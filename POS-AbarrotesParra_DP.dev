@@ -24,12 +24,12 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=common
+Folders=common,ventas
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=3
+UnitCount=4
 
 [VersionInfo]
 Major=1
@@ -74,6 +74,16 @@ BuildCmd=
 FileName=common\logo.h
 CompileCpp=0
 Folder=common
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
+FileName=ventas\ventas.c
+CompileCpp=0
+Folder=ventas
 Compile=1
 Link=1
 Priority=1000
