@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "logo.h"
 // Prototipos de funciones para cada submenú
 void menu_inventario();
 void menu_administracion_productos();
@@ -16,6 +16,7 @@ void menu_main() {
     int opcion;
     
     do {
+    	imprimir_logo();
         printf("\n======= MENÚ PRINCIPAL =======\n");
         printf("1. Gestión de Inventario\n");
         printf("2. Proceso de Venta\n");
