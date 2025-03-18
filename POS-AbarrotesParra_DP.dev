@@ -110,6 +110,9 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit8]
+FileName=include\ventas.h
+
 [Unit7]
 FileName=include\ventas.h
 CompileCpp=0
