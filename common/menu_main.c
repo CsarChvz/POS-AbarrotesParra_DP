@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include "logo.h"
+#include "../include/ventas.h"
+
+
 // Prototipos de funciones para cada submenú
 void menu_inventario();
 void menu_administracion_productos();
@@ -102,7 +105,7 @@ void menu_administracion_productos() {
 
         switch (opcion) {
             case 1:
-                printf("Función de Registro aún no implementada.\n");
+                registrar_producto(2);
                 break;
             case 2:
                 printf("Función de Actualización aún no implementada.\n");
