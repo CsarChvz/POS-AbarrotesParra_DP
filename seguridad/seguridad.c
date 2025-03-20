@@ -11,17 +11,19 @@
 typedef struct {
     char usuario[USUARIO_LENGTH];
     char contrasena[CONTRASENA_LENGTH];
+	int rol;
 } Usuario;
 
 // Lista de usuarios - Seteados para debugear
 Usuario usuarios[MAX_USERS] = {
-    {"admin", "admin123"},
-    {"user1", "contrasena1"},
-    {"user2", "contrasena2"}
+    {"admin", "admin123", 2},
+    {"user1", "contrasena1", 3},
+    {"user2", "contrasena2", 3}
 };
 
 // Variable global para almacenar el usuario logueado
 char usuario_actual[USUARIO_LENGTH] = "";
+
 
 int checar_credenciales(const char *usuario, const char *contrasena) {
     int i;
@@ -32,6 +34,19 @@ int checar_credenciales(const char *usuario, const char *contrasena) {
     }
     return 0;
 }
+
+// Se comprueba el rol que tiene el usuario
+int obtener_rol(const char *usuario) {
+    int i;
+    for (i = 0; i < MAX_USERS; i++) {
+        if (strcmp(usuarios[i].usuario, usuario) == 0) {
+            return usuarios[i].rol; // Retorna el rol del usuario
+        }
+    }
+    return -1; // Usuario no encontrado
+}
+
+
 
 // Función para iniciar sesión
 int inicio_sesion() {
@@ -49,7 +64,7 @@ int inicio_sesion() {
         // Verificar credenciales
         if (checar_credenciales(usuario, contrasena)) {
             strcpy(usuario_actual, usuario); // Guardar usuario logueado
-            printf("\241Acceso concedido!\n"); // ¡ (¡ = ASCII 241)
+            printf("\241Acceso concedido!\n"); // ¡ (¡ = ASCII 241
             return 1;
         } else {
             printf("\241Acceso denegado! Usuario o contrase\244a incorrectos.\n");
@@ -63,6 +78,8 @@ int inicio_sesion() {
         }
     }
 }
+
+
 
 // Función para cerrar sesión
 void cerrar_sesion() {
