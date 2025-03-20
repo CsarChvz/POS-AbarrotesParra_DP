@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o common/logo.o ventas/ventas.o common/menu_main.o
-LINKOBJ  = main.o common/logo.o ventas/ventas.o common/menu_main.o
+OBJ      = main.o common/logo.o ventas/ventas.o common/menu_main.o seguridad/seguridad.o
+LINKOBJ  = main.o common/logo.o ventas/ventas.o common/menu_main.o seguridad/seguridad.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -35,3 +35,6 @@ ventas/ventas.o: ventas/ventas.c
 
 common/menu_main.o: common/menu_main.c
 	$(CC) -c common/menu_main.c -o common/menu_main.o $(CFLAGS)
+
+seguridad/seguridad.o: seguridad/seguridad.c
+	$(CC) -c seguridad/seguridad.c -o seguridad/seguridad.o $(CFLAGS)
