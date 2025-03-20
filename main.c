@@ -16,10 +16,11 @@ int main() {
                 
                 int opcion;
                 scanf("%d", &opcion);
-
+				
                 switch (opcion) {
                     case 1:
-                        menu_main(); // Función de tu sistema
+                    	
+                        menu_main(obtener_rol(usuario_actual)); // Función de tu sistema
                         break;
                     case 2:
                         cerrar_sesion();

@@ -9,5 +9,7 @@ int checar_credenciales(const char *usuario, const char *contrasena);
 int inicio_sesion();
 
 void cerrar_sesion();
+
+int obtener_rol(const char *usuario);
 #endif
 
