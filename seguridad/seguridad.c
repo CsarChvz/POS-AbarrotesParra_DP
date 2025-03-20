@@ -17,8 +17,8 @@ typedef struct {
 // Lista de usuarios - Seteados para debugear
 Usuario usuarios[MAX_USERS] = {
     {"admin", "admin123", 2},
-    {"user1", "contrasena1", 3},
-    {"user2", "contrasena2", 3}
+    {"user1", "contrasena1", 1},
+    {"user2", "contrasena2", 1}
 };
 
 // Variable global para almacenar el usuario logueado
