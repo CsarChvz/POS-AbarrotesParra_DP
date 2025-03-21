@@ -1,6 +1,6 @@
 #ifndef MENU_MAIN_H
 #define MENU_MAIN_H
 
-void menu_main();
+void menu_main(int const *role);
 
 #endif
