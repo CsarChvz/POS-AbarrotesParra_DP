@@ -79,6 +79,19 @@ int inicio_sesion() {
     }
 }
 
+void cambiar_contrasena(char *nueva_contrasena) {
+	int i;
+    for (i = 0; i < MAX_USERS; i++) {
+    	// Encontramos el usuario segun la iteracion
+        if (strcmp(usuarios[i].usuario, usuario_actual) == 0) {
+            strcpy(usuarios[i].contrasena, nueva_contrasena); // Cambia la contrase?a
+            printf("Contrase?a cambiada exitosamente.\n");
+            cerrar_sesion(); // Cierra sesi?n despu?s del cambio
+            return;
+        }
+    }
+    printf("Error: Usuario no encontrado.\n");
+}
 
 
 // Función para cerrar sesión
