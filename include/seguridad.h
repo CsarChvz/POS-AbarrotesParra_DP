@@ -11,5 +11,7 @@ int inicio_sesion();
 void cerrar_sesion();
 
 int obtener_rol(const char *usuario);
+
+void cambiar_contrasena();
 #endif
 
