@@ -904,6 +904,7 @@ void menu_mi_cuenta(){
         switch (opcion) {
             case 1:
 				printf("Función cambiar contraseña");
+				cambiar_contrasena();
                 break;
             case 3:
                 return;

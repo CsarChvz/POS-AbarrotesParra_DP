@@ -79,11 +79,14 @@ int inicio_sesion() {
     }
 }
 
-void cambiar_contrasena(char *nueva_contrasena) {
+void cambiar_contrasena() {
 	int i;
+	char nueva_contrasena[CONTRASENA_LENGTH]; 
     for (i = 0; i < MAX_USERS; i++) {
     	// Encontramos el usuario segun la iteracion
         if (strcmp(usuarios[i].usuario, usuario_actual) == 0) {
+        	printf("\n Ingrese la nueva contraseña: ");
+        	scanf("%s", &nueva_contrasena);
             strcpy(usuarios[i].contrasena, nueva_contrasena); // Cambia la contrase?a
             printf("Contrase?a cambiada exitosamente.\n");
             cerrar_sesion(); // Cierra sesi?n despu?s del cambio
