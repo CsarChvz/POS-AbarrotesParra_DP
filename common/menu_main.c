@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include "logo.h"
 #include "../include/ventas.h"
-
+#include "../include/reportes.h"
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
 
+#define T 100
 // Prototipos de funciones
 void menu_inventario(int role);
 void menu_ventas(int role);
@@ -654,6 +655,8 @@ void menu_reportes_estadisticas(int role) {
 
 void menu_reportes_ventas(int role) {
     int opcion;
+	char fecha[11];
+	int mes, anio;
     do {
         printf("\n--- Reportes de Ventas ---\n");
         printf("1. Ventas por Día\n");
@@ -673,23 +676,38 @@ void menu_reportes_ventas(int role) {
         
         printf("Seleccione una opción: ");
         scanf("%d", &opcion);
-
+		
+		switch(opcion){
+			case 1:
+				mostrar_ventas_dia();
+				break;
+			case 2:
+				printf("\n Ingrese la fecha apartir la cual quiere filtrar las venta: ");
+				scanf("%s", &fecha);
+				mostar_ventas_semana(fecha);
+				return;
+			case 3:
+				printf("\n Ingrese el año: ");
+				scanf("%d", &anio);
+				printf("\n Ingrese el mes: ");
+				scanf("%d", &mes);
+				mostrar_ventas_anio(mes, anio);
+				return;
+			default:
+				return;
         if (role == ROL_ADMIN) {
-            if (opcion >= 1 && opcion <= 6) {
-                printf("Función aún no implementada.\n");
-            } else if (opcion == 7) {
-                return;
-            } else {
-                printf("Opción inválida.\n");
-            }
+ 
+			}
         } else {
-            if (opcion >= 1 && opcion <= 4) {
-                printf("Función aún no implementada.\n");
-            } else if (opcion == 5) {
-                return;
-            } else {
-                printf("Opción inválida.\n");
-            }
+ 			switch(opcion){
+        		case 4:
+        			break;
+        		case 5:
+					return;
+				default:
+					return;
+						
+			}
         }
     } while (1);
 }

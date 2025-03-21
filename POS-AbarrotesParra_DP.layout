@@ -22,7 +22,7 @@ CursorRow=23
 TopLine=1
 LeftChar=1
 [Editor_5]
-CursorCol=31
+CursorCol=1
 CursorRow=4
 TopLine=1
 LeftChar=1
@@ -52,12 +52,12 @@ CursorRow=1
 TopLine=1
 LeftChar=1
 [Editor_10]
-CursorCol=1
-CursorRow=1
+CursorCol=20
+CursorRow=15
 TopLine=1
 LeftChar=1
 [Editor_11]
-CursorCol=1
-CursorRow=1
+CursorCol=25
+CursorRow=17
 TopLine=1
 LeftChar=1
