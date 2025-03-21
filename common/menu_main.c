@@ -32,6 +32,8 @@ void menu_gestion_usuarios();
 
 void menu_registro_auditoria();
 
+void menu_mi_cuenta();
+
 
 // Definir estructura de opción de menú
 typedef struct {
@@ -53,6 +55,8 @@ void menu_main(int role) {
         {"Caja", menu_gestion_caja, ROL_VENDEDOR},
         {"Reportes", menu_reportes_estadisticas, ROL_VENDEDOR},
         {"Administración", menu_administracion, ROL_ADMIN},
+        {"Mi cuenta", menu_mi_cuenta, ROL_VENDEDOR},
+        
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -884,6 +888,27 @@ void menu_registro_auditoria() {
             default:
                 printf("Opción inválida.\n");
         }
-    } while (opcion != 5);
+    } while (opcion != 3);
 }
 
+
+void menu_mi_cuenta(){
+	int opcion;
+    do {
+        printf("\n--- Mi cuenta ---\n");
+        printf("1. Cambiar contrasena\n");
+        printf("3. Volver\n");
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+				printf("Función cambiar contraseña");
+                break;
+            case 3:
+                return;
+            default:
+                printf("Opción inválida.\n");
+        }
+    } while (opcion != 3);
+}
