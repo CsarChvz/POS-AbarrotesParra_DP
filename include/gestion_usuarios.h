@@ -19,6 +19,6 @@ typedef struct {
 
 int obtenerUsuarios(Usuario usuarios[], int max_usuarios);
 
-void listarUsuarios();
+int listarUsuarios();
 
 #endif

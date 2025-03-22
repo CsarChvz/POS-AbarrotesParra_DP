@@ -3,7 +3,6 @@
 #include "../include/ventas.h"
 #include "../include/reportes.h"
 #include "../include/gestion_usuarios.h"
-
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
@@ -678,53 +677,53 @@ void menu_reportes_ventas(int role) {
         printf("Seleccione una opción: ");
         scanf("%d", &opcion);
 
-        switch (opcion) {
-            case 1:
-                mostrar_ventas_dia();
-                break;
-            case 2:
-                printf("\nIngrese la fecha a partir de la cual quiere filtrar las ventas (YYYY-MM-DD): ");
-                scanf("%s", fecha);  // No usar & con cadenas
-                mostrar_ventas_semana(fecha);
-                break;
-            case 3:
-                printf("\nIngrese el año: ");
-                scanf("%d", &anio);
-                printf("\nIngrese el mes: ");
-                scanf("%d", &mes);
-                mostrar_ventas_anio(mes, anio);
-                break;
-            case 4:
-                if (role == ROL_ADMIN) {
-                    printf("Función: Ventas por vendedor (aún no implementada).\n");
-                } else {
-                    printf("Función: Mis ventas (aún no implementada).\n");
-                }
-                break;
-            case 5:
-                if (role == ROL_ADMIN) {
-                    printf("Función: Ventas por producto (aún no implementada).\n");
-                } else {
-                    return;  // Salir del menú si no es admin
-                }
-                break;
-            case 6:
-                if (role == ROL_ADMIN) {
-                    printf("Función: Ventas por método de pago (aún no implementada).\n");
-                } else {
-                    printf("Opción inválida.\n");
-                }
-                break;
-            case 7:
-                if (role == ROL_ADMIN) {
-                    return;
-                }
-                printf("Opción inválida.\n");
-                break;
-            default:
-                printf("Opción inválida.\n");
-        }
-    } while (1);
+    //     switch (opcion) {
+    //         case 1:
+    //             mostrar_ventas_dia();
+    //             break;
+    //         case 2:
+    //             printf("\nIngrese la fecha a partir de la cual quiere filtrar las ventas (YYYY-MM-DD): ");
+    //             scanf("%s", fecha);  // No usar & con cadenas
+    //             mostrar_ventas_semana(fecha);
+    //             break;
+    //         case 3:
+    //             printf("\nIngrese el año: ");
+    //             scanf("%d", &anio);
+    //             printf("\nIngrese el mes: ");
+    //             scanf("%d", &mes);
+    //             mostrar_ventas_anio(mes, anio);
+    //             break;
+    //         case 4:
+    //             if (role == ROL_ADMIN) {
+    //                 printf("Función: Ventas por vendedor (aún no implementada).\n");
+    //             } else {
+    //                 printf("Función: Mis ventas (aún no implementada).\n");
+    //             }
+    //             break;
+    //         case 5:
+    //             if (role == ROL_ADMIN) {
+    //                 printf("Función: Ventas por producto (aún no implementada).\n");
+    //             } else {
+    //                 return;  // Salir del menú si no es admin
+    //             }
+    //             break;
+    //         case 6:
+    //             if (role == ROL_ADMIN) {
+    //                 printf("Función: Ventas por método de pago (aún no implementada).\n");
+    //             } else {
+    //                 printf("Opción inválida.\n");
+    //             }
+    //             break;
+    //         case 7:
+    //             if (role == ROL_ADMIN) {
+    //                 return;
+    //             }
+    //             printf("Opción inválida.\n");
+    //             break;
+    //         default:
+    //             printf("Opción inválida.\n");
+    //     }
+     } while (1);
 }
 
 
@@ -735,7 +734,7 @@ void menu_reportes_inventario(int role) {
         printf("1. Stock Actual\n");
         printf("2. Productos m�s Vendidos\n");
         printf("3. Productos menos Vendidos\n");
-        
+
         // Mostrar opciones adicionales para administrador
         if (role == ROL_ADMIN) {
             printf("4. Rotaci�n de Inventario\n");
@@ -744,7 +743,7 @@ void menu_reportes_inventario(int role) {
         } else {
             printf("4. Volver\n");
         }
-        
+
         printf("Seleccione una opci�n: ");
         scanf("%d", &opcion);
 
@@ -752,7 +751,7 @@ void menu_reportes_inventario(int role) {
             if (opcion >= 1 && opcion <= 5) {
                 printf("Funci�n a�n no implementada.\n");
             } else if (opcion == 6) {
-                return;
+                return; // Salir del men�
             } else {
                 printf("Opci�n inv�lida.\n");
             }
@@ -760,13 +759,14 @@ void menu_reportes_inventario(int role) {
             if (opcion >= 1 && opcion <= 3) {
                 printf("Funci�n a�n no implementada.\n");
             } else if (opcion == 4) {
-                return;
+                return; // Salir del men� para usuarios no admin
             } else {
                 printf("Opci�n inv�lida.\n");
             }
         }
-    } while (1);
+    } while (1); // El bucle sigue hasta que se elija "Volver"
 }
+
 
 void menu_reportes_caja() {
     int opcion;
@@ -781,14 +781,6 @@ void menu_reportes_caja() {
         scanf("%d", &opcion);
 
         switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 5:
-                return;
             default:
                 printf("Opci�n inv�lida.\n");
         }
@@ -878,12 +870,12 @@ void menu_gestion_usuarios() {
 
         switch (opcion) {
             case 1:
-                printf("No seaaa");
+                listarUsuarios();
             case 2:
             case 3:
+                
             case 4:
             case 5:
-                printf("Funci�n a�n no asdf.\n");
                 break;
             case 6:
                 return;
