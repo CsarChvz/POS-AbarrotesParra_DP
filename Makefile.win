@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o common/logo.o ventas/ventas.o common/menu_main.o seguridad/seguridad.o ventas/pruebas.o reportes/reportes.o
-LINKOBJ  = main.o common/logo.o ventas/ventas.o common/menu_main.o seguridad/seguridad.o ventas/pruebas.o reportes/reportes.o
+OBJ      = main.o common/logo.o ventas/ventas.o common/menu_main.o seguridad/seguridad.o ventas/pruebas.o reportes/reportes.o common/data/usuarios.o seguridad/gestion_usuarios.o
+LINKOBJ  = main.o common/logo.o ventas/ventas.o common/menu_main.o seguridad/seguridad.o ventas/pruebas.o reportes/reportes.o common/data/usuarios.o seguridad/gestion_usuarios.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -44,3 +44,6 @@ ventas/pruebas.o: ventas/pruebas.c
 
 reportes/reportes.o: reportes/reportes.c
 	$(CC) -c reportes/reportes.c -o reportes/reportes.o $(CFLAGS)
+
+seguridad/gestion_usuarios.o: seguridad/gestion_usuarios.c
+	$(CC) -c seguridad/gestion_usuarios.c -o seguridad/gestion_usuarios.o $(CFLAGS)
