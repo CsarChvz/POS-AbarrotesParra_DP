@@ -24,12 +24,12 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=common,common/data,include,reportes,seguridad,ventas
+Folders=common,include,reportes,seguridad,ventas
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=15
+UnitCount=14
 
 [VersionInfo]
 Major=1
@@ -170,19 +170,10 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit13]
-FileName=common\data\usuarios.csv
-Folder=common/data
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit14]
-FileName=seguridad\gestion_usuarios.c
+FileName=include\gestion_usuarios.h
 CompileCpp=0
-Folder=seguridad
+Folder=include
 Compile=1
 Link=1
 Priority=1000
@@ -193,6 +184,16 @@ BuildCmd=
 FileName=include\gestion_usuarios.h
 CompileCpp=0
 Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit13]
+FileName=seguridad\gestion_usuarios.c
+CompileCpp=0
+Folder=seguridad
 Compile=1
 Link=1
 Priority=1000

@@ -14,7 +14,7 @@ CursorRow=1
 TopLine=1
 LeftChar=1
 [Editors]
-Order=14,4,5
+Order=
 Focused=4
 [Editor_0]
 CursorCol=25
