@@ -1,0 +1,4 @@
+id,usuario,contrasena,rol,activo
+1,admin,admin123,2,1,
+2,user1,contrasena1,1,0
+3,user2,contrasena2,1,1

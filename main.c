@@ -5,22 +5,23 @@
 #include "include/seguridad.h"
 
 int main() {
+    int rol;
     while (1) {
         if (inicio_sesion() == 1) {
             while (1) {
-                printf("\n--- Men\243 Principal ---\n"); // Menú (é = ASCII 243)
+                printf("\n--- Men\243 Principal ---\n"); // Menï¿½ (ï¿½ = ASCII 243)
                 printf("1. Acceder al sistema\n");
-                printf("2. Cerrar sesi\242n\n"); // Sesión (ó = ASCII 162)
+                printf("2. Cerrar sesi\242n\n"); // Sesiï¿½n (ï¿½ = ASCII 162)
                 printf("3. Salir\n");
-                printf("Seleccione una opci\242n: "); // Opción (ó = ASCII 162)
+                printf("Seleccione una opci\242n: "); // Opciï¿½n (ï¿½ = ASCII 162)
                 
                 int opcion;
                 scanf("%d", &opcion);
 				
                 switch (opcion) {
                     case 1:
-                    	
-                        menu_main(obtener_rol(usuario_actual)); // Función de tu sistema
+                        rol = obtener_rol(usuario_actual);
+                        menu_main(&rol); // Funciï¿½n de tu sistema
                         break;
                     case 2:
                         cerrar_sesion();
@@ -29,11 +30,11 @@ int main() {
                         printf("Saliendo del programa...\n");
                         return 0;
                     default:
-                        printf("Opci\242n inv\240lida. Intente nuevamente.\n"); // Opción (ó = 162), Inválida (á = 160)
+                        printf("Opci\242n inv\240lida. Intente nuevamente.\n"); // Opciï¿½n (ï¿½ = 162), Invï¿½lida (ï¿½ = 160)
                 }
 
                 if (usuario_actual[0] == '\0') {
-                    break; // Regresa al login si se cierra sesión
+                    break; // Regresa al login si se cierra sesiï¿½n
                 }
             }
         } else {
