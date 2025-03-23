@@ -40,8 +40,8 @@ typedef struct {
 } VentaProducto;
 
 Producto *buscarProductoPorId(Producto productos[], int numProductos, int idProducto) {
-	int i;
-    for (i= 0; i < numProductos; i++) {
+    int i;
+    for (i = 0; i < numProductos; i++) {
         if (productos[i].id == idProducto) {
             return &productos[i];
         }
@@ -62,6 +62,90 @@ void mostrarCarrito(VentaProducto ventasProductos[], int numVentasProductos, Pro
     }
 }
 
+void guardarVentaProceso(VentaProducto ventasProductos[], int numVentasProductos, int idVenta) {
+    FILE *archivo = fopen("common/data/ventas_productos.csv", "a");
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo ventas_proceso.csv\n");
+        return;
+    }
+
+    int i;
+    for (i = 0; i < numVentasProductos; i++) {
+        if (ventasProductos[i].idVenta == idVenta) {
+            fprintf(archivo, "%d,%d,%d,%.2f,%.2f,%.2f\n",
+                    ventasProductos[i].idVP, ventasProductos[i].idVenta, ventasProductos[i].idProducto,
+                    ventasProductos[i].cantidad, ventasProductos[i].precioUnitario, ventasProductos[i].subtotal);
+        }
+    }
+
+    fclose(archivo);
+}
+
+void guardarVenta(Venta venta) {
+    FILE *archivo = fopen("common/data/ventas.csv", "a");
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo ventas.csv\n");
+        return;
+    }
+
+    struct tm *timeinfo;
+    timeinfo = localtime(&venta.fechaVenta);
+
+    fprintf(archivo, "%d,%d-%02d-%02d,%s,%d,%.2f\n",
+            venta.idVenta, timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+            venta.metodoPago, venta.idUsuario, venta.precioTotal);
+
+    fclose(archivo);
+}
+
+static int obtenerSiguienteIdVenta() {
+    FILE *archivo = fopen("common/data/ventas.csv", "r");
+    if (archivo == NULL) {
+        return 1; // Si no existe el archivo, el primer ID es 1
+    }
+
+    char linea[256];
+    int maxId = 0;
+    int id;
+
+    // Saltar cabecera
+    fgets(linea, 256, archivo);
+
+    while (fgets(linea, 256, archivo) != NULL) {
+        sscanf(linea, "%d", &id);
+        if (id > maxId) {
+            maxId = id;
+        }
+    }
+
+    fclose(archivo);
+    return maxId + 1;
+}
+
+static int obtenerSiguienteIdVentaProducto() {
+    FILE *archivo = fopen("common/data/ventas_productos.csv", "r");
+    if (archivo == NULL) {
+        return 1; // Si no existe el archivo, el primer ID es 1
+    }
+
+    char linea[256];
+    int maxId = 0;
+    int id;
+
+    // Saltar cabecera
+    fgets(linea, 256, archivo);
+
+    while (fgets(linea, 256, archivo) != NULL) {
+        sscanf(linea, "%d", &id);
+        if (id > maxId) {
+            maxId = id;
+        }
+    }
+
+    fclose(archivo);
+    return maxId + 1;
+}
+
 void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int *numVentas, VentaProducto ventasProductos[], int *numVentasProductos) {
     int opcion;
     int idProducto;
@@ -74,7 +158,7 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
     int idUsuario;
     int i;
 
-    ventaActual.idVenta = *numVentas + 1;
+    ventaActual.idVenta = obtenerSiguienteIdVenta(); // Obtener el siguiente ID para la venta
     ventaActual.fechaVenta = time(NULL);
 
     printf("\n--- Nueva Venta ---\n");
@@ -97,7 +181,7 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
                 if (productos[i].id == idProducto) {
                     if (productos[i].stock >= cantidad || strcmp(productos[i].unidad, "Gramos") == 0) {
                         VentaProducto ventaProducto;
-                        ventaProducto.idVP = *numVentasProductos + 1;
+                        ventaProducto.idVP = obtenerSiguienteIdVentaProducto(); // Obtener el siguiente ID para ventaProducto
                         ventaProducto.idVenta = ventaActual.idVenta;
                         ventaProducto.idProducto = productos[i].id;
                         ventaProducto.cantidad = cantidad;
@@ -160,7 +244,11 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
             ventas[*numVentas] = ventaActual;
             (*numVentas)++;
 
-            printf("Venta finalizada.\n");
+            // Guardar datos en archivos CSV
+            guardarVentaProceso(ventasProductos, *numVentasProductos, ventaActual.idVenta);
+            guardarVenta(ventaActual);
+
+            printf("Venta finalizada y datos guardados.\n");
             break;
         } else if (opcion == 3) {
             printf("Venta cancelada.\n");
@@ -214,7 +302,7 @@ void registrarVentaMenu() {
     Producto *productos = NULL;
     int numProductos = obtenerProductos(&productos);
 
-    if (numProductos== 0) {
+    if (numProductos == 0) {
         printf("No se pudieron obtener los productos.\n");
         return;
     }

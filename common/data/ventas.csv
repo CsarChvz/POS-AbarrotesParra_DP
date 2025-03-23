@@ -8,3 +8,4 @@ ID_Venta,Fecha_Venta,Metodo_Pago,ID_Usuario,Precio_Total
 7,2025-03-24,Credit Card,2,19.80
 8,2025-03-24,Transfer,1,37.00
 9,2025-03-24,Cash,3,250.90
+10,2025-03-23,Cash,1,10.60
