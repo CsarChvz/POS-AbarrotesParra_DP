@@ -16,7 +16,7 @@
 #define USUARIO_LENGTH_C 50
 // Prototipos de funciones
 void menu_inventario(int role);
-void menu_ventas(int role);
+void menu_ventas();
 void menu_gestion_caja(int role);
 void menu_reportes_estadisticas(int role);
 void menu_administracion(int role);
@@ -24,10 +24,9 @@ void menu_administracion(int role);
 void menu_administracion_productos();
 void menu_control_stock();
 void menu_descuentos_promociones();
-void menu_categorias();
-void menu_nueva_venta();
-void menu_historial_ventas(int role);
-void menu_cancelacion_ventas();
+
+void menu_historial_ventas();
+
 void menu_apertura_caja();
 void menu_ingresos_egresos(int role);
 void menu_corte_caja(int role);
@@ -111,7 +110,6 @@ void menu_inventario(int role) {
         {"Gesti�n de Productos", menu_administracion_productos, ROL_ADMIN},
         {"Control de Stock", menu_control_stock, ROL_VENDEDOR},
         {"Descuentos y Promociones", menu_descuentos_promociones, ROL_ADMIN},
-        {"Categor�as", menu_categorias, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -269,38 +267,12 @@ void menu_descuentos_promociones() {
     } while (opcion != 4);
 }
 
-void menu_categorias() {
-    int opcion;
-    do {
-        printf("\n--- Categor�as ---\n");
-        printf("1. Ver Categor�as\n");
-        printf("2. Crear Nueva Categor�a\n");
-        printf("3. Modificar Categor�a\n");
-        printf("4. Eliminar Categor�a\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 5:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 5);
-}
-
-void menu_ventas(int role) {
+void menu_ventas() {
+    int role;
+    role = obtener_rol(usuario_actual);
     OpcionMenu opciones[] = {
-        {"Nueva Venta", menu_nueva_venta, ROL_VENDEDOR},
-        {"Historial de Ventas", menu_historial_ventas, ROL_VENDEDOR},
-        {"Cancelaci�n de Ventas", menu_cancelacion_ventas, ROL_ADMIN}
+        {"Nueva Venta", registrarVentaMenu, ROL_VENDEDOR},
+        {"Historial de Ventas", visualizarHistorialVentas, ROL_ADMIN},
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -340,107 +312,6 @@ void menu_ventas(int role) {
     } while (1);
 }
 
-void menu_nueva_venta() {
-    int opcion;
-    do {
-        printf("\n--- Nueva Venta ---\n");
-        printf("1. Buscar y Seleccionar Productos\n");
-        printf("2. Ver Carrito\n");
-        printf("3. Procesar Pago\n");
-        printf("4. Cancelar Venta\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 5:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 5);
-}
-
-void menu_historial_ventas(int role) {
-    int opcion;
-    do {
-        printf("\n--- Historial de Ventas ---\n");
-        printf("1. Ver Mis Ventas\n");
-        
-        // Solo admin puede ver todas las ventas
-        if (role == ROL_ADMIN) {
-            printf("2. Ver Todas las Ventas\n");
-            printf("3. Buscar Venta por ID\n");
-            printf("4. Filtrar por Fecha\n");
-            printf("5. Volver\n");
-        } else {
-            printf("2. Buscar Venta por ID\n");
-            printf("3. Filtrar por Fecha\n");
-            printf("4. Volver\n");
-        }
-        
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        if (role == ROL_ADMIN) {
-            switch (opcion) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    printf("Funci�n a�n no implementada.\n");
-                    break;
-                case 5:
-                    return;
-                default:
-                    printf("Opci�n inv�lida.\n");
-            }
-        } else {
-            switch (opcion) {
-                case 1:
-                case 2:
-                case 3:
-                    printf("Funci�n a�n no implementada.\n");
-                    break;
-                case 4:
-                    return;
-                default:
-                    printf("Opci�n inv�lida.\n");
-            }
-        }
-    } while (1);
-}
-
-void menu_cancelacion_ventas() {
-    int opcion;
-    do {
-        printf("\n--- Cancelaci�n de Ventas ---\n");
-        printf("1. Buscar Venta a Cancelar\n");
-        printf("2. Justificar Cancelaci�n\n");
-        printf("3. Ver Historial de Cancelaciones\n");
-        printf("4. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 4:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 4);
-}
 
 void menu_gestion_caja(int role) {
     OpcionMenu opciones[] = {
@@ -754,8 +625,7 @@ void menu_reportes_inventario(int role) {
         // Mostrar opciones adicionales para administrador
         if (role == ROL_ADMIN) {
             printf("4. Rotaci�n de Inventario\n");
-            printf("5. Productos por Categor�a\n");
-            printf("6. Volver\n");
+            printf("5. Volver\n");
         } else {
             printf("4. Volver\n");
         }
@@ -766,7 +636,7 @@ void menu_reportes_inventario(int role) {
         if (role == ROL_ADMIN) {
             if (opcion >= 1 && opcion <= 5) {
                 printf("Funci�n a�n no implementada.\n");
-            } else if (opcion == 6) {
+            } else if (opcion == 5) {
                 return; // Salir del men�
             } else {
                 printf("Opci�n inv�lida.\n");
