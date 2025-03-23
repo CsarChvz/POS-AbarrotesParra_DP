@@ -13,5 +13,12 @@ void cerrar_sesion();
 int obtener_rol(const char *usuario);
 
 void cambiar_contrasena();
+
+typedef struct {
+    char usuario[USUARIO_LENGTH];  
+    int role;      
+} UsuarioGlobal;
+
+extern UsuarioGlobal usuario_global;
 #endif
 

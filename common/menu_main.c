@@ -6,12 +6,12 @@
 #include "../include/reportes.h"
 #include "../include/gestion_usuarios.h"
 #include "../include/inventario.h"
-
+#include "../include/seguridad.h"
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
 #define T 100
-#define USUARIO_LENGTH 50
+#define USUARIO_LENGTH_C 50
 // Prototipos de funciones
 void menu_inventario(int role);
 void menu_ventas(int role);
@@ -20,7 +20,7 @@ void menu_reportes_estadisticas(int role);
 void menu_administracion(int role);
 
 void menu_administracion_productos();
-void menu_control_stock(int role);
+void menu_control_stock();
 void menu_descuentos_promociones();
 void menu_categorias();
 void menu_nueva_venta();
@@ -44,7 +44,7 @@ void menu_mi_cuenta();
 // Definir estructura de opci�n de men�
 typedef struct {
     char *nombre;
-    void (*funcion)(int);
+    void (*funcion)(int role);
     int permiso_minimo; // 1 = Vendedor, 2 = Admin
 } OpcionMenu;
 
@@ -192,8 +192,10 @@ void menu_administracion_productos() {
 }
 
 
-void menu_control_stock(int role) {
+void menu_control_stock() {
     int opcion;
+    int role;
+    role = obtener_rol(usuario_actual);
     do {
         printf("\n--- Control de Stock ---\n");
         printf("1. Ver Stock Actual\n");
@@ -753,6 +755,7 @@ void menu_reportes_inventario(int role) {
         printf("2. Productos m�s Vendidos\n");
         printf("3. Productos menos Vendidos\n");
 
+    
         // Mostrar opciones adicionales para administrador
         if (role == ROL_ADMIN) {
             printf("4. Rotaci�n de Inventario\n");
@@ -875,7 +878,7 @@ void menu_administracion(int role) {
 
 void menu_gestion_usuarios() {
     int opcion, role, success;
-    char nombre_usuario[USUARIO_LENGTH];
+    char nombre_usuario[USUARIO_LENGTH_C];
 
     do {
         printf("\n--- Gesti�n de Usuarios ---\n");
