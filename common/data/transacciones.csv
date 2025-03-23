@@ -1,0 +1,3 @@
+ID_Transaccion,Fecha,Tipo_Transaccion,Ingreso,Egreso,Saldo,Metodo_Pago,ID_Usuario
+1,2025-03-22,Ingreso,2000.00,0.00,2000.00,Credit Card,1
+2,2025-03-22,Egreso,0.00,100.00,1900.00,Cash,1
