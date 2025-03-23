@@ -245,6 +245,17 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
             switch (opcionPago) {
                 case 1:
                     strcpy(metodoPago, "Efectivo");
+                    float montoRecibido;
+                    do {
+                        printf("Ingrese el monto recibido: ");
+                        scanf("%f", &montoRecibido);
+                        if (montoRecibido < total) {
+                            printf("El monto recibido es insuficiente. Ingrese un monto mayor o igual al total.\n");
+                        }
+                    } while (montoRecibido < total);
+
+                    float cambio = montoRecibido - total;
+                    printf("Cambio: %.2f\n", cambio);
                     break;
                 case 2:
                     strcpy(metodoPago, "Tarjeta");
