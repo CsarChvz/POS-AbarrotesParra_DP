@@ -213,14 +213,16 @@ void menu_control_stock() {
         printf("Seleccione una opci�n: ");
         scanf("%d", &opcion);
 
+        switch (opcion) {
+            case 1:
+                printf("Funci�n de Ver Stock a�n no implementada.\n");
+                break;
+            case 2:
+                printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
+                break;
+        }
         if (role == ROL_ADMIN) {
             switch (opcion) {
-                case 1:
-                    printf("Funci�n de Ver Stock a�n no implementada.\n");
-                    break;
-                case 2:
-                    printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
-                    break;
                 case 3:
                     printf("Funci�n de Reposici�n a�n no implementada.\n");
                     break;
@@ -232,20 +234,8 @@ void menu_control_stock() {
                 default:
                     printf("Opci�n inv�lida.\n");
             }
-        } else {
-            switch (opcion) {
-                case 1:
-                    printf("Funci�n de Ver Stock a�n no implementada.\n");
-                    break;
-                case 2:
-                    printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
-                    break;
-                case 3:
-                    return;
-                default:
-                    printf("Opci�n inv�lida.\n");
-            }
-        }
+        } 
+        
     } while (1);
 }
 
