@@ -173,7 +173,7 @@ void menu_administracion_productos() {
                 registrarProductoMenu();
                 break;  
             case 2:
-                printf("Función de Actualización aún no implementada.\n");
+                visualizarProductosMenu();
                 break;
             case 3:
                 printf("Función de Eliminación aún no implementada.\n");
