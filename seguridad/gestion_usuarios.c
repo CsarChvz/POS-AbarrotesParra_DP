@@ -232,3 +232,83 @@ void cambiarEstatusUsuarioMenu() {
         printf("No se pudo actualizar el estatus del usuario.\n");
     }
 }
+
+int cambiarRolUsuario(int idUsuario) {
+    FILE *archivoOriginal = fopen("common/data/usuarios.csv", "r");
+    FILE *archivoTemporal = fopen("common/data/usuarios_temp.csv", "w");
+
+    if (!archivoOriginal || !archivoTemporal) {
+        perror("Error al abrir los archivos");
+        if (archivoOriginal) fclose(archivoOriginal);
+        if (archivoTemporal) fclose(archivoTemporal);
+        return 0;
+    }
+
+    char linea[256];
+    int encontrado = 0;
+
+    // Copiar la cabecera
+    if (fgets(linea, sizeof(linea), archivoOriginal)) {
+        fputs(linea, archivoTemporal);
+    }
+
+    // Leer y modificar líneas
+    while (fgets(linea, sizeof(linea), archivoOriginal)) {
+        Usuario u;
+        if (sscanf(linea, "%d,%49[^,],%49[^,],%d,%d", 
+                   &u.id, u.usuario, u.contrasena, &u.rol, &u.activo) == 5) {
+            if (u.id == idUsuario) {
+                u.rol = (u.rol == 1) ? 2 : 1; // Alternar entre 1 (vendedor) y 2 (admin)
+                fprintf(archivoTemporal, "%d,%s,%s,%d,%d\n", 
+                        u.id, u.usuario, u.contrasena, u.rol, u.activo);
+                encontrado = 1;
+                printf("\n[Rol actualizado] Usuario: '%s' -> Nuevo Rol: %s\n", 
+                       u.usuario, u.rol == 1 ? "Vendedor" : "Admin");
+            } else {
+                fputs(linea, archivoTemporal);
+            }
+        } else {
+            printf("Advertencia: Línea corrupta en el archivo.\n");
+        }
+    }
+
+    fclose(archivoOriginal);
+    fclose(archivoTemporal);
+
+    if (!encontrado) {
+        remove("common/data/usuarios_temp.csv");
+        printf("Error: No se encontró el usuario con ID %d.\n", idUsuario);
+        return 0;
+    }
+
+    if (remove("common/data/usuarios.csv") != 0) {
+        perror("Error al eliminar el archivo original");
+        return 0;
+    }
+
+    if (rename("common/data/usuarios_temp.csv", "common/data/usuarios.csv") != 0) {
+        perror("Error al renombrar el archivo temporal");
+        return 0;
+    }
+
+    return 1;
+}
+
+void cambiarRolUsuarioMenu() {
+    int id;
+    listarUsuarios();
+    printf("----------------------------------------");
+    printf("\n--- Cambiar Rol de Usuario ---\n");
+    printf("Ingrese el ID del usuario: ");
+    
+    if (scanf("%d", &id) != 1) {
+        printf("Error: Entrada inválida.\n");
+        return;
+    }
+
+    if (cambiarRolUsuario(id)) {
+        printf("El rol del usuario con ID %d ha sido actualizado correctamente.\n", id);
+    } else {
+        printf("No se pudo actualizar el rol del usuario.\n");
+    }
+}

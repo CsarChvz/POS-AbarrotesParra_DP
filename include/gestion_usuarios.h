@@ -25,4 +25,6 @@ int guardarUsuario(const char *nombre_usuario, int role);
 
 void cambiarEstatusUsuarioMenu();
 
+void cambiarRolUsuarioMenu();
+
 #endif
