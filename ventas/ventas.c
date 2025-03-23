@@ -319,6 +319,53 @@ static int obtenerProductos(Producto **productos) {
     return count;
 }
 
+void generarTicketVenta(int idVenta, Venta ventas[], int numVentas, VentaProducto ventasProductos[], int numVentasProductos, Producto productos[], int numProductos) {
+    int i, j;
+    Venta venta;
+    struct tm *timeinfo;
+
+    // Buscar la venta por ID
+    for (i = 0; i < numVentas; i++) {
+        if (ventas[i].idVenta == idVenta) {
+            venta = ventas[i];
+            break;
+        }
+    }
+
+    if (i == numVentas) {
+        printf("Venta con ID %d no encontrada.\n", idVenta);
+        return;
+    }
+
+    timeinfo = localtime(&venta.fechaVenta);
+
+    printf("\n--- Ticket de Venta ---\n");
+    printf("ID Venta: %d\n", venta.idVenta);
+    printf("Fecha: %04d-%02d-%02d %02d:%02d:%02d\n",
+           timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+           timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+    printf("Método de Pago: %s\n", venta.metodoPago);
+    printf("Usuario: %d\n", venta.idUsuario);
+    printf("\n--- Productos ---\n");
+
+    float total = 0;
+
+    // Buscar y mostrar los productos de la venta
+    for (i = 0; i < numVentasProductos; i++) {
+        if (ventasProductos[i].idVenta == idVenta) {
+            Producto *producto = buscarProductoPorId(productos, numProductos, ventasProductos[i].idProducto);
+            if (producto != NULL) {
+                printf("%s x%.2f %s: %.2f\n",
+                       producto->nombre, ventasProductos[i].cantidad, producto->unidad, ventasProductos[i].subtotal);
+                total += ventasProductos[i].subtotal;
+            }
+        }
+    }
+
+    printf("\nTotal: %.2f\n", total);
+    printf("--- Fin del Ticket ---\n\n");
+}
+
 void registrarVentaMenu() {
     int i;
     Producto *productos = NULL;
@@ -342,6 +389,10 @@ void registrarVentaMenu() {
     int numVentasProductos = 0;
 
     registrarVenta(productos, numProductos, ventas, &numVentas, ventasProductos, &numVentasProductos);
+
+    if (numVentas > 0) {
+        generarTicketVenta(ventas[numVentas - 1].idVenta, ventas, numVentas, ventasProductos, numVentasProductos, productos, numProductos);
+    }
 
     free(productos);
 }
