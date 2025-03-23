@@ -2,4 +2,5 @@
 #define CONTROL_STOCK_H
 
 int listarStockProductos();
+void visualizarStockBajo();
 #endif
