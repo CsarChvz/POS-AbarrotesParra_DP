@@ -1,7 +1,7 @@
 ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 4,Jugo Naranja,0.80,16,1,Botella,500,1234567890126,15
 5,Shampoo,5.00,10,1,Frasco,300,1234567890127,8
-6,Shampoo,8.00,7,1,Frasco,500,1234567890128,5
+6,Shampoo,8.00,5,1,Frasco,500,1234567890128,5
 7,Arroz,1.20,65,1,Gramos,1000,1234567890129,40
 8,Arroz,2.50,28,1,Gramos,5000,1234567890130,25
 9,Leche,1.30,35,1,Botella,1000,1234567890131,30
@@ -13,7 +13,7 @@ ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 15,Sal,0.80,32,1,Gramos,1000,1234567890137,30
 16,Cereal,2.00,11,1,Paquete,350,1234567890138,10
 17,Leche Condensada,2.50,9,1,Frasco,400,1234567890139,8
-18,Chocolate,3.20,14,1,Barra,100,1234567890140,15
+18,Chocolate,3.20,13,1,Barra,100,1234567890140,15
 19,Queso,4.00,5,1,Paquete,500,1234567890141,6
 20,Pan,1.50,2,1,Bolsa,400,1234567890142,10
 21,Mantequilla,3.00,7,1,Barra,250,1234567890143,5
@@ -21,6 +21,6 @@ ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 23,Huevos,0.30,48,1,Unidad,12,1234567890145,50
 24,Pasta,1.70,18,1,Paquete,500,1234567890146,20
 25,Galletas,2.10,25,1,Paquete,300,1234567890147,30
-26,Refresco,1.90,9,1,Botella,600,1234567890148,12
+26,Refresco,1.90,7,1,Botella,600,1234567890148,12
 27,Jamón,4.50,4,1,Paquete,250,1234567890149,5
 28,Atún,2.80,6,1,Lata,200,1234567890150,10

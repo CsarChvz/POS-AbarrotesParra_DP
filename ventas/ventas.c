@@ -148,6 +148,69 @@ static int obtenerSiguienteIdVentaProducto() {
     return maxId + 1;
 }
 
+static int actualizarStockProducto(int id, float cantidad, int restar) {
+    FILE *archivoOriginal = fopen("common/data/productos.csv", "r");
+    FILE *archivoTemporal = fopen("common/data/productos_temp.csv", "w");
+
+    if (!archivoOriginal || !archivoTemporal) {
+        perror("Error al abrir los archivos");
+        if (archivoOriginal) fclose(archivoOriginal);
+        if (archivoTemporal) fclose(archivoTemporal);
+        return 0;
+    }
+
+    char linea[256];
+    int encontrado = 0;
+
+    // Copiar la cabecera
+    if (fgets(linea, sizeof(linea), archivoOriginal)) {
+        fputs(linea, archivoTemporal);
+    }
+
+    while (fgets(linea, sizeof(linea), archivoOriginal)) {
+        Producto p;
+        if (sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%14[^,],%d",
+                   &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
+                   p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
+            if (p.id == id) {
+                if (restar) {
+                    p.stock -= (int)cantidad; // Restar la cantidad
+                } else {
+                    p.stock += (int)cantidad; // Incrementar la cantidad
+                }
+                encontrado = 1;
+                printf("\n[Stock actualizado] Producto: '%s' | Nuevo Stock: %d\n", p.nombre, p.stock);
+            }
+            fprintf(archivoTemporal, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n",
+                    p.id, p.nombre, p.precio, p.stock, p.activo,
+                    p.unidad, p.valorUnidad, p.codigoBarras, p.stockMinimo);
+        } else {
+            printf("Advertencia: Línea corrupta en el archivo.\n");
+        }
+    }
+
+    fclose(archivoOriginal);
+    fclose(archivoTemporal);
+
+    if (!encontrado) {
+        remove("common/data/productos_temp.csv");
+        printf("Error: No se encontró el producto con ID %d.\n", id);
+        return 0;
+    }
+
+    if (remove("common/data/productos.csv") != 0) {
+        perror("Error al eliminar el archivo original");
+        return 0;
+    }
+
+    if (rename("common/data/productos_temp.csv", "common/data/productos.csv") != 0) {
+        perror("Error al renombrar el archivo temporal");
+        return 0;
+    }
+
+    return 1;
+}
+
 void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int *numVentas, VentaProducto ventasProductos[], int *numVentasProductos) {
     int opcion;
     int idProducto;
@@ -198,6 +261,9 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
                         ventasProductos[*numVentasProductos] = ventaProducto;
                         (*numVentasProductos)++;
 
+                        // Actualizar stock del producto
+                        actualizarStockProducto(productos[i].id, cantidad, 1);
+
                         printf("%s x%.2f %s agregado.\n", productos[i].nombre, cantidad, productos[i].unidad);
                         if (strcmp(productos[i].unidad, "Gramos") != 0) {
                             productos[i].stock -= (int)cantidad;
@@ -245,6 +311,17 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
             switch (opcionPago) {
                 case 1:
                     strcpy(metodoPago, "Efectivo");
+                    float montoRecibido;
+                    do {
+                        printf("Ingrese el monto recibido: ");
+                        scanf("%f", &montoRecibido);
+                        if (montoRecibido < total) {
+                            printf("El monto recibido es insuficiente. Ingrese un monto mayor o igual al total.\n");
+                        }
+                    } while (montoRecibido < total);
+
+                    float cambio = montoRecibido - total;
+                    printf("Cambio: %.2f\n", cambio);
                     break;
                 case 2:
                     strcpy(metodoPago, "Tarjeta");
@@ -319,6 +396,53 @@ static int obtenerProductos(Producto **productos) {
     return count;
 }
 
+void generarTicketVenta(int idVenta, Venta ventas[], int numVentas, VentaProducto ventasProductos[], int numVentasProductos, Producto productos[], int numProductos) {
+    int i, j;
+    Venta venta;
+    struct tm *timeinfo;
+
+    // Buscar la venta por ID
+    for (i = 0; i < numVentas; i++) {
+        if (ventas[i].idVenta == idVenta) {
+            venta = ventas[i];
+            break;
+        }
+    }
+
+    if (i == numVentas) {
+        printf("Venta con ID %d no encontrada.\n", idVenta);
+        return;
+    }
+
+    timeinfo = localtime(&venta.fechaVenta);
+
+    printf("\n--- Ticket de Venta ---\n");
+    printf("ID Venta: %d\n", venta.idVenta);
+    printf("Fecha: %04d-%02d-%02d %02d:%02d:%02d\n",
+           timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+           timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+    printf("Método de Pago: %s\n", venta.metodoPago);
+    printf("Usuario: %d\n", venta.idUsuario);
+    printf("\n--- Productos ---\n");
+
+    float total = 0;
+
+    // Buscar y mostrar los productos de la venta
+    for (i = 0; i < numVentasProductos; i++) {
+        if (ventasProductos[i].idVenta == idVenta) {
+            Producto *producto = buscarProductoPorId(productos, numProductos, ventasProductos[i].idProducto);
+            if (producto != NULL) {
+                printf("%s x%.2f %s: %.2f\n",
+                       producto->nombre, ventasProductos[i].cantidad, producto->unidad, ventasProductos[i].subtotal);
+                total += ventasProductos[i].subtotal;
+            }
+        }
+    }
+
+    printf("\nTotal: %.2f\n", total);
+    printf("--- Fin del Ticket ---\n\n");
+}
+
 void registrarVentaMenu() {
     int i;
     Producto *productos = NULL;
@@ -342,6 +466,10 @@ void registrarVentaMenu() {
     int numVentasProductos = 0;
 
     registrarVenta(productos, numProductos, ventas, &numVentas, ventasProductos, &numVentasProductos);
+
+    if (numVentas > 0) {
+        generarTicketVenta(ventas[numVentas - 1].idVenta, ventas, numVentas, ventasProductos, numVentasProductos, productos, numProductos);
+    }
 
     free(productos);
 }
