@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+
 #include "logo.h"
 #include "../include/ventas.h"
 #include "../include/reportes.h"
@@ -6,8 +8,8 @@
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
-
 #define T 100
+#define USUARIO_LENGTH 50
 // Prototipos de funciones
 void menu_inventario(int role);
 void menu_ventas(int role);
@@ -856,29 +858,51 @@ void menu_administracion(int role) {
 }
 
 void menu_gestion_usuarios() {
-    int opcion;
+    int opcion, role, success;
+    char nombre_usuario[USUARIO_LENGTH];
+
     do {
         printf("\n--- Gesti�n de Usuarios ---\n");
         printf("1. Ver Usuarios\n");
         printf("2. Crear Usuario\n");
-        printf("3. Modificar Usuario\n");
-        printf("4. Desactivar Usuario\n");
-        printf("5. Asignar Roles\n");
-        printf("6. Volver\n");
+        printf("3. Cambiar Estatus de Usuario\n");
+        printf("4. Asignar Roles\n");
+        printf("5. Volver\n");
         printf("Seleccione una opci�n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
                 listarUsuarios();
-            case 2:
-            case 3:
-                
-            case 4:
-            case 5:
                 break;
-            case 6:
+            case 2:
+                printf("Ingrese el nombre del usuario: ");
+                scanf("%s", nombre_usuario);
+    
+                printf("Ingrese que rol quiere que tenga el usuario [2 - Admin / 1 - Vendedor]: ");
+                // Usar `scanf` con "&role" para leer la entrada correctamente
+                if (scanf("%d", &role) != 1) {
+                    // Si no se lee correctamente, mostrar mensaje de error
+                    printf("Entrada inválida para el rol.\n");
+                    break; // Salir del case si hay error
+                }
+    
+                success = guardarUsuario(nombre_usuario, role);
+                if (success) {
+                    printf("Usuario guardado exitosamente.\n");
+                } else {
+                    printf("Error al guardar el usuario.\n");
+                }
+                break;
+            case 3:
+                cambiarEstatusUsuarioMenu();
+                break;
+            case 4:
+                cambiarRolUsuarioMenu();
+                break;
+            case 5:
                 return;
+                break;
             default:
                 printf("Opci�n inv�lida.\n");
         }

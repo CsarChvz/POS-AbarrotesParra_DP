@@ -21,4 +21,10 @@ int obtenerUsuarios(Usuario usuarios[], int max_usuarios);
 
 int listarUsuarios();
 
+int guardarUsuario(const char *nombre_usuario, int role);
+
+void cambiarEstatusUsuarioMenu();
+
+void cambiarRolUsuarioMenu();
+
 #endif
