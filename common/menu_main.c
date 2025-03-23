@@ -27,7 +27,7 @@ void menu_descuentos_promociones();
 
 void menu_nueva_venta();
 void menu_historial_ventas(int role);
-void menu_cancelacion_ventas();
+
 void menu_apertura_caja();
 void menu_ingresos_egresos(int role);
 void menu_corte_caja(int role);
@@ -272,7 +272,6 @@ void menu_ventas(int role) {
     OpcionMenu opciones[] = {
         {"Nueva Venta", menu_nueva_venta, ROL_VENDEDOR},
         {"Historial de Ventas", menu_historial_ventas, ROL_VENDEDOR},
-        {"Cancelaci�n de Ventas", menu_cancelacion_ventas, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -319,7 +318,6 @@ void menu_nueva_venta() {
         printf("1. Buscar y Seleccionar Productos\n");
         printf("2. Ver Carrito\n");
         printf("3. Procesar Pago\n");
-        printf("4. Cancelar Venta\n");
         printf("5. Volver\n");
         printf("Seleccione una opci�n: ");
         scanf("%d", &opcion);
@@ -387,31 +385,6 @@ void menu_historial_ventas(int role) {
             }
         }
     } while (1);
-}
-
-void menu_cancelacion_ventas() {
-    int opcion;
-    do {
-        printf("\n--- Cancelaci�n de Ventas ---\n");
-        printf("1. Buscar Venta a Cancelar\n");
-        printf("2. Justificar Cancelaci�n\n");
-        printf("3. Ver Historial de Cancelaciones\n");
-        printf("4. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 4:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 4);
 }
 
 void menu_gestion_caja(int role) {
