@@ -226,7 +226,7 @@ void menu_control_stock() {
         if (role == ROL_ADMIN) {
             switch (opcion) {
                 case 3:
-                    printf("Funci�n de Reposici�n a�n no implementada.\n");
+                    registrarReposicionStock();
                     break;
                 case 4:
                     printf("Funci�n de Configuraci�n de Stock a�n no implementada.\n");

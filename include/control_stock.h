@@ -3,4 +3,6 @@
 
 int listarStockProductos();
 void visualizarStockBajo();
+void registrarReposicionStock();
+
 #endif
