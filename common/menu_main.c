@@ -346,11 +346,6 @@ void menu_historial_ventas(int role) {
         // Solo admin puede ver todas las ventas
         if (role == ROL_ADMIN) {
             printf("2. Ver Todas las Ventas\n");
-            printf("3. Buscar Venta por ID\n");
-            printf("4. Filtrar por Fecha\n");
-            printf("5. Volver\n");
-        } else {
-            printf("2. Buscar Venta por ID\n");
             printf("3. Filtrar por Fecha\n");
             printf("4. Volver\n");
         }

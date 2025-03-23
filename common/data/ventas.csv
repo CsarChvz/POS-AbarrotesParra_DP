@@ -1,0 +1,10 @@
+ID_Venta,Fecha_Venta,Metodo_Pago,Notas,ID_Usuario,Precio_Total
+1,2025-03-22,Credit Card,Venta de prueba,2,1999.98
+2,2025-03-22,Debit Card,Compra de monitor,2,199.99
+3,2025-03-22,Cash,Compra de 3 mouse,1,89.97
+4,2025-03-23,Transfer,Compra de productos varios,3,120.50
+5,2025-03-23,Debit Card,Compra de despensa,4,350.75
+6,2025-03-23,Cash,Compra de shampoo y leche,5,18.70
+7,2025-03-24,Credit Card,Compra de cereal y azúcar,2,19.80
+8,2025-03-24,Transfer,Compra de arroz y aceite,1,37.00
+9,2025-03-24,Cash,Venta de productos al por mayor,3,250.90
