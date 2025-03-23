@@ -345,3 +345,79 @@ void registrarVentaMenu() {
 
     free(productos);
 }
+
+void visualizarHistorialVentas() {
+    FILE *archivo = fopen("common/data/ventas.csv", "r");
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo ventas.csv\n");
+        return;
+    }
+
+    char linea[256];
+    int idVenta, idUsuario, pagina = 1, ventasPorPagina = 10, totalVentas = 0, i, inicio, fin;
+    time_t fechaVenta;
+    char metodoPago[20];
+    float precioTotal;
+    struct tm *timeinfo;
+
+    // Contar el número total de ventas
+    while (fgets(linea, sizeof(linea), archivo) != NULL) {
+        totalVentas++;
+    }
+    rewind(archivo); // Volver al inicio del archivo
+
+    // Saltar la cabecera
+    fgets(linea, sizeof(linea), archivo);
+
+    while (1) {
+        printf("\n--- Historial de Ventas (Página %d) ---\n", pagina);
+        printf("ID Venta | Fecha       | Metodo de Pago | Precio Total\n");
+        printf("------------------------------------------------------\n");
+
+        inicio = (pagina - 1) * ventasPorPagina;
+        fin = inicio + ventasPorPagina;
+        if (fin > totalVentas - 1) { // Restar 1 por la cabecera
+            fin = totalVentas - 1;
+        }
+
+        i = 0;
+        while (fgets(linea, sizeof(linea), archivo) != NULL) {
+            if (i >= inicio && i < fin) {
+                sscanf(linea, "%d,%ld,%s,%d,%f", &idVenta, &fechaVenta, metodoPago, &idUsuario, &precioTotal);
+                timeinfo = localtime(&fechaVenta);
+                printf("%-8d | %04d-%02d-%02d | %-14s | %.2f\n",
+                       idVenta, timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+                       metodoPago, precioTotal);
+            }
+            i++;
+        }
+
+        char opcion;
+        printf("\n--- Opciones ---\n");
+        if (pagina > 1) {
+            printf("a. Página Anterior\n");
+        }
+        if (fin < totalVentas - 1) { // Restar 1 por la cabecera
+            printf("s. Siguiente Página\n");
+        }
+        printf("q. Salir\n");
+        printf("Seleccione una opción: ");
+        scanf(" %c", &opcion);
+
+        if (opcion == 'a' && pagina > 1) {
+            pagina--;
+            rewind(archivo); // Volver al inicio del archivo
+            fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+        } else if (opcion == 's' && fin < totalVentas - 1) {
+            pagina++;
+            rewind(archivo); // Volver al inicio del archivo
+            fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+        } else if (opcion == 'q') {
+            break;
+        } else {
+            printf("Opción inválida.\n");
+        }
+    }
+
+    fclose(archivo);
+}
