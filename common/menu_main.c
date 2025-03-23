@@ -16,7 +16,7 @@
 #define USUARIO_LENGTH_C 50
 // Prototipos de funciones
 void menu_inventario(int role);
-void menu_ventas(int role);
+void menu_ventas();
 void menu_gestion_caja(int role);
 void menu_reportes_estadisticas(int role);
 void menu_administracion(int role);
@@ -25,7 +25,7 @@ void menu_administracion_productos();
 void menu_control_stock();
 void menu_descuentos_promociones();
 
-void menu_historial_ventas(int role);
+void menu_historial_ventas();
 
 void menu_apertura_caja();
 void menu_ingresos_egresos(int role);
@@ -267,10 +267,12 @@ void menu_descuentos_promociones() {
     } while (opcion != 4);
 }
 
-void menu_ventas(int role) {
+void menu_ventas() {
+    int role;
+    role = obtener_rol(usuario_actual);
     OpcionMenu opciones[] = {
         {"Nueva Venta", registrarVentaMenu, ROL_VENDEDOR},
-        {"Historial de Ventas", menu_historial_ventas, ROL_VENDEDOR},
+        {"Historial de Ventas", visualizarHistorialVentas, ROL_ADMIN},
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -310,50 +312,6 @@ void menu_ventas(int role) {
     } while (1);
 }
 
-void menu_historial_ventas(int role) {
-    int opcion;
-    do {
-        printf("\n--- Historial de Ventas ---\n");
-        printf("1. Ver Mis Ventas\n");
-        
-        // Solo admin puede ver todas las ventas
-        if (role == ROL_ADMIN) {
-            printf("2. Ver Todas las Ventas\n");
-            printf("3. Filtrar por Fecha\n");
-            printf("4. Volver\n");
-        }
-        
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        if (role == ROL_ADMIN) {
-            switch (opcion) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    printf("Funci�n a�n no implementada.\n");
-                    break;
-                case 5:
-                    return;
-                default:
-                    printf("Opci�n inv�lida.\n");
-            }
-        } else {
-            switch (opcion) {
-                case 1:
-                case 2:
-                case 3:
-                    printf("Funci�n a�n no implementada.\n");
-                    break;
-                case 4:
-                    return;
-                default:
-                    printf("Opci�n inv�lida.\n");
-            }
-        }
-    } while (1);
-}
 
 void menu_gestion_caja(int role) {
     OpcionMenu opciones[] = {
