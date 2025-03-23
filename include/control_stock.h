@@ -4,5 +4,5 @@
 int listarStockProductos();
 void visualizarStockBajo();
 void registrarReposicionStock();
-
+void modificarStockMinimo();
 #endif
