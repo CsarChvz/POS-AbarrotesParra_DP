@@ -898,10 +898,11 @@ void menu_gestion_usuarios() {
                 cambiarEstatusUsuarioMenu();
                 break;
             case 4:
-            case 5:
+                cambiarRolUsuarioMenu();
                 break;
-            case 6:
+            case 5:
                 return;
+                break;
             default:
                 printf("Opci�n inv�lida.\n");
         }
