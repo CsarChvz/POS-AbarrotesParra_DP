@@ -2,7 +2,7 @@ ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 4,Jugo Naranja,0.80,16,1,Botella,500,1234567890126,15
 5,Shampoo,5.00,10,1,Frasco,300,1234567890127,8
 6,Shampoo,8.00,7,1,Frasco,500,1234567890128,5
-7,Arroz,1.20,65,1,Gramos,1000,1234567890129,50
+7,Arroz,1.20,65,1,Gramos,1000,1234567890129,40
 8,Arroz,2.50,28,1,Gramos,5000,1234567890130,25
 9,Leche,1.30,35,1,Botella,1000,1234567890131,30
 10,Leche,0.70,12,1,Botella,500,1234567890132,10

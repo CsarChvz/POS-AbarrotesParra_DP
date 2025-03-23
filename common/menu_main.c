@@ -229,7 +229,7 @@ void menu_control_stock() {
                     registrarReposicionStock();
                     break;
                 case 4:
-                    printf("Funci�n de Configuraci�n de Stock a�n no implementada.\n");
+                    modificarStockMinimo();
                     break;
                 case 5:
                     return;
