@@ -22,4 +22,5 @@ void registrarProductoMenu();
 
 void visualizarProductosMenu();
 
+void eliminarProductoMenu();
 #endif

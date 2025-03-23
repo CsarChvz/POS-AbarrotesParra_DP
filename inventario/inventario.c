@@ -245,3 +245,145 @@ void visualizarProductosMenu() {
         }
     } while (opcion != 2);
 }
+
+void eliminarProductoPorNombre(char *nombre) {
+    Producto *productos = NULL;
+    int cantidadProductos, i;
+
+    cantidadProductos = obtenerProductos(&productos);
+    if (cantidadProductos == 0) {
+        printf("No hay productos registrados.\n");
+        return;
+    }
+
+    for (i = 0; i < cantidadProductos; i++) {
+        if (strcmp(productos[i].nombre, nombre) == 0) {
+            // Mostrar producto encontrado
+            printf("Producto encontrado: ID: %d, Nombre: %s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n", 
+                productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
+                productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+
+            // Confirmación para eliminar
+            char opcion;
+            printf("¿Está seguro de que desea eliminar este producto? (s/n): ");
+            scanf(" %c", &opcion);
+
+            if (opcion == 's' || opcion == 'S') {
+                // Eliminar producto
+                // Para eliminar, se puede escribir los productos restantes en un nuevo archivo
+                FILE *archivo = fopen("common/data/productos.csv", "w");
+                if (archivo == NULL) {
+                    perror("Error al abrir el archivo para reescribir");
+                    free(productos);
+                    return;
+                }
+
+                // Reescribir productos que no son el que estamos eliminando
+                for (i = 0; i < cantidadProductos; i++) {
+                    if (strcmp(productos[i].nombre, nombre) != 0) {
+                        fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n", 
+                            productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
+                            productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+                    }
+                }
+
+                fclose(archivo);
+                printf("Producto eliminado exitosamente.\n");
+            } else {
+                printf("El producto no fue eliminado.\n");
+            }
+            free(productos);
+            return;
+        }
+    }
+
+    printf("No se encontró un producto con el nombre: %s\n", nombre);
+    free(productos);
+}
+
+void eliminarProductoPorId(int id) {
+    Producto *productos = NULL;
+    int cantidadProductos, i;
+
+    cantidadProductos = obtenerProductos(&productos);
+    if (cantidadProductos == 0) {
+        printf("No hay productos registrados.\n");
+        return;
+    }
+
+    for (i = 0; i < cantidadProductos; i++) {
+        if (productos[i].id == id) {
+            // Mostrar producto encontrado
+            printf("Producto encontrado: ID: %d, Nombre: %s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n", 
+                productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
+                productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+
+            // Confirmación para eliminar
+            char opcion;
+            printf("¿Está seguro de que desea eliminar este producto? (s/n): ");
+            scanf(" %c", &opcion);
+
+            if (opcion == 's' || opcion == 'S') {
+                // Eliminar producto
+                // Reescribir los productos restantes en el archivo
+                FILE *archivo = fopen("common/data/productos.csv", "w");
+                if (archivo == NULL) {
+                    perror("Error al abrir el archivo para reescribir");
+                    free(productos);
+                    return;
+                }
+
+                // Reescribir productos que no son el que estamos eliminando
+                for (i = 0; i < cantidadProductos; i++) {
+                    if (productos[i].id != id) {
+                        fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n", 
+                            productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
+                            productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+                    }
+                }
+
+                fclose(archivo);
+                printf("Producto eliminado exitosamente.\n");
+            } else {
+                printf("El producto no fue eliminado.\n");
+            }
+            free(productos);
+            return;
+        }
+    }
+
+    printf("No se encontró un producto con ID: %d\n", id);
+    free(productos);
+}
+
+void eliminarProductoMenu() {
+    int opcion, id;
+    char nombre[NOMBRE_LENGTH];
+
+    do {
+        printf("\n--- Menú de Eliminación de Productos ---\n");
+        printf("1. Eliminar Producto por ID\n");
+        printf("2. Eliminar Producto por Nombre\n");
+        printf("3. Volver\n");
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+                printf("Ingrese el ID del producto a eliminar: ");
+                scanf("%d", &id);
+                eliminarProductoPorId(id);
+                break;
+            case 2:
+                printf("Ingrese el nombre del producto a eliminar: ");
+                scanf("%s", nombre);
+                eliminarProductoPorNombre(nombre);
+                break;
+            case 3:
+                printf("Volviendo al menú principal.\n");
+                return;
+            default:
+                printf("Opción inválida.\n");
+        }
+    } while (opcion != 3);
+}

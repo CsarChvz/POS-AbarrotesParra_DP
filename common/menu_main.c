@@ -176,10 +176,11 @@ void menu_administracion_productos() {
                 visualizarProductosMenu();
                 break;
             case 3:
-                printf("Función de Eliminación aún no implementada.\n");
+                printf("Función de Actualizacion aún no implementada.\n");
+                // @TODO: 
                 break;
             case 4:
-                printf("Volviendo...\n");
+                eliminarProductoMenu();
                 break;
             case 5:
                 printf("Volviendo...\n");
