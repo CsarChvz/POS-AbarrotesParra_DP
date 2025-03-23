@@ -5,6 +5,8 @@
 #include "../include/ventas.h"
 #include "../include/reportes.h"
 #include "../include/gestion_usuarios.h"
+#include "../include/inventario.h"
+
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
@@ -147,34 +149,47 @@ void menu_inventario(int role) {
     } while (1);
 }
 
+
 void menu_administracion_productos() {
     int opcion;
     do {
-        printf("\n--- Gesti�n de Productos ---\n");
+        printf("\n--- Gestión de Productos ---\n");
         printf("1. Registrar Nuevo Producto\n");
-        printf("2. Actualizar Producto\n");
-        printf("3. Eliminar Producto\n");
-        printf("4. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
+        printf("2. Visualizar productos\n");
+        printf("3. Actualizar Producto\n");
+        printf("4. Eliminar Producto\n");
+        printf("5. Volver\n");
+        printf("Seleccione una opción: ");
+        
+        if (scanf("%d", &opcion) != 1) {
+            // Si la entrada no es válida, limpiamos el buffer y mostramos un error
+            while (getchar() != '\n');  // Limpiar buffer
+            printf("Error: Entrada inválida. Por favor, ingrese un número.\n");
+            continue;  // Volver al inicio del menú
+        }
 
         switch (opcion) {
             case 1:
-                registrar_producto(2); // Asumiendo que esta funci�n existe
-                break;
+                registrarProductoMenu();
+                break;  
             case 2:
-                printf("Funci�n de Actualizaci�n a�n no implementada.\n");
+                printf("Función de Actualización aún no implementada.\n");
                 break;
             case 3:
-                printf("Funci�n de Eliminaci�n a�n no implementada.\n");
+                printf("Función de Eliminación aún no implementada.\n");
                 break;
             case 4:
+                printf("Volviendo...\n");
+                break;
+            case 5:
+                printf("Volviendo...\n");
                 return;
             default:
-                printf("Opci�n inv�lida.\n");
+                printf("Opción inválida.\n");
         }
-    } while (opcion != 4);
+    } while (opcion != 4);  // Seguir mostrando el menú hasta que se elija salir
 }
+
 
 void menu_control_stock(int role) {
     int opcion;

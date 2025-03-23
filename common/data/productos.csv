@@ -19,3 +19,4 @@ ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 18,Chocolate,3.2,120,1,Barra,100,1234567890140,15
 19,Pasta,1.4,180,1,Paquete,500,1234567890141,20
 20,Tomate,1.6,100,1,Gramos,1000,1234567890142,25
+21,plumas,9.00,10,1,Bolsa,10,12312,0
