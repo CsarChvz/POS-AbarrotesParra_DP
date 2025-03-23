@@ -13,6 +13,14 @@ typedef struct {
     int activo;
 } Usuario;
 
+typedef struct {
+    int id;
+    int usuario_id;
+    char descripcion[100];
+    float monto;
+    char fecha[11]; // formato: YYYY-MM-DD
+} Transaccion;
+
 int obtenerUsuarios(Usuario usuarios[], int max_usuarios) {
     FILE *archivo = fopen("common/data/usuarios.csv", "r");
     if (archivo == NULL) {
@@ -111,4 +119,116 @@ int guardarUsuario(const char *nombre_usuario, int role) {
 
     fclose(archivo);
     return 1; // Éxito
+}
+
+int buscarUsuario(int id, Usuario *resultado) {
+    FILE *archivo = fopen("common/data/usuarios.csv", "r");  // Modo lectura
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo");
+        return 0;  // Error al abrir el archivo
+    }
+
+    char linea[256];
+    int encontrado = 0;
+
+    // Saltar la cabecera
+    if (fgets(linea, sizeof(linea), archivo) == NULL) {
+        fclose(archivo);
+        return 0;  // Archivo vacío
+    }
+
+    while (fgets(linea, sizeof(linea), archivo) != NULL) {
+        Usuario u;
+        if (sscanf(linea, "%d,%49[^,],%49[^,],%d,%d", 
+                   &u.id, u.usuario, u.contrasena, &u.rol, &u.activo) == 5) {  // Verifica que haya 5 campos
+            if (u.id == id) {
+                *resultado = u;
+                encontrado = 1;
+                break;
+            }
+        }
+    }
+
+    fclose(archivo);
+    return encontrado;
+}
+
+int cambiarEstatusUsuario(int idUsuario) {
+    FILE *archivoOriginal = fopen("common/data/usuarios.csv", "r");
+    FILE *archivoTemporal = fopen("common/data/usuarios_temp.csv", "w");
+
+    if (!archivoOriginal || !archivoTemporal) {
+        perror("Error al abrir los archivos");
+        if (archivoOriginal) fclose(archivoOriginal);
+        if (archivoTemporal) fclose(archivoTemporal);
+        return 0;
+    }
+
+    char linea[256];
+    int encontrado = 0;
+
+    // Copiar la cabecera
+    if (fgets(linea, sizeof(linea), archivoOriginal)) {
+        fputs(linea, archivoTemporal);
+    }
+
+    // Leer y modificar líneas
+    while (fgets(linea, sizeof(linea), archivoOriginal)) {
+        Usuario u;
+        if (sscanf(linea, "%d,%49[^,],%49[^,],%d,%d", 
+                   &u.id, u.usuario, u.contrasena, &u.rol, &u.activo) == 5) {
+            if (u.id == idUsuario) {
+                u.activo = !u.activo; // Cambiar estado
+                fprintf(archivoTemporal, "%d,%s,%s,%d,%d\n", 
+                        u.id, u.usuario, u.contrasena, u.rol, u.activo);
+                encontrado = 1;
+                printf("\n[Estatus actualizado] Usuario: '%s' -> %s\n", 
+                       u.usuario, u.activo ? "Activo" : "Inactivo");
+            } else {
+                fputs(linea, archivoTemporal);
+            }
+        } else {
+            printf("Advertencia: Línea corrupta en el archivo.\n");
+        }
+    }
+
+    fclose(archivoOriginal);
+    fclose(archivoTemporal);
+
+    if (!encontrado) {
+        remove("common/data/usuarios_temp.csv");
+        printf("Error: No se encontró el usuario con ID %d.\n", idUsuario);
+        return 0;
+    }
+
+    if (remove("common/data/usuarios.csv") != 0) {
+        perror("Error al eliminar el archivo original");
+        return 0;
+    }
+
+    if (rename("common/data/usuarios_temp.csv", "common/data/usuarios.csv") != 0) {
+        perror("Error al renombrar el archivo temporal");
+        return 0;
+    }
+
+    return 1;
+}
+
+void cambiarEstatusUsuarioMenu() {
+    int id;
+    listarUsuarios();
+    printf("----------------------------------------");
+    printf("\n--- Cambiar Estatus de Usuario ---\n");
+    printf("Ingrese el ID del usuario: ");
+    
+    if (scanf("%d", &id) != 1) {
+        printf("Error: Entrada inválida.\n");
+        return;
+    }
+
+    if (cambiarEstatusUsuario(id)) {
+        printf("El estatus del usuario con ID %d ha sido actualizado correctamente.\n", id);
+    } else {
+        printf("No se pudo actualizar el estatus del usuario.\n");
+    }
 }
