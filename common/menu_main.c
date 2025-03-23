@@ -865,10 +865,9 @@ void menu_gestion_usuarios() {
         printf("\n--- Gesti�n de Usuarios ---\n");
         printf("1. Ver Usuarios\n");
         printf("2. Crear Usuario\n");
-        printf("3. Modificar Usuario\n");
-        printf("4. Desactivar Usuario\n");
-        printf("5. Asignar Roles\n");
-        printf("6. Volver\n");
+        printf("3. Cambiar Estatus de Usuario\n");
+        printf("4. Asignar Roles\n");
+        printf("5. Volver\n");
         printf("Seleccione una opci�n: ");
         scanf("%d", &opcion);
 
@@ -896,7 +895,8 @@ void menu_gestion_usuarios() {
                 }
                 break;
             case 3:
-                
+                cambiarEstatusUsuarioMenu();
+                break;
             case 4:
             case 5:
                 break;
