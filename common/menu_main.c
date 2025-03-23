@@ -220,7 +220,7 @@ void menu_control_stock() {
                 listarStockProductos();
                 break;
             case 2:
-                printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
+                visualizarStockBajo();
                 break;
         }
         if (role == ROL_ADMIN) {
@@ -233,10 +233,13 @@ void menu_control_stock() {
                     break;
                 case 5:
                     return;
-                default:
-                    printf("Opci�n inv�lida.\n");
             }
-        } 
+        } else {
+            switch (opcion) {
+                case 3:
+                    return;
+            }
+        }
         
     } while (1);
 }

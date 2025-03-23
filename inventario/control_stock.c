@@ -120,3 +120,64 @@ int listarStockProductos() {
     return 0;
 }
 
+// Función para obtener productos con bajo stock
+int obtenerProductosBajoStock(Producto **productos) {
+    FILE *archivo = fopen("common/data/productos.csv", "r");
+    if (archivo == NULL) {
+        return 0; // Error o archivo no existe
+    }
+
+    char linea[256];
+    int count = 0;
+
+    // Contamos la cantidad de productos en el archivo
+    while (fgets(linea, 256, archivo) != NULL) {
+        count++;
+    }
+
+    // Volvemos al inicio del archivo
+    fseek(archivo, 0, SEEK_SET);
+
+    // Reservamos memoria para los productos
+    *productos = (Producto *)malloc(count * sizeof(Producto));
+    if (*productos == NULL) {
+        fclose(archivo);
+        return 0;
+    }
+
+    fgets(linea, 256, archivo); // Saltar la cabecera si existe
+
+    int i = 0, productosBajoStock = 0;
+    while (fgets(linea, 256, archivo) != NULL) {
+        Producto p;
+        sscanf(linea, "%d,%[^,],%*f,%d,%d,%*[^,],%*d,%*[^,],%*d", 
+               &p.id, p.nombre, &p.stock, &p.stockMinimo);
+        
+        if (p.stock <= p.stockMinimo + 5) { // Filtra productos con bajo stock
+            (*productos)[productosBajoStock++] = p;
+        }
+    }
+
+    fclose(archivo);
+    return productosBajoStock;
+}
+
+// Función para listar productos con bajo stock
+void visualizarStockBajo() {
+    Producto *productos = NULL;
+    int cantidad = obtenerProductosBajoStock(&productos);
+    int i;
+    if (cantidad == 0) {
+        printf("\nNo hay productos con bajo stock.\n");
+        return;
+    }
+
+    printf("\n--- Productos con Bajo Stock ---\n");
+    printf("ID\tNombre\t\tStock\tStock Mínimo\n");
+    printf("-------------------------------------\n");
+    for (i = 0; i < cantidad; i++) {
+        printf("%d\t%-20s\t%d\t%d\n", productos[i].id, productos[i].nombre, productos[i].stock, productos[i].stockMinimo);
+    }
+    
+    free(productos);
+}
