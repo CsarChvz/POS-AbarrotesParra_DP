@@ -7,6 +7,8 @@
 #include "../include/gestion_usuarios.h"
 #include "../include/inventario.h"
 #include "../include/seguridad.h"
+#include "../include/control_stock.h"
+
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
@@ -215,7 +217,7 @@ void menu_control_stock() {
 
         switch (opcion) {
             case 1:
-                printf("Funci�n de Ver Stock a�n no implementada.\n");
+                listarStockProductos();
                 break;
             case 2:
                 printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
