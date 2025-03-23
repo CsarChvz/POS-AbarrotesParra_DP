@@ -3,6 +3,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "../include/seguridad.h"
+
 #define MAX_VENTAS 100
 #define MAX_VENTAS_PRODUCTOS (MAX_VENTAS * 10)
 
@@ -232,14 +234,34 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
             }
             printf("Total: %.2f\n", total);
 
-            printf("Metodo de pago: ");
-            scanf("%s", metodoPago);
-            printf("ID Usuario: ");
-            scanf("%d", &idUsuario);
+            int opcionPago;
+            printf("Metodo de pago:\n");
+            printf("1. Efectivo\n");
+            printf("2. Tarjeta\n");
+            printf("3. Transferencia\n");
+            printf("Ingrese opción: ");
+            scanf("%d", &opcionPago);
+    
+            switch (opcionPago) {
+                case 1:
+                    strcpy(metodoPago, "Efectivo");
+                    break;
+                case 2:
+                    strcpy(metodoPago, "Tarjeta");
+                    break;
+                case 3:
+                    strcpy(metodoPago, "Transferencia");
+                    break;
+                default:
+                    printf("Opción de pago inválida. Se usará 'Efectivo' por defecto.\n");
+                    strcpy(metodoPago, "Efectivo");
+                    break;
+            }
 
+            
             ventaActual.precioTotal = total;
             strcpy(ventaActual.metodoPago, metodoPago);
-            ventaActual.idUsuario = idUsuario;
+            ventaActual.idUsuario = usuario_id;
 
             ventas[*numVentas] = ventaActual;
             (*numVentas)++;

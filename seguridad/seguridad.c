@@ -1,6 +1,7 @@
+// seguridad.c
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h> // Para manejar strings con strcmp
+#include <string.h>
 #include "../include/seguridad.h"
 
 #define MAX_USERS 3
@@ -11,66 +12,63 @@
 typedef struct {
     char usuario[USUARIO_LENGTH];
     char contrasena[CONTRASENA_LENGTH];
-	int rol;
+    int rol;
+    int id; // a√±adimos id
 } Usuario;
 
 // Lista de usuarios - Seteados para debugear
 Usuario usuarios[MAX_USERS] = {
-    {"admin", "admin123", 2},
-    {"user1", "contrasena1", 1},
-    {"user2", "contrasena2", 1}
+    {"admin", "admin123", 2, 1}, // a√±adimos id
+    {"user1", "contrasena1", 1, 2}, // a√±adimos id
+    {"user2", "contrasena2", 1, 3} // a√±adimos id
 };
 
 // Variable global para almacenar el usuario logueado
 char usuario_actual[USUARIO_LENGTH] = "";
-
+int usuario_id = 0; // Definici√≥n de usuario_id
 
 int checar_credenciales(const char *usuario, const char *contrasena) {
     int i;
     for (i = 0; i < MAX_USERS; i++) {
         if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0) {
-            return 1; 
+            usuario_id = usuarios[i].id; // Rellenar usuario_id
+            return 1;
         }
     }
     return 0;
 }
 
-// Se comprueba el rol que tiene el usuario
 int obtener_rol(const char *usuario) {
     int i;
     for (i = 0; i < MAX_USERS; i++) {
         if (strcmp(usuarios[i].usuario, usuario) == 0) {
-            return usuarios[i].rol; // Retorna el rol del usuario
+            return usuarios[i].rol;
         }
     }
-    return -1; // Usuario no encontrado
+    return -1;
 }
 
-
-
-// FunciÛn para iniciar sesiÛn
 int inicio_sesion() {
     char usuario[USUARIO_LENGTH];
     char contrasena[CONTRASENA_LENGTH];
 
     while (1) {
-        printf("\n--- Inicio de Sesi\242n ---\n"); // SesiÛn (Û = ASCII 242)
+        printf("\n--- Inicio de Sesi√≥n ---\n");
         printf("Ingrese el nombre de usuario: ");
-        scanf("%19s", usuario); 
+        scanf("%19s", usuario);
 
-        printf("Ingrese la contrase\244a: "); // ContraseÒa (Ò = ASCII 244)
+        printf("Ingrese la contrase√±a: ");
         scanf("%19s", contrasena);
 
-        // Verificar credenciales
         if (checar_credenciales(usuario, contrasena)) {
-            strcpy(usuario_actual, usuario); // Guardar usuario logueado
-            printf("\241Acceso concedido!\n"); // ° (° = ASCII 241
+            strcpy(usuario_actual, usuario);
+            printf("¬°Acceso concedido!\n");
             return 1;
         } else {
-            printf("\241Acceso denegado! Usuario o contrase\244a incorrectos.\n");
+            printf("¬°Acceso denegado! Usuario o contrase√±a incorrectos.\n");
         }
 
-        printf("\277Desea intentarlo de nuevo? (s/n): "); // ø (ø = ASCII 277)
+        printf("¬øDesea intentarlo de nuevo? (s/n): ");
         char opcion;
         scanf(" %c", &opcion);
         if (opcion == 'n' || opcion == 'N') {
@@ -80,26 +78,23 @@ int inicio_sesion() {
 }
 
 void cambiar_contrasena() {
-	int i;
-	char nueva_contrasena[CONTRASENA_LENGTH]; 
+    int i;
+    char nueva_contrasena[CONTRASENA_LENGTH];
     for (i = 0; i < MAX_USERS; i++) {
-    	// Encontramos el usuario segun la iteracion
         if (strcmp(usuarios[i].usuario, usuario_actual) == 0) {
-        	printf("\n Ingrese la nueva contraseÒa: ");
-        	scanf("%s", &nueva_contrasena);
-            strcpy(usuarios[i].contrasena, nueva_contrasena); // Cambia la contrase?a
-            printf("Contrase?a cambiada exitosamente.\n");
-            cerrar_sesion(); // Cierra sesi?n despu?s del cambio
+            printf("\nIngrese la nueva contrase√±a: ");
+            scanf("%s", &nueva_contrasena);
+            strcpy(usuarios[i].contrasena, nueva_contrasena);
+            printf("Contrase√±a cambiada exitosamente.\n");
+            cerrar_sesion();
             return;
         }
     }
     printf("Error: Usuario no encontrado.\n");
 }
 
-
-// FunciÛn para cerrar sesiÛn
 void cerrar_sesion() {
-    printf("\nCerrando sesi\242n...\n");
-    usuario_actual[0] = '\0'; // Borra el usuario actual
+    printf("\nCerrando sesi√≥n...\n");
+    usuario_actual[0] = '\0';
+    usuario_id = 0; // Limpiar usuario_id
 }
-
