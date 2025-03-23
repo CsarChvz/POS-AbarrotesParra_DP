@@ -1,3 +1,6 @@
-ID_Transaccion,Fecha,Tipo_Transaccion,Ingreso,Egreso,Saldo,Metodo_Pago,ID_Usuario
-1,2025-03-22,Ingreso,2000.00,0.00,2000.00,Credit Card,1
-2,2025-03-22,Egreso,0.00,100.00,1900.00,Cash,1
+ID_Transaccion,Fecha,Tipo_Movimiento,Categoria_Transaccion,Ingreso,Egreso,Saldo,Metodo_Pago,ID_Usuario,Observaciones,Corte_Caja,Inicio_Jornada
+1,2025-03-22,Ingreso,Venta,2000.00,0.00,2000.00,Credit Card,1,,No,No
+2,2025-03-22,Egreso,Compra,0.00,100.00,1900.00,Cash,1,,No,No
+3,2025-03-23,Ingreso,Deposito Inicial,500.00,0.00,2400.00,Cash,1,Deposito inicial para la jornada,No,Si
+4,2025-03-23,Egreso,Retiro de Efectivo,0.00,100.00,2300.00,Cash,1,Retiro para gastos menores,No,No
+5,2025-03-23,Egreso,Corte de caja,0.00,2300.00,0.00,Cash,1,Corte de caja de la jornada,Si,No
