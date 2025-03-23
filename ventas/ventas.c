@@ -148,6 +148,69 @@ static int obtenerSiguienteIdVentaProducto() {
     return maxId + 1;
 }
 
+static int actualizarStockProducto(int id, float cantidad, int restar) {
+    FILE *archivoOriginal = fopen("common/data/productos.csv", "r");
+    FILE *archivoTemporal = fopen("common/data/productos_temp.csv", "w");
+
+    if (!archivoOriginal || !archivoTemporal) {
+        perror("Error al abrir los archivos");
+        if (archivoOriginal) fclose(archivoOriginal);
+        if (archivoTemporal) fclose(archivoTemporal);
+        return 0;
+    }
+
+    char linea[256];
+    int encontrado = 0;
+
+    // Copiar la cabecera
+    if (fgets(linea, sizeof(linea), archivoOriginal)) {
+        fputs(linea, archivoTemporal);
+    }
+
+    while (fgets(linea, sizeof(linea), archivoOriginal)) {
+        Producto p;
+        if (sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%14[^,],%d",
+                   &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
+                   p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
+            if (p.id == id) {
+                if (restar) {
+                    p.stock -= (int)cantidad; // Restar la cantidad
+                } else {
+                    p.stock += (int)cantidad; // Incrementar la cantidad
+                }
+                encontrado = 1;
+                printf("\n[Stock actualizado] Producto: '%s' | Nuevo Stock: %d\n", p.nombre, p.stock);
+            }
+            fprintf(archivoTemporal, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n",
+                    p.id, p.nombre, p.precio, p.stock, p.activo,
+                    p.unidad, p.valorUnidad, p.codigoBarras, p.stockMinimo);
+        } else {
+            printf("Advertencia: Línea corrupta en el archivo.\n");
+        }
+    }
+
+    fclose(archivoOriginal);
+    fclose(archivoTemporal);
+
+    if (!encontrado) {
+        remove("common/data/productos_temp.csv");
+        printf("Error: No se encontró el producto con ID %d.\n", id);
+        return 0;
+    }
+
+    if (remove("common/data/productos.csv") != 0) {
+        perror("Error al eliminar el archivo original");
+        return 0;
+    }
+
+    if (rename("common/data/productos_temp.csv", "common/data/productos.csv") != 0) {
+        perror("Error al renombrar el archivo temporal");
+        return 0;
+    }
+
+    return 1;
+}
+
 void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int *numVentas, VentaProducto ventasProductos[], int *numVentasProductos) {
     int opcion;
     int idProducto;
@@ -197,6 +260,9 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
 
                         ventasProductos[*numVentasProductos] = ventaProducto;
                         (*numVentasProductos)++;
+
+                        // Actualizar stock del producto
+                        actualizarStockProducto(productos[i].id, cantidad, 1);
 
                         printf("%s x%.2f %s agregado.\n", productos[i].nombre, cantidad, productos[i].unidad);
                         if (strcmp(productos[i].unidad, "Gramos") != 0) {

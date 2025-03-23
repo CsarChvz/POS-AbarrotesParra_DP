@@ -14,3 +14,5 @@ ID_Venta,Fecha_Venta,Metodo_Pago,ID_Usuario,Precio_Total
 13,2025-03-23,Efectivo,1,15.30
 14,2025-03-23,Efectivo,1,49.90
 15,2025-03-23,Efectivo,1,6.00
+16,2025-03-23,Efectivo,1,16.00
+17,2025-03-23,Tarjeta,1,16.00
