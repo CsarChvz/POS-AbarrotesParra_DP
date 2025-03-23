@@ -24,7 +24,7 @@ void menu_administracion(int role);
 void menu_administracion_productos();
 void menu_control_stock();
 void menu_descuentos_promociones();
-void menu_categorias();
+
 void menu_nueva_venta();
 void menu_historial_ventas(int role);
 void menu_cancelacion_ventas();
@@ -111,7 +111,6 @@ void menu_inventario(int role) {
         {"Gesti�n de Productos", menu_administracion_productos, ROL_ADMIN},
         {"Control de Stock", menu_control_stock, ROL_VENDEDOR},
         {"Descuentos y Promociones", menu_descuentos_promociones, ROL_ADMIN},
-        {"Categor�as", menu_categorias, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -267,33 +266,6 @@ void menu_descuentos_promociones() {
                 printf("Opci�n inv�lida.\n");
         }
     } while (opcion != 4);
-}
-
-void menu_categorias() {
-    int opcion;
-    do {
-        printf("\n--- Categor�as ---\n");
-        printf("1. Ver Categor�as\n");
-        printf("2. Crear Nueva Categor�a\n");
-        printf("3. Modificar Categor�a\n");
-        printf("4. Eliminar Categor�a\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 5:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 5);
 }
 
 void menu_ventas(int role) {
@@ -754,8 +726,7 @@ void menu_reportes_inventario(int role) {
         // Mostrar opciones adicionales para administrador
         if (role == ROL_ADMIN) {
             printf("4. Rotaci�n de Inventario\n");
-            printf("5. Productos por Categor�a\n");
-            printf("6. Volver\n");
+            printf("5. Volver\n");
         } else {
             printf("4. Volver\n");
         }
@@ -766,7 +737,7 @@ void menu_reportes_inventario(int role) {
         if (role == ROL_ADMIN) {
             if (opcion >= 1 && opcion <= 5) {
                 printf("Funci�n a�n no implementada.\n");
-            } else if (opcion == 6) {
+            } else if (opcion == 5) {
                 return; // Salir del men�
             } else {
                 printf("Opci�n inv�lida.\n");
