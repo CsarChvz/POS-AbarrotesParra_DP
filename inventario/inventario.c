@@ -119,3 +119,129 @@ void registrarProductoMenu() {
         printf("Error al registrar el producto.\n");
     }
 }
+
+// Función para obtener los productos desde el archivo CSV
+int obtenerProductos(Producto **productos) {
+    FILE *archivo = fopen("common/data/productos.csv", "r");
+    if (archivo == NULL) {
+        return 0; // Error o archivo no existe
+    }
+
+    char linea[256];
+    int count = 0;
+
+    // Contamos la cantidad de productos en el archivo
+    while (fgets(linea, 256, archivo) != NULL) {
+        count++;
+    }
+
+    // Volvemos al inicio del archivo
+    fseek(archivo, 0, SEEK_SET);
+
+    // Reservamos memoria para los productos
+    *productos = (Producto *)malloc(count * sizeof(Producto));
+    if (*productos == NULL) {
+        fclose(archivo);
+        return 0; // Error al asignar memoria
+    }
+
+    // Saltar la línea de cabecera si existe
+    fgets(linea, 256, archivo);
+
+    // Leer los productos desde el archivo CSV
+    int i = 0;
+    while (fgets(linea, 256, archivo) != NULL) {
+        Producto p;
+        sscanf(linea, "%d,%[^,],%f,%d,%d,%[^,],%d,%[^,],%d", 
+               &p.id, p.nombre, &p.precio, &p.stock, &p.activo, p.unidad, 
+               &p.valorUnidad, p.codigoBarras, &p.stockMinimo);
+        (*productos)[i] = p;
+        i++;
+    }
+
+    fclose(archivo);
+    return count; // Retorna la cantidad de productos leídos
+}
+
+// Función para listar productos con paginación
+int listarProductos() {
+    Producto *productos = NULL; // Puntero para almacenar productos
+    int cantidadProductosLeidos, i, pagina = 1, productosPorPagina = 10;
+
+    cantidadProductosLeidos = obtenerProductos(&productos);
+
+    if (cantidadProductosLeidos == 0) {
+        printf("\nNo hay productos registrados o error al leer el archivo.\n");
+        return 1;
+    }
+
+    while (1) {
+        printf("\n--- Lista de Productos (Página %d) ---\n", pagina);
+
+        // Mostrar los productos de la página actual
+        int inicio = (pagina - 1) * productosPorPagina;
+        int fin = inicio + productosPorPagina;
+        if (fin > cantidadProductosLeidos) {
+            fin = cantidadProductosLeidos;
+        }
+
+        for (i = inicio; i < fin; i++) {
+            printf("ID: %d, Nombre: %-20s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %-10s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n", 
+                   productos[i].id, productos[i].nombre, productos[i].precio, 
+                   productos[i].stock, productos[i].activo, productos[i].unidad, 
+                   productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+        }
+
+        // Preguntar si desea ver la siguiente página o volver a la anterior
+        char opcion;
+        printf("\n--- Opciones ---\n");
+        if (pagina > 1) {
+            printf("a. Página Anterior\n");
+        }
+        if (fin < cantidadProductosLeidos) {
+            printf("s. Siguiente Página\n");
+        }
+        printf("q. Salir\n");
+        printf("Seleccione una opción: ");
+        scanf(" %c", &opcion); // Espacio antes de %c para consumir el salto de línea
+
+        if (opcion == 'a' && pagina > 1) {
+            pagina--; // Ir a la página anterior
+        } else if (opcion == 's' && fin < cantidadProductosLeidos) {
+            pagina++; // Ir a la siguiente página
+        } else if (opcion == 'q') {
+            break; // Salir
+        } else {
+            printf("Opción inválida.\n");
+        }
+    }
+
+    // Liberar memoria
+    free(productos);
+
+    return 0;
+}
+
+// Función de menú para visualizar productos
+void visualizarProductosMenu() {
+    int opcion;
+    do {
+        printf("\n--- Menú de Productos ---\n");
+        printf("1. Ver Lista de Productos\n");
+        printf("2. Volver\n");
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+        getchar();  // Limpiar el buffer de entrada
+
+        switch (opcion) {
+            case 1:
+                listarProductos();
+                break;
+            case 2:
+                printf("Volviendo al menú principal.\n");
+                return;
+            default:
+                printf("Opción inválida.\n");
+        }
+    } while (opcion != 2);
+}

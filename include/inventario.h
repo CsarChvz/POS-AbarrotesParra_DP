@@ -20,4 +20,6 @@ typedef struct {
 
 void registrarProductoMenu();
 
+void visualizarProductosMenu();
+
 #endif
