@@ -6,12 +6,14 @@
 #include "../include/reportes.h"
 #include "../include/gestion_usuarios.h"
 #include "../include/inventario.h"
+#include "../include/seguridad.h"
+#include "../include/control_stock.h"
 
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
 #define T 100
-#define USUARIO_LENGTH 50
+#define USUARIO_LENGTH_C 50
 // Prototipos de funciones
 void menu_inventario(int role);
 void menu_ventas(int role);
@@ -20,7 +22,7 @@ void menu_reportes_estadisticas(int role);
 void menu_administracion(int role);
 
 void menu_administracion_productos();
-void menu_control_stock(int role);
+void menu_control_stock();
 void menu_descuentos_promociones();
 void menu_categorias();
 void menu_nueva_venta();
@@ -44,7 +46,7 @@ void menu_mi_cuenta();
 // Definir estructura de opci�n de men�
 typedef struct {
     char *nombre;
-    void (*funcion)(int);
+    void (*funcion)(int role);
     int permiso_minimo; // 1 = Vendedor, 2 = Admin
 } OpcionMenu;
 
@@ -192,8 +194,10 @@ void menu_administracion_productos() {
 }
 
 
-void menu_control_stock(int role) {
+void menu_control_stock() {
     int opcion;
+    int role;
+    role = obtener_rol(usuario_actual);
     do {
         printf("\n--- Control de Stock ---\n");
         printf("1. Ver Stock Actual\n");
@@ -211,39 +215,32 @@ void menu_control_stock(int role) {
         printf("Seleccione una opci�n: ");
         scanf("%d", &opcion);
 
+        switch (opcion) {
+            case 1:
+                listarStockProductos();
+                break;
+            case 2:
+                visualizarStockBajo();
+                break;
+        }
         if (role == ROL_ADMIN) {
             switch (opcion) {
-                case 1:
-                    printf("Funci�n de Ver Stock a�n no implementada.\n");
-                    break;
-                case 2:
-                    printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
-                    break;
                 case 3:
-                    printf("Funci�n de Reposici�n a�n no implementada.\n");
+                    registrarReposicionStock();
                     break;
                 case 4:
-                    printf("Funci�n de Configuraci�n de Stock a�n no implementada.\n");
+                    modificarStockMinimo();
                     break;
                 case 5:
                     return;
-                default:
-                    printf("Opci�n inv�lida.\n");
             }
         } else {
             switch (opcion) {
-                case 1:
-                    printf("Funci�n de Ver Stock a�n no implementada.\n");
-                    break;
-                case 2:
-                    printf("Funci�n de Ver Bajo Stock a�n no implementada.\n");
-                    break;
                 case 3:
                     return;
-                default:
-                    printf("Opci�n inv�lida.\n");
             }
         }
+        
     } while (1);
 }
 
@@ -753,6 +750,7 @@ void menu_reportes_inventario(int role) {
         printf("2. Productos m�s Vendidos\n");
         printf("3. Productos menos Vendidos\n");
 
+    
         // Mostrar opciones adicionales para administrador
         if (role == ROL_ADMIN) {
             printf("4. Rotaci�n de Inventario\n");
@@ -875,7 +873,7 @@ void menu_administracion(int role) {
 
 void menu_gestion_usuarios() {
     int opcion, role, success;
-    char nombre_usuario[USUARIO_LENGTH];
+    char nombre_usuario[USUARIO_LENGTH_C];
 
     do {
         printf("\n--- Gesti�n de Usuarios ---\n");
