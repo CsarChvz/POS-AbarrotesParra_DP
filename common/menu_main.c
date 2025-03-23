@@ -25,7 +25,6 @@ void menu_administracion_productos();
 void menu_control_stock();
 void menu_descuentos_promociones();
 
-void menu_nueva_venta();
 void menu_historial_ventas(int role);
 
 void menu_apertura_caja();
@@ -270,7 +269,7 @@ void menu_descuentos_promociones() {
 
 void menu_ventas(int role) {
     OpcionMenu opciones[] = {
-        {"Nueva Venta", menu_nueva_venta, ROL_VENDEDOR},
+        {"Nueva Venta", registrarVentaMenu, ROL_VENDEDOR},
         {"Historial de Ventas", menu_historial_ventas, ROL_VENDEDOR},
     };
 
@@ -309,32 +308,6 @@ void menu_ventas(int role) {
             printf("Opci�n inv�lida. Intente nuevamente.\n");
         }
     } while (1);
-}
-
-void menu_nueva_venta() {
-    int opcion;
-    do {
-        printf("\n--- Nueva Venta ---\n");
-        printf("1. Buscar y Seleccionar Productos\n");
-        printf("2. Ver Carrito\n");
-        printf("3. Procesar Pago\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 5:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 5);
 }
 
 void menu_historial_ventas(int role) {
