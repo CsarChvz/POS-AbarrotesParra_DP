@@ -20,7 +20,7 @@ int main() {
 				
                 switch (opcion) {
                     case 1:
-                        rol = obtener_rol(usuario_actual);
+                        rol = obtener_rol(usuario_global.usuario);
                         menu_main(&rol); // Funci�n de tu sistema
                         break;
                     case 2:
@@ -33,7 +33,7 @@ int main() {
                         printf("Opci\242n inv\240lida. Intente nuevamente.\n"); // Opci�n (� = 162), Inv�lida (� = 160)
                 }
 
-                if (usuario_actual[0] == '\0') {
+                if (usuario_global.usuario[0] == '\0') {
                     break; // Regresa al login si se cierra sesi�n
                 }
             }

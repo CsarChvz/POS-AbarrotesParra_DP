@@ -1,50 +1,99 @@
-// seguridad.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../include/seguridad.h"
 
-#define MAX_USERS 3
 #define USUARIO_LENGTH 20
 #define CONTRASENA_LENGTH 20
+#define MAX_LINEA 100
+#define ARCHIVO_USUARIOS "common/data/usuarios.csv"
 
-// Estructura de Usuario
 typedef struct {
+    int id;
     char usuario[USUARIO_LENGTH];
     char contrasena[CONTRASENA_LENGTH];
     int rol;
-    int id; // añadimos id
+    int activo;
 } Usuario;
 
-// Lista de usuarios - Seteados para debugear
-Usuario usuarios[MAX_USERS] = {
-    {"admin", "admin123", 2, 1}, // añadimos id
-    {"user1", "contrasena1", 1, 2}, // añadimos id
-    {"user2", "contrasena2", 1, 3} // añadimos id
-};
+UsuarioGlobal usuario_global;
 
-// Variable global para almacenar el usuario logueado
-char usuario_actual[USUARIO_LENGTH] = "";
-int usuario_id = 0; // Definición de usuario_id
+int leer_usuarios(Usuario **usuarios, int *num_usuarios) {
+    FILE *archivo = fopen(ARCHIVO_USUARIOS, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo de usuarios");
+        printf("Ruta del archivo: %s\n", ARCHIVO_USUARIOS);
+        return 0;
+    }
+
+    char linea[MAX_LINEA];
+    int count = 0;
+
+    while (fgets(linea, MAX_LINEA, archivo) != NULL) {
+        count++;
+    }
+
+    rewind(archivo);
+
+    *usuarios = (Usuario *)malloc((count - 1) * sizeof(Usuario));
+    if (*usuarios == NULL) {
+        fclose(archivo);
+        perror("Error al asignar memoria para usuarios");
+        return 0;
+    }
+
+    fgets(linea, MAX_LINEA, archivo); // Saltar la cabecera
+
+    int i = 0;
+    while (fgets(linea, MAX_LINEA, archivo) != NULL) {
+        if (sscanf(linea, "%d,%19[^,],%19[^,],%d,%d",
+                   &(*usuarios)[i].id, (*usuarios)[i].usuario, (*usuarios)[i].contrasena,
+                   &(*usuarios)[i].rol, &(*usuarios)[i].activo) == 5) {
+            i++;
+        }
+    }
+
+    fclose(archivo);
+    *num_usuarios = i;
+    return 1;
+}
 
 int checar_credenciales(const char *usuario, const char *contrasena) {
+    Usuario *usuarios = NULL;
+    int num_usuarios = 0;
     int i;
-    for (i = 0; i < MAX_USERS; i++) {
-        if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0) {
-            usuario_id = usuarios[i].id; // Rellenar usuario_id
+    if (!leer_usuarios(&usuarios, &num_usuarios)) {
+        printf("Error al leer usuarios en checar_credenciales.\n");
+        return 0;
+    }
+
+    for (i = 0; i < num_usuarios; i++) {
+        if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0 && usuarios[i].activo == 1) { //solo usuarios activos
+            usuario_global.id = usuarios[i].id;
+            free(usuarios);
             return 1;
         }
     }
+    free(usuarios);
     return 0;
 }
 
 int obtener_rol(const char *usuario) {
+    Usuario *usuarios = NULL;
+    int num_usuarios = 0;
     int i;
-    for (i = 0; i < MAX_USERS; i++) {
+    if (!leer_usuarios(&usuarios, &num_usuarios)) {
+        return -1;
+    }
+
+    for (i = 0; i < num_usuarios; i++) {
         if (strcmp(usuarios[i].usuario, usuario) == 0) {
-            return usuarios[i].rol;
+            int rol = usuarios[i].rol;
+            free(usuarios);
+            return rol;
         }
     }
+    free(usuarios);
     return -1;
 }
 
@@ -61,7 +110,7 @@ int inicio_sesion() {
         scanf("%19s", contrasena);
 
         if (checar_credenciales(usuario, contrasena)) {
-            strcpy(usuario_actual, usuario);
+            strcpy(usuario_global.usuario, usuario);
             printf("¡Acceso concedido!\n");
             return 1;
         } else {
@@ -78,23 +127,49 @@ int inicio_sesion() {
 }
 
 void cambiar_contrasena() {
-    int i;
+    Usuario *usuarios = NULL;
+    int num_usuarios = 0;
     char nueva_contrasena[CONTRASENA_LENGTH];
-    for (i = 0; i < MAX_USERS; i++) {
-        if (strcmp(usuarios[i].usuario, usuario_actual) == 0) {
+    int i,j;
+    if (!leer_usuarios(&usuarios, &num_usuarios)) {
+        printf("Error al leer usuarios.\n");
+        return;
+    }
+
+    for (i = 0; i < num_usuarios; i++) {
+        if (strcmp(usuarios[i].usuario, usuario_global.usuario) == 0) {
             printf("\nIngrese la nueva contraseña: ");
-            scanf("%s", &nueva_contrasena);
+            scanf("%19s", nueva_contrasena);
             strcpy(usuarios[i].contrasena, nueva_contrasena);
+
+            FILE *archivo = fopen(ARCHIVO_USUARIOS, "w");
+            if (archivo == NULL) {
+                perror("Error al abrir el archivo de usuarios para escritura");
+                free(usuarios);
+                return;
+            }
+
+            fprintf(archivo, "id,usuario,contrasena,rol,activo\n");
+            for (j = 0; j < num_usuarios; j++) {
+                fprintf(archivo, "%d,%s,%s,%d,%d\n", usuarios[j].id, usuarios[j].usuario, usuarios[j].contrasena, usuarios[j].rol, usuarios[j].activo);
+            }
+            fclose(archivo);
+
             printf("Contraseña cambiada exitosamente.\n");
             cerrar_sesion();
+            free(usuarios);
             return;
         }
     }
     printf("Error: Usuario no encontrado.\n");
+    free(usuarios);
 }
 
 void cerrar_sesion() {
     printf("\nCerrando sesión...\n");
-    usuario_actual[0] = '\0';
-    usuario_id = 0; // Limpiar usuario_id
+
+    usuario_global.id = 0;
+    memset(usuario_global.usuario, 0, sizeof(usuario_global.usuario));
+    usuario_global.rol = 0;
+    usuario_global.activo = 0;
 }

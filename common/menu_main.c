@@ -196,7 +196,7 @@ void menu_administracion_productos() {
 void menu_control_stock() {
     int opcion;
     int role;
-    role = obtener_rol(usuario_actual);
+    role = obtener_rol(usuario_global.usuario);
     do {
         printf("\n--- Control de Stock ---\n");
         printf("1. Ver Stock Actual\n");
@@ -270,7 +270,7 @@ void menu_descuentos_promociones() {
 
 void menu_ventas() {
     int role;
-    role = obtener_rol(usuario_actual);
+    role = obtener_rol(usuario_global.usuario);
     OpcionMenu opciones[] = {
         {"Nueva Venta", registrarVentaMenu, ROL_VENDEDOR},
         {"Historial de Ventas", visualizarHistorialVentas, ROL_ADMIN},
@@ -383,7 +383,7 @@ void menu_apertura_caja() {
 
 void menu_ingresos_egresos() {
     int role;
-    role = obtener_rol(usuario_actual);
+    role = obtener_rol(usuario_global.usuario);
     int opcion;
     do {
         printf("\n--- Ingresos/Egresos ---\n");
