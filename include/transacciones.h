@@ -18,5 +18,5 @@ typedef struct {
 
 void registrarIngreso();
 void registrarEgreso();
-
+int listarTransacciones();
 #endif

@@ -29,7 +29,7 @@ void menu_descuentos_promociones();
 void menu_apertura_caja();
 void menu_ingresos_egresos();
 void menu_corte_caja(int role);
-void menu_retiro_efectivo();
+
 void menu_reportes_ventas(int role);
 void menu_reportes_inventario(int role);
 void menu_reportes_caja();
@@ -317,7 +317,6 @@ void menu_gestion_caja(int role) {
         {"Apertura de Caja", menu_apertura_caja, ROL_VENDEDOR},
         {"Ingresos/Egresos", menu_ingresos_egresos, ROL_VENDEDOR},
         {"Corte de Caja", menu_corte_caja, ROL_VENDEDOR},
-        {"Retiro de Efectivo", menu_retiro_efectivo, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -394,8 +393,7 @@ void menu_ingresos_egresos() {
             printf("3. Ver Historial de Transacciones\n");
             printf("4. Volver\n");
         } else {
-            printf("2. Ver Mis Transacciones\n");
-            printf("3. Volver\n");
+            printf("2. Volver\n");
         }
         
         printf("Seleccione una opci�n: ");
@@ -410,7 +408,7 @@ void menu_ingresos_egresos() {
                     registrarEgreso();
                     break;
                 case 3:
-                    printf("Funci�n a�n no implementada.\n");
+                    listarTransacciones();
                     break;
                 case 4:
                     return;
@@ -423,9 +421,6 @@ void menu_ingresos_egresos() {
                     registrarIngreso();
                     break;
                 case 2:
-                    printf("Funci�n a�n no implementada.\n");
-                    break;
-                case 3:
                     return;
                 default:
                     printf("Opci�n inv�lida.\n");
@@ -479,28 +474,6 @@ void menu_corte_caja(int role) {
     } while (1);
 }
 
-void menu_retiro_efectivo() {
-    int opcion;
-    do {
-        printf("\n--- Retiro de Efectivo ---\n");
-        printf("1. Registrar Nuevo Retiro\n");
-        printf("2. Ver Historial de Retiros\n");
-        printf("3. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-                printf("Funci�n a�n no implementada.\n");
-                break;
-            case 3:
-                return;
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 3);
-}
 
 void menu_reportes_estadisticas(int role) {
     OpcionMenu opciones[] = {
