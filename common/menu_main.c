@@ -790,12 +790,8 @@ void menu_registro_auditoria() {
                 solicitarYListarAuditoria();
                 break;
             case 2:
-                printf("\n?? B�squeda Avanzada\n");
-                printf("   1. Buscar por palabra clave\n");
-                printf("   2. Buscar por nombre de usuario\n");
-                printf("   3. Volver\n");
+                busquedaAvanzada();
                 break;
-
             case 3:
                 return;
             default:
