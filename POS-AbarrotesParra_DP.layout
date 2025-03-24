@@ -28,8 +28,8 @@ TopLine=1
 LeftChar=1
 [Editor_4]
 CursorCol=12
-CursorRow=270
-TopLine=261
+CursorRow=376
+TopLine=375
 LeftChar=1
 [Editor_6]
 CursorCol=1
@@ -85,4 +85,14 @@ LeftChar=1
 CursorCol=5
 CursorRow=178
 TopLine=164
+LeftChar=1
+[Editor_19]
+CursorCol=1
+CursorRow=1
+TopLine=1
+LeftChar=1
+[Editor_18]
+CursorCol=1
+CursorRow=1
+TopLine=1
 LeftChar=1
