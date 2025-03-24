@@ -54,7 +54,7 @@ void registrarIngreso() {
 
     Transaccion transaccion;
     transaccion.idTransaccion = obtenerSiguienteIdTransaccion();
-    transaccion.idUsuario = usuario_id;
+    transaccion.idUsuario = usuario_global.id;
 
     time_t tiempoActual = time(NULL);
     struct tm *tiempoLocal = localtime(&tiempoActual);
@@ -123,7 +123,7 @@ void registrarIngreso() {
 void registrarEgreso() {
     Transaccion transaccion;
     transaccion.idTransaccion = obtenerSiguienteIdTransaccion();
-    transaccion.idUsuario = usuario_id;
+    transaccion.idUsuario = usuario_global.id;
 
     time_t tiempoActual = time(NULL);
     struct tm *tiempoLocal = localtime(&tiempoActual);

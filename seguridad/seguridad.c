@@ -16,6 +16,7 @@ typedef struct {
     int id; // añadimos id
 } Usuario;
 
+
 // Lista de usuarios - Seteados para debugear
 Usuario usuarios[MAX_USERS] = {
     {"admin", "admin123", 2, 1}, // añadimos id
@@ -23,15 +24,15 @@ Usuario usuarios[MAX_USERS] = {
     {"user2", "contrasena2", 1, 3} // añadimos id
 };
 
-// Variable global para almacenar el usuario logueado
-char usuario_actual[USUARIO_LENGTH] = "";
-int usuario_id = 0; // Definición de usuario_id
+
+UsuarioGlobal usuario_global;
+
 
 int checar_credenciales(const char *usuario, const char *contrasena) {
     int i;
     for (i = 0; i < MAX_USERS; i++) {
         if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0) {
-            usuario_id = usuarios[i].id; // Rellenar usuario_id
+            usuario_global.id = usuarios[i].id;
             return 1;
         }
     }
@@ -61,7 +62,7 @@ int inicio_sesion() {
         scanf("%19s", contrasena);
 
         if (checar_credenciales(usuario, contrasena)) {
-            strcpy(usuario_actual, usuario);
+            strcpy(usuario_global.usuario, usuario);
             printf("¡Acceso concedido!\n");
             return 1;
         } else {
@@ -81,7 +82,7 @@ void cambiar_contrasena() {
     int i;
     char nueva_contrasena[CONTRASENA_LENGTH];
     for (i = 0; i < MAX_USERS; i++) {
-        if (strcmp(usuarios[i].usuario, usuario_actual) == 0) {
+        if (strcmp(usuarios[i].usuario, usuario_global.usuario) == 0) {
             printf("\nIngrese la nueva contraseña: ");
             scanf("%s", &nueva_contrasena);
             strcpy(usuarios[i].contrasena, nueva_contrasena);
@@ -95,6 +96,9 @@ void cambiar_contrasena() {
 
 void cerrar_sesion() {
     printf("\nCerrando sesión...\n");
-    usuario_actual[0] = '\0';
-    usuario_id = 0; // Limpiar usuario_id
+
+    usuario_global.id = 0;
+    memset(usuario_global.usuario, 0, sizeof(usuario_global.usuario)); // Limpiar el array de char
+    usuario_global.rol = 0;
+    usuario_global.activo = 0;
 }

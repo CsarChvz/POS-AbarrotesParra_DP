@@ -22,5 +22,5 @@ ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 24,Pasta,1.70,18,1,Paquete,500,1234567890146,20
 25,Galletas,2.10,25,1,Paquete,300,1234567890147,30
 26,Refresco,1.90,7,1,Botella,600,1234567890148,12
-27,Jamón,4.50,4,1,Paquete,250,1234567890149,5
+27,Jamón,4.50,3,1,Paquete,250,1234567890149,5
 28,Atún,2.80,6,1,Lata,200,1234567890150,10
