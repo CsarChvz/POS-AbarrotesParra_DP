@@ -4,3 +4,7 @@ ID_Transaccion,Fecha,Tipo_Movimiento,Categoria_Transaccion,Ingreso,Egreso,Saldo,
 3,2025-03-23,Ingreso,Deposito Inicial,500.00,0.00,2400.00,Cash,1,Deposito inicial para la jornada,No,Si
 4,2025-03-23,Egreso,Retiro de Efectivo,0.00,100.00,2300.00,Cash,1,Retiro para gastos menores,No,No
 5,2025-03-23,Egreso,Corte de caja,0.00,2300.00,0.00,Cash,1,Corte de caja de la jornada,Si,No
+6,2025-03-23,Ingreso,Deposito,1000.00,0.00,1000.00,Efectivo,1,Inicio,No,Si
+7,2025-03-23,Ingreso,Venta,250.00,0.00,1250.00,Tarjeta,1,.,No,No
+8,2025-03-23,Ingreso,Venta,10.00,0.00,1260.00,Efectivo,1,Coca,No,No
+9,2025-03-23,Ingreso,Venta,102.00,0.00,1362.00,Cash,1,.,No,No

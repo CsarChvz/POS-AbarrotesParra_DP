@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "gestion_usuarios.h": "c"
+      "gestion_usuarios.h": "c",
+      "seguridad.h": "c"
     }
 }

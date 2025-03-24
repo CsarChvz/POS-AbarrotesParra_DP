@@ -16,4 +16,7 @@ typedef struct {
     char inicioJornada[4]; // "Sí" o "No"
 } Transaccion;
 
+void registrarIngreso();
+void registrarEgreso();
+
 #endif
