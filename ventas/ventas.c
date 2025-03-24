@@ -338,7 +338,7 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
             
             ventaActual.precioTotal = total;
             strcpy(ventaActual.metodoPago, metodoPago);
-            ventaActual.idUsuario = usuario_id;
+            ventaActual.idUsuario = usuario_global.id;
 
             ventas[*numVentas] = ventaActual;
             (*numVentas)++;
