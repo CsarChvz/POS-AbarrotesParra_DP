@@ -1,29 +1,37 @@
 #include <stdio.h>
+#include <string.h>
+
 #include "logo.h"
 #include "../include/ventas.h"
+#include "../include/reportes.h"
+#include "../include/gestion_usuarios.h"
+#include "../include/inventario.h"
+#include "../include/seguridad.h"
+#include "../include/control_stock.h"
+#include "../include/transacciones.h"
+#include "../include/auditoria.h"
 
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
-
+#define T 100
+#define USUARIO_LENGTH_C 50
 // Prototipos de funciones
 void menu_inventario(int role);
-void menu_ventas(int role);
+void menu_ventas();
 void menu_gestion_caja(int role);
 void menu_reportes_estadisticas(int role);
 void menu_administracion(int role);
 
 void menu_administracion_productos();
-void menu_control_stock(int role);
+void menu_control_stock();
 void menu_descuentos_promociones();
-void menu_categorias();
-void menu_nueva_venta();
-void menu_historial_ventas(int role);
-void menu_cancelacion_ventas();
+
+
 void menu_apertura_caja();
-void menu_ingresos_egresos(int role);
+void menu_ingresos_egresos();
 void menu_corte_caja(int role);
-void menu_retiro_efectivo();
+
 void menu_reportes_ventas(int role);
 void menu_reportes_inventario(int role);
 void menu_reportes_caja();
@@ -35,26 +43,26 @@ void menu_registro_auditoria();
 void menu_mi_cuenta();
 
 
-// Definir estructura de opción de menú
+// Definir estructura de opciï¿½n de menï¿½
 typedef struct {
     char *nombre;
-    void (*funcion)(int);
+    void (*funcion)(int role);
     int permiso_minimo; // 1 = Vendedor, 2 = Admin
 } OpcionMenu;
 
-// Función para verificar permisos
+// Funciï¿½n para verificar permisos
 int tiene_permiso(int role, int permiso_minimo) {
     return role >= permiso_minimo;
 }
 
-// Menú principal
+// Menï¿½ principal
 void menu_main(int role) {
     OpcionMenu opciones[] = {
         {"Inventario", menu_inventario, ROL_VENDEDOR},
         {"Ventas", menu_ventas, ROL_VENDEDOR},
         {"Caja", menu_gestion_caja, ROL_VENDEDOR},
         {"Reportes", menu_reportes_estadisticas, ROL_VENDEDOR},
-        {"Administración", menu_administracion, ROL_ADMIN},
+        {"Administraciï¿½n", menu_administracion, ROL_ADMIN},
         {"Mi cuenta", menu_mi_cuenta, ROL_VENDEDOR},
         
     };
@@ -64,7 +72,7 @@ void menu_main(int role) {
     int i, num_opcion;
     do {
         imprimir_logo();
-        printf("\n======= MENÚ PRINCIPAL =======\n");
+        printf("\n======= MENï¿½ PRINCIPAL =======\n");
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
@@ -72,11 +80,11 @@ void menu_main(int role) {
         }
         printf("%d. Salir\n", num_opcion);
         printf("==============================\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
 
         scanf("%d", &opcion);
 
-        // Ajustar opción basado en permisos visibles
+        // Ajustar opciï¿½n basado en permisos visibles
         int opcion_real = -1;
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
@@ -93,17 +101,16 @@ void menu_main(int role) {
             printf("Saliendo del sistema...\n");
             break;
         } else {
-            printf("Opción inválida. Intente nuevamente.\n");
+            printf("Opciï¿½n invï¿½lida. Intente nuevamente.\n");
         }
     } while (1);
 }
 
 void menu_inventario(int role) {
     OpcionMenu opciones[] = {
-        {"Gestión de Productos", menu_administracion_productos, ROL_ADMIN},
+        {"Gestiï¿½n de Productos", menu_administracion_productos, ROL_ADMIN},
         {"Control de Stock", menu_control_stock, ROL_VENDEDOR},
         {"Descuentos y Promociones", menu_descuentos_promociones, ROL_ADMIN},
-        {"Categorías", menu_categorias, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -116,13 +123,13 @@ void menu_inventario(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Menú Principal\n", num_opcion);
+        printf("%d. Volver al Menï¿½ Principal\n", num_opcion);
         printf("==========================\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
 
         scanf("%d", &opcion);
 
-        // Ajustar opción basado en permisos visibles
+        // Ajustar opciï¿½n basado en permisos visibles
         int opcion_real = -1;
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
@@ -138,42 +145,58 @@ void menu_inventario(int role) {
         } else if (opcion == num_opcion) {
             return;
         } else {
-            printf("Opción inválida. Intente nuevamente.\n");
+            printf("Opciï¿½n invï¿½lida. Intente nuevamente.\n");
         }
     } while (1);
 }
 
+
 void menu_administracion_productos() {
     int opcion;
     do {
-        printf("\n--- Gestión de Productos ---\n");
+        printf("\n--- GestiÃ³n de Productos ---\n");
         printf("1. Registrar Nuevo Producto\n");
-        printf("2. Actualizar Producto\n");
-        printf("3. Eliminar Producto\n");
-        printf("4. Volver\n");
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
+        printf("2. Visualizar productos\n");
+        printf("3. Actualizar Producto\n");
+        printf("4. Eliminar Producto\n");
+        printf("5. Volver\n");
+        printf("Seleccione una opciÃ³n: ");
+        
+        if (scanf("%d", &opcion) != 1) {
+            // Si la entrada no es vÃ¡lida, limpiamos el buffer y mostramos un error
+            while (getchar() != '\n');  // Limpiar buffer
+            printf("Error: Entrada invÃ¡lida. Por favor, ingrese un nÃºmero.\n");
+            continue;  // Volver al inicio del menÃº
+        }
 
         switch (opcion) {
             case 1:
-                registrar_producto(2); // Asumiendo que esta función existe
-                break;
+                registrarProductoMenu();
+                break;  
             case 2:
-                printf("Función de Actualización aún no implementada.\n");
+                visualizarProductosMenu();
                 break;
             case 3:
-                printf("Función de Eliminación aún no implementada.\n");
+                printf("FunciÃ³n de Actualizacion aÃºn no implementada.\n");
+                // @TODO: 
                 break;
             case 4:
+                eliminarProductoMenu();
+                break;
+            case 5:
+                printf("Volviendo...\n");
                 return;
             default:
-                printf("Opción inválida.\n");
+                printf("OpciÃ³n invÃ¡lida.\n");
         }
-    } while (opcion != 4);
+    } while (opcion != 4);  // Seguir mostrando el menÃº hasta que se elija salir
 }
 
-void menu_control_stock(int role) {
+
+void menu_control_stock() {
     int opcion;
+    int role;
+    role = obtener_rol(usuario_global.usuario);
     do {
         printf("\n--- Control de Stock ---\n");
         printf("1. Ver Stock Actual\n");
@@ -181,49 +204,42 @@ void menu_control_stock(int role) {
         
         // Solo mostrar estas opciones al administrador
         if (role == ROL_ADMIN) {
-            printf("3. Registrar Reposición de Stock\n");
-            printf("4. Configurar Stock Mínimo\n");
+            printf("3. Registrar Reposiciï¿½n de Stock\n");
+            printf("4. Configurar Stock Mï¿½nimo\n");
             printf("5. Volver\n");
         } else {
             printf("3. Volver\n");
         }
         
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
+        switch (opcion) {
+            case 1:
+                listarStockProductos();
+                break;
+            case 2:
+                visualizarStockBajo();
+                break;
+        }
         if (role == ROL_ADMIN) {
             switch (opcion) {
-                case 1:
-                    printf("Función de Ver Stock aún no implementada.\n");
-                    break;
-                case 2:
-                    printf("Función de Ver Bajo Stock aún no implementada.\n");
-                    break;
                 case 3:
-                    printf("Función de Reposición aún no implementada.\n");
+                    registrarReposicionStock();
                     break;
                 case 4:
-                    printf("Función de Configuración de Stock aún no implementada.\n");
+                    modificarStockMinimo();
                     break;
                 case 5:
                     return;
-                default:
-                    printf("Opción inválida.\n");
             }
         } else {
             switch (opcion) {
-                case 1:
-                    printf("Función de Ver Stock aún no implementada.\n");
-                    break;
-                case 2:
-                    printf("Función de Ver Bajo Stock aún no implementada.\n");
-                    break;
                 case 3:
                     return;
-                default:
-                    printf("Opción inválida.\n");
             }
         }
+        
     } while (1);
 }
 
@@ -235,55 +251,29 @@ void menu_descuentos_promociones() {
         printf("2. Configurar Fechas de Descuento\n");
         printf("3. Ver Productos con Descuento\n");
         printf("4. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
             case 2:
             case 3:
-                printf("Función aún no implementada.\n");
+                printf("Funciï¿½n aï¿½n no implementada.\n");
                 break;
             case 4:
                 return;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 4);
 }
 
-void menu_categorias() {
-    int opcion;
-    do {
-        printf("\n--- Categorías ---\n");
-        printf("1. Ver Categorías\n");
-        printf("2. Crear Nueva Categoría\n");
-        printf("3. Modificar Categoría\n");
-        printf("4. Eliminar Categoría\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Función aún no implementada.\n");
-                break;
-            case 5:
-                return;
-            default:
-                printf("Opción inválida.\n");
-        }
-    } while (opcion != 5);
-}
-
-void menu_ventas(int role) {
+void menu_ventas() {
+    int role;
+    role = obtener_rol(usuario_global.usuario);
     OpcionMenu opciones[] = {
-        {"Nueva Venta", menu_nueva_venta, ROL_VENDEDOR},
-        {"Historial de Ventas", menu_historial_ventas, ROL_VENDEDOR},
-        {"Cancelación de Ventas", menu_cancelacion_ventas, ROL_ADMIN}
+        {"Nueva Venta", registrarVentaMenu, ROL_VENDEDOR},
+        {"Historial de Ventas", visualizarHistorialVentas, ROL_ADMIN},
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -296,13 +286,13 @@ void menu_ventas(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Menú Principal\n", num_opcion);
+        printf("%d. Volver al Menï¿½ Principal\n", num_opcion);
         printf("=====================\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
 
         scanf("%d", &opcion);
 
-        // Ajustar opción basado en permisos visibles
+        // Ajustar opciï¿½n basado en permisos visibles
         int opcion_real = -1;
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
@@ -318,119 +308,17 @@ void menu_ventas(int role) {
         } else if (opcion == num_opcion) {
             return;
         } else {
-            printf("Opción inválida. Intente nuevamente.\n");
+            printf("Opciï¿½n invï¿½lida. Intente nuevamente.\n");
         }
     } while (1);
 }
 
-void menu_nueva_venta() {
-    int opcion;
-    do {
-        printf("\n--- Nueva Venta ---\n");
-        printf("1. Buscar y Seleccionar Productos\n");
-        printf("2. Ver Carrito\n");
-        printf("3. Procesar Pago\n");
-        printf("4. Cancelar Venta\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Función aún no implementada.\n");
-                break;
-            case 5:
-                return;
-            default:
-                printf("Opción inválida.\n");
-        }
-    } while (opcion != 5);
-}
-
-void menu_historial_ventas(int role) {
-    int opcion;
-    do {
-        printf("\n--- Historial de Ventas ---\n");
-        printf("1. Ver Mis Ventas\n");
-        
-        // Solo admin puede ver todas las ventas
-        if (role == ROL_ADMIN) {
-            printf("2. Ver Todas las Ventas\n");
-            printf("3. Buscar Venta por ID\n");
-            printf("4. Filtrar por Fecha\n");
-            printf("5. Volver\n");
-        } else {
-            printf("2. Buscar Venta por ID\n");
-            printf("3. Filtrar por Fecha\n");
-            printf("4. Volver\n");
-        }
-        
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
-
-        if (role == ROL_ADMIN) {
-            switch (opcion) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    printf("Función aún no implementada.\n");
-                    break;
-                case 5:
-                    return;
-                default:
-                    printf("Opción inválida.\n");
-            }
-        } else {
-            switch (opcion) {
-                case 1:
-                case 2:
-                case 3:
-                    printf("Función aún no implementada.\n");
-                    break;
-                case 4:
-                    return;
-                default:
-                    printf("Opción inválida.\n");
-            }
-        }
-    } while (1);
-}
-
-void menu_cancelacion_ventas() {
-    int opcion;
-    do {
-        printf("\n--- Cancelación de Ventas ---\n");
-        printf("1. Buscar Venta a Cancelar\n");
-        printf("2. Justificar Cancelación\n");
-        printf("3. Ver Historial de Cancelaciones\n");
-        printf("4. Volver\n");
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-                printf("Función aún no implementada.\n");
-                break;
-            case 4:
-                return;
-            default:
-                printf("Opción inválida.\n");
-        }
-    } while (opcion != 4);
-}
 
 void menu_gestion_caja(int role) {
     OpcionMenu opciones[] = {
         {"Apertura de Caja", menu_apertura_caja, ROL_VENDEDOR},
         {"Ingresos/Egresos", menu_ingresos_egresos, ROL_VENDEDOR},
         {"Corte de Caja", menu_corte_caja, ROL_VENDEDOR},
-        {"Retiro de Efectivo", menu_retiro_efectivo, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -443,13 +331,13 @@ void menu_gestion_caja(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Menú Principal\n", num_opcion);
+        printf("%d. Volver al Menï¿½ Principal\n", num_opcion);
         printf("====================\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
 
         scanf("%d", &opcion);
 
-        // Ajustar opción basado en permisos visibles
+        // Ajustar opciï¿½n basado en permisos visibles
         int opcion_real = -1;
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
@@ -465,7 +353,7 @@ void menu_gestion_caja(int role) {
         } else if (opcion == num_opcion) {
             return;
         } else {
-            printf("Opción inválida. Intente nuevamente.\n");
+            printf("Opciï¿½n invï¿½lida. Intente nuevamente.\n");
         }
     } while (1);
 }
@@ -477,23 +365,25 @@ void menu_apertura_caja() {
         printf("1. Iniciar Nueva Caja\n");
         printf("2. Ver Estado Actual\n");
         printf("3. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
             case 2:
-                printf("Función aún no implementada.\n");
+                printf("Funciï¿½n aï¿½n no implementada.\n");
                 break;
             case 3:
                 return;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 3);
 }
 
-void menu_ingresos_egresos(int role) {
+void menu_ingresos_egresos() {
+    int role;
+    role = obtener_rol(usuario_global.usuario);
     int opcion;
     do {
         printf("\n--- Ingresos/Egresos ---\n");
@@ -505,35 +395,37 @@ void menu_ingresos_egresos(int role) {
             printf("3. Ver Historial de Transacciones\n");
             printf("4. Volver\n");
         } else {
-            printf("2. Ver Mis Transacciones\n");
-            printf("3. Volver\n");
+            printf("2. Volver\n");
         }
         
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         if (role == ROL_ADMIN) {
             switch (opcion) {
                 case 1:
+                    registrarIngreso();
+                    break;
                 case 2:
+                    registrarEgreso();
+                    break;
                 case 3:
-                    printf("Función aún no implementada.\n");
+                    listarTransacciones();
                     break;
                 case 4:
                     return;
                 default:
-                    printf("Opción inválida.\n");
+                    printf("Opciï¿½n invï¿½lida.\n");
             }
         } else {
             switch (opcion) {
                 case 1:
-                case 2:
-                    printf("Función aún no implementada.\n");
+                    registrarIngreso();
                     break;
-                case 3:
+                case 2:
                     return;
                 default:
-                    printf("Opción inválida.\n");
+                    printf("Opciï¿½n invï¿½lida.\n");
             }
         }
     } while (1);
@@ -544,7 +436,7 @@ void menu_corte_caja(int role) {
     do {
         printf("\n--- Corte de Caja ---\n");
         printf("1. Realizar Corte\n");
-        printf("2. Ver Último Corte\n");
+        printf("2. Ver ï¿½ltimo Corte\n");
         
         // Solo admin puede ver todos los cortes
         if (role == ROL_ADMIN) {
@@ -554,7 +446,7 @@ void menu_corte_caja(int role) {
             printf("3. Volver\n");
         }
         
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         if (role == ROL_ADMIN) {
@@ -562,57 +454,35 @@ void menu_corte_caja(int role) {
                 case 1:
                 case 2:
                 case 3:
-                    printf("Función aún no implementada.\n");
+                    printf("Funciï¿½n aï¿½n no implementada.\n");
                     break;
                 case 4:
                     return;
                 default:
-                    printf("Opción inválida.\n");
+                    printf("Opciï¿½n invï¿½lida.\n");
             }
         } else {
             switch (opcion) {
                 case 1:
                 case 2:
-                    printf("Función aún no implementada.\n");
+                    printf("Funciï¿½n aï¿½n no implementada.\n");
                     break;
                 case 3:
                     return;
                 default:
-                    printf("Opción inválida.\n");
+                    printf("Opciï¿½n invï¿½lida.\n");
             }
         }
     } while (1);
 }
 
-void menu_retiro_efectivo() {
-    int opcion;
-    do {
-        printf("\n--- Retiro de Efectivo ---\n");
-        printf("1. Registrar Nuevo Retiro\n");
-        printf("2. Ver Historial de Retiros\n");
-        printf("3. Volver\n");
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-            case 2:
-                printf("Función aún no implementada.\n");
-                break;
-            case 3:
-                return;
-            default:
-                printf("Opción inválida.\n");
-        }
-    } while (opcion != 3);
-}
 
 void menu_reportes_estadisticas(int role) {
     OpcionMenu opciones[] = {
         {"Reportes de Ventas", menu_reportes_ventas, ROL_VENDEDOR},
         {"Reportes de Inventario", menu_reportes_inventario, ROL_VENDEDOR},
         {"Reportes de Caja", menu_reportes_caja, ROL_ADMIN},
-        {"Exportación de Datos", menu_exportacion_datos, ROL_ADMIN}
+        {"Exportaciï¿½n de Datos", menu_exportacion_datos, ROL_ADMIN}
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -625,13 +495,13 @@ void menu_reportes_estadisticas(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Menú Principal\n", num_opcion);
+        printf("%d. Volver al Menï¿½ Principal\n", num_opcion);
         printf("========================\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
 
         scanf("%d", &opcion);
 
-        // Ajustar opción basado en permisos visibles
+        // Ajustar opciï¿½n basado en permisos visibles
         int opcion_real = -1;
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
@@ -647,92 +517,124 @@ void menu_reportes_estadisticas(int role) {
         } else if (opcion == num_opcion) {
             return;
         } else {
-            printf("Opción inválida. Intente nuevamente.\n");
+            printf("Opciï¿½n invï¿½lida. Intente nuevamente.\n");
         }
     } while (1);
 }
-
 void menu_reportes_ventas(int role) {
     int opcion;
+    char fecha[11];
+    int mes, anio;
+
     do {
         printf("\n--- Reportes de Ventas ---\n");
-        printf("1. Ventas por Día\n");
+        printf("1. Ventas por DÃ­a\n");
         printf("2. Ventas por Semana\n");
         printf("3. Ventas por Mes\n");
-        
-        // Mostrar opciones adicionales para administrador
+
         if (role == ROL_ADMIN) {
             printf("4. Ventas por Vendedor\n");
             printf("5. Ventas por Producto\n");
-            printf("6. Ventas por Método de Pago\n");
+            printf("6. Ventas por MÃ©todo de Pago\n");
             printf("7. Volver\n");
         } else {
             printf("4. Mis Ventas\n");
             printf("5. Volver\n");
         }
-        
-        printf("Seleccione una opción: ");
+
+        printf("Seleccione una opciÃ³n: ");
         scanf("%d", &opcion);
 
-        if (role == ROL_ADMIN) {
-            if (opcion >= 1 && opcion <= 6) {
-                printf("Función aún no implementada.\n");
-            } else if (opcion == 7) {
-                return;
-            } else {
-                printf("Opción inválida.\n");
-            }
-        } else {
-            if (opcion >= 1 && opcion <= 4) {
-                printf("Función aún no implementada.\n");
-            } else if (opcion == 5) {
-                return;
-            } else {
-                printf("Opción inválida.\n");
-            }
-        }
-    } while (1);
+    //     switch (opcion) {
+    //         case 1:
+    //             mostrar_ventas_dia();
+    //             break;
+    //         case 2:
+    //             printf("\nIngrese la fecha a partir de la cual quiere filtrar las ventas (YYYY-MM-DD): ");
+    //             scanf("%s", fecha);  // No usar & con cadenas
+    //             mostrar_ventas_semana(fecha);
+    //             break;
+    //         case 3:
+    //             printf("\nIngrese el aÃ±o: ");
+    //             scanf("%d", &anio);
+    //             printf("\nIngrese el mes: ");
+    //             scanf("%d", &mes);
+    //             mostrar_ventas_anio(mes, anio);
+    //             break;
+    //         case 4:
+    //             if (role == ROL_ADMIN) {
+    //                 printf("FunciÃ³n: Ventas por vendedor (aÃºn no implementada).\n");
+    //             } else {
+    //                 printf("FunciÃ³n: Mis ventas (aÃºn no implementada).\n");
+    //             }
+    //             break;
+    //         case 5:
+    //             if (role == ROL_ADMIN) {
+    //                 printf("FunciÃ³n: Ventas por producto (aÃºn no implementada).\n");
+    //             } else {
+    //                 return;  // Salir del menÃº si no es admin
+    //             }
+    //             break;
+    //         case 6:
+    //             if (role == ROL_ADMIN) {
+    //                 printf("FunciÃ³n: Ventas por mÃ©todo de pago (aÃºn no implementada).\n");
+    //             } else {
+    //                 printf("OpciÃ³n invÃ¡lida.\n");
+    //             }
+    //             break;
+    //         case 7:
+    //             if (role == ROL_ADMIN) {
+    //                 return;
+    //             }
+    //             printf("OpciÃ³n invÃ¡lida.\n");
+    //             break;
+    //         default:
+    //             printf("OpciÃ³n invÃ¡lida.\n");
+    //     }
+     } while (1);
 }
+
 
 void menu_reportes_inventario(int role) {
     int opcion;
     do {
         printf("\n--- Reportes de Inventario ---\n");
         printf("1. Stock Actual\n");
-        printf("2. Productos más Vendidos\n");
+        printf("2. Productos mï¿½s Vendidos\n");
         printf("3. Productos menos Vendidos\n");
-        
+
+    
         // Mostrar opciones adicionales para administrador
         if (role == ROL_ADMIN) {
-            printf("4. Rotación de Inventario\n");
-            printf("5. Productos por Categoría\n");
-            printf("6. Volver\n");
+            printf("4. Rotaciï¿½n de Inventario\n");
+            printf("5. Volver\n");
         } else {
             printf("4. Volver\n");
         }
-        
-        printf("Seleccione una opción: ");
+
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         if (role == ROL_ADMIN) {
             if (opcion >= 1 && opcion <= 5) {
-                printf("Función aún no implementada.\n");
-            } else if (opcion == 6) {
-                return;
+                printf("Funciï¿½n aï¿½n no implementada.\n");
+            } else if (opcion == 5) {
+                return; // Salir del menï¿½
             } else {
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
             }
         } else {
             if (opcion >= 1 && opcion <= 3) {
-                printf("Función aún no implementada.\n");
+                printf("Funciï¿½n aï¿½n no implementada.\n");
             } else if (opcion == 4) {
-                return;
+                return; // Salir del menï¿½ para usuarios no admin
             } else {
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
             }
         }
-    } while (1);
+    } while (1); // El bucle sigue hasta que se elija "Volver"
 }
+
 
 void menu_reportes_caja() {
     int opcion;
@@ -743,20 +645,12 @@ void menu_reportes_caja() {
         printf("3. Balance Mensual\n");
         printf("4. Reporte de Ingresos/Egresos\n");
         printf("5. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                printf("Función aún no implementada.\n");
-                break;
-            case 5:
-                return;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 5);
 }
@@ -764,51 +658,51 @@ void menu_reportes_caja() {
 void menu_exportacion_datos() {
     int opcion;
     do {
-        printf("\n--- Exportación de Datos ---\n");
+        printf("\n--- Exportaciï¿½n de Datos ---\n");
         printf("1. Exportar a PDF\n");
         printf("2. Exportar a Excel\n");
         printf("3. Exportar a CSV\n");
         printf("4. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
             case 2:
             case 3:
-                printf("Función aún no implementada.\n");
+                printf("Funciï¿½n aï¿½n no implementada.\n");
                 break;
             case 4:
                 return;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 4);
 }
 
 void menu_administracion(int role) {
     OpcionMenu opciones[] = {
-        {"Gestión de Usuarios", menu_gestion_usuarios, ROL_ADMIN},
-        {"Registro de Auditoría", menu_registro_auditoria, ROL_ADMIN},
+        {"Gestiï¿½n de Usuarios", menu_gestion_usuarios, ROL_ADMIN},
+        {"Registros de Auditorï¿½a", menu_registro_auditoria, ROL_ADMIN},
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
     int opcion;
     int i, num_opcion;
     do {
-        printf("\n======= ADMINISTRACIÓN =======\n");
+        printf("\n======= ADMINISTRACIï¿½N =======\n");
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Menú Principal\n", num_opcion);
+        printf("%d. Volver al Menï¿½ Principal\n", num_opcion);
         printf("==============================\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
 
         scanf("%d", &opcion);
 
-        // Ajustar opción basado en permisos visibles
+        // Ajustar opciï¿½n basado en permisos visibles
         int opcion_real = -1;
         for (i = 0, num_opcion = 1; i < total_opciones; i++) {
             if (tiene_permiso(role, opciones[i].permiso_minimo)) {
@@ -824,36 +718,59 @@ void menu_administracion(int role) {
         } else if (opcion == num_opcion) {
             return;
         } else {
-            printf("Opción inválida. Intente nuevamente.\n");
+            printf("Opciï¿½n invï¿½lida. Intente nuevamente.\n");
         }
     } while (1);
 }
 
 void menu_gestion_usuarios() {
-    int opcion;
+    int opcion, role, success;
+    char nombre_usuario[USUARIO_LENGTH_C];
+
     do {
-        printf("\n--- Gestión de Usuarios ---\n");
+        printf("\n--- Gestiï¿½n de Usuarios ---\n");
         printf("1. Ver Usuarios\n");
         printf("2. Crear Usuario\n");
-        printf("3. Modificar Usuario\n");
-        printf("4. Desactivar Usuario\n");
-        printf("5. Asignar Roles\n");
-        printf("6. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("3. Cambiar Estatus de Usuario\n");
+        printf("4. Asignar Roles\n");
+        printf("5. Volver\n");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                printf("Función aún no implementada.\n");
+                listarUsuarios();
                 break;
-            case 6:
+            case 2:
+                printf("Ingrese el nombre del usuario: ");
+                scanf("%s", nombre_usuario);
+    
+                printf("Ingrese que rol quiere que tenga el usuario [2 - Admin / 1 - Vendedor]: ");
+                // Usar `scanf` con "&role" para leer la entrada correctamente
+                if (scanf("%d", &role) != 1) {
+                    // Si no se lee correctamente, mostrar mensaje de error
+                    printf("Entrada invÃ¡lida para el rol.\n");
+                    break; // Salir del case si hay error
+                }
+    
+                success = guardarUsuario(nombre_usuario, role);
+                if (success) {
+                    printf("Usuario guardado exitosamente.\n");
+                } else {
+                    printf("Error al guardar el usuario.\n");
+                }
+                break;
+            case 3:
+                cambiarEstatusUsuarioMenu();
+                break;
+            case 4:
+                cambiarRolUsuarioMenu();
+                break;
+            case 5:
                 return;
+                break;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 6);
 }
@@ -861,32 +778,24 @@ void menu_gestion_usuarios() {
 void menu_registro_auditoria() {
     int opcion;
     do {
-        printf("\n--- Registro de Auditoría ---\n");
+        printf("\n--- Registro de Auditorï¿½a ---\n");
         printf("1. Ver Historial de Acciones\n");
-        printf("2. Búsqueda Avanzada\n");
+        printf("2. Bï¿½squeda Avanzada\n");
         printf("3. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
-                printf("\n?? Ver Historial de Acciones\n");
-                printf("   1. Filtrar por usuario\n");
-                printf("   2. Filtrar por fecha\n");
-                printf("   3. Filtrar por tipo de acción\n");
-                printf("   4. Volver\n");
+                solicitarYListarAuditoria();
                 break;
             case 2:
-                printf("\n?? Búsqueda Avanzada\n");
-                printf("   1. Buscar por palabra clave\n");
-                printf("   2. Buscar por nombre de usuario\n");
-                printf("   3. Volver\n");
+                busquedaAvanzada();
                 break;
-
             case 3:
                 return;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 3);
 }
@@ -898,17 +807,18 @@ void menu_mi_cuenta(){
         printf("\n--- Mi cuenta ---\n");
         printf("1. Cambiar contrasena\n");
         printf("3. Volver\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opciï¿½n: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
-				printf("Función cambiar contraseña");
+				printf("Funciï¿½n cambiar contraseï¿½a");
+				cambiar_contrasena();
                 break;
             case 3:
                 return;
             default:
-                printf("Opción inválida.\n");
+                printf("Opciï¿½n invï¿½lida.\n");
         }
     } while (opcion != 3);
 }

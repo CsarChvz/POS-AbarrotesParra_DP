@@ -1,15 +1,19 @@
 #ifndef SEGURIDAD_H
 #define SEGURIDAD_H
+
 #define USUARIO_LENGTH 20
 
-extern char usuario_actual[USUARIO_LENGTH]; // Hacer accesible la variable global
+typedef struct {
+    int id;
+    char usuario[USUARIO_LENGTH];
+    int rol;
+    int activo;
+} UsuarioGlobal;
 
-int checar_credenciales(const char *usuario, const char *contrasena);
+extern UsuarioGlobal usuario_global;
 
 int inicio_sesion();
-
+void cambiar_contrasena();
 void cerrar_sesion();
 
-int obtener_rol(const char *usuario);
 #endif
-

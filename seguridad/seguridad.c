@@ -1,76 +1,123 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h> // Para manejar strings con strcmp
+#include <string.h>
 #include "../include/seguridad.h"
 
-#define MAX_USERS 3
 #define USUARIO_LENGTH 20
 #define CONTRASENA_LENGTH 20
+#define MAX_LINEA 100
+#define ARCHIVO_USUARIOS "common/data/usuarios.csv"
 
-// Estructura de Usuario
 typedef struct {
+    int id;
     char usuario[USUARIO_LENGTH];
     char contrasena[CONTRASENA_LENGTH];
-	int rol;
+    int rol;
+    int activo;
 } Usuario;
 
-// Lista de usuarios - Seteados para debugear
-Usuario usuarios[MAX_USERS] = {
-    {"admin", "admin123", 2},
-    {"user1", "contrasena1", 1},
-    {"user2", "contrasena2", 1}
-};
+UsuarioGlobal usuario_global;
 
-// Variable global para almacenar el usuario logueado
-char usuario_actual[USUARIO_LENGTH] = "";
+int leer_usuarios(Usuario **usuarios, int *num_usuarios) {
+    FILE *archivo = fopen(ARCHIVO_USUARIOS, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo de usuarios");
+        printf("Ruta del archivo: %s\n", ARCHIVO_USUARIOS);
+        return 0;
+    }
 
+    char linea[MAX_LINEA];
+    int count = 0;
 
-int checar_credenciales(const char *usuario, const char *contrasena) {
-    int i;
-    for (i = 0; i < MAX_USERS; i++) {
-        if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0) {
-            return 1; 
+    while (fgets(linea, MAX_LINEA, archivo) != NULL) {
+        count++;
+    }
+
+    rewind(archivo);
+
+    *usuarios = (Usuario *)malloc((count - 1) * sizeof(Usuario));
+    if (*usuarios == NULL) {
+        fclose(archivo);
+        perror("Error al asignar memoria para usuarios");
+        return 0;
+    }
+
+    fgets(linea, MAX_LINEA, archivo); // Saltar la cabecera
+
+    int i = 0;
+    while (fgets(linea, MAX_LINEA, archivo) != NULL) {
+        if (sscanf(linea, "%d,%19[^,],%19[^,],%d,%d",
+                   &(*usuarios)[i].id, (*usuarios)[i].usuario, (*usuarios)[i].contrasena,
+                   &(*usuarios)[i].rol, &(*usuarios)[i].activo) == 5) {
+            i++;
         }
     }
+
+    fclose(archivo);
+    *num_usuarios = i;
+    return 1;
+}
+
+int checar_credenciales(const char *usuario, const char *contrasena) {
+    Usuario *usuarios = NULL;
+    int num_usuarios = 0;
+    int i;
+    if (!leer_usuarios(&usuarios, &num_usuarios)) {
+        printf("Error al leer usuarios en checar_credenciales.\n");
+        return 0;
+    }
+
+    for (i = 0; i < num_usuarios; i++) {
+        if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0 && usuarios[i].activo == 1) { //solo usuarios activos
+            usuario_global.id = usuarios[i].id;
+            free(usuarios);
+            return 1;
+        }
+    }
+    free(usuarios);
     return 0;
 }
 
-// Se comprueba el rol que tiene el usuario
 int obtener_rol(const char *usuario) {
+    Usuario *usuarios = NULL;
+    int num_usuarios = 0;
     int i;
-    for (i = 0; i < MAX_USERS; i++) {
+    if (!leer_usuarios(&usuarios, &num_usuarios)) {
+        return -1;
+    }
+
+    for (i = 0; i < num_usuarios; i++) {
         if (strcmp(usuarios[i].usuario, usuario) == 0) {
-            return usuarios[i].rol; // Retorna el rol del usuario
+            int rol = usuarios[i].rol;
+            free(usuarios);
+            return rol;
         }
     }
-    return -1; // Usuario no encontrado
+    free(usuarios);
+    return -1;
 }
 
-
-
-// Función para iniciar sesión
 int inicio_sesion() {
     char usuario[USUARIO_LENGTH];
     char contrasena[CONTRASENA_LENGTH];
 
     while (1) {
-        printf("\n--- Inicio de Sesi\242n ---\n"); // Sesión (ó = ASCII 242)
+        printf("\n--- Inicio de SesiÃ³n ---\n");
         printf("Ingrese el nombre de usuario: ");
-        scanf("%19s", usuario); 
+        scanf("%19s", usuario);
 
-        printf("Ingrese la contrase\244a: "); // Contraseña (ñ = ASCII 244)
+        printf("Ingrese la contraseÃ±a: ");
         scanf("%19s", contrasena);
 
-        // Verificar credenciales
         if (checar_credenciales(usuario, contrasena)) {
-            strcpy(usuario_actual, usuario); // Guardar usuario logueado
-            printf("\241Acceso concedido!\n"); // ¡ (¡ = ASCII 241
+            strcpy(usuario_global.usuario, usuario);
+            printf("Â¡Acceso concedido!\n");
             return 1;
         } else {
-            printf("\241Acceso denegado! Usuario o contrase\244a incorrectos.\n");
+            printf("Â¡Acceso denegado! Usuario o contraseÃ±a incorrectos.\n");
         }
 
-        printf("\277Desea intentarlo de nuevo? (s/n): "); // ¿ (¿ = ASCII 277)
+        printf("Â¿Desea intentarlo de nuevo? (s/n): ");
         char opcion;
         scanf(" %c", &opcion);
         if (opcion == 'n' || opcion == 'N') {
@@ -79,11 +126,50 @@ int inicio_sesion() {
     }
 }
 
+void cambiar_contrasena() {
+    Usuario *usuarios = NULL;
+    int num_usuarios = 0;
+    char nueva_contrasena[CONTRASENA_LENGTH];
+    int i,j;
+    if (!leer_usuarios(&usuarios, &num_usuarios)) {
+        printf("Error al leer usuarios.\n");
+        return;
+    }
 
+    for (i = 0; i < num_usuarios; i++) {
+        if (strcmp(usuarios[i].usuario, usuario_global.usuario) == 0) {
+            printf("\nIngrese la nueva contraseÃ±a: ");
+            scanf("%19s", nueva_contrasena);
+            strcpy(usuarios[i].contrasena, nueva_contrasena);
 
-// Función para cerrar sesión
-void cerrar_sesion() {
-    printf("\nCerrando sesi\242n...\n");
-    usuario_actual[0] = '\0'; // Borra el usuario actual
+            FILE *archivo = fopen(ARCHIVO_USUARIOS, "w");
+            if (archivo == NULL) {
+                perror("Error al abrir el archivo de usuarios para escritura");
+                free(usuarios);
+                return;
+            }
+
+            fprintf(archivo, "id,usuario,contrasena,rol,activo\n");
+            for (j = 0; j < num_usuarios; j++) {
+                fprintf(archivo, "%d,%s,%s,%d,%d\n", usuarios[j].id, usuarios[j].usuario, usuarios[j].contrasena, usuarios[j].rol, usuarios[j].activo);
+            }
+            fclose(archivo);
+
+            printf("ContraseÃ±a cambiada exitosamente.\n");
+            cerrar_sesion();
+            free(usuarios);
+            return;
+        }
+    }
+    printf("Error: Usuario no encontrado.\n");
+    free(usuarios);
 }
 
+void cerrar_sesion() {
+    printf("\nCerrando sesiÃ³n...\n");
+
+    usuario_global.id = 0;
+    memset(usuario_global.usuario, 0, sizeof(usuario_global.usuario));
+    usuario_global.rol = 0;
+    usuario_global.activo = 0;
+}
