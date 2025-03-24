@@ -9,6 +9,8 @@
 #include "../include/seguridad.h"
 #include "../include/control_stock.h"
 #include "../include/transacciones.h"
+#include "../include/auditoria.h"
+
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
@@ -681,7 +683,7 @@ void menu_exportacion_datos() {
 void menu_administracion(int role) {
     OpcionMenu opciones[] = {
         {"Gesti�n de Usuarios", menu_gestion_usuarios, ROL_ADMIN},
-        {"Registro de Auditor�a", menu_registro_auditoria, ROL_ADMIN},
+        {"Registros de Auditor�a", menu_registro_auditoria, ROL_ADMIN},
     };
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
@@ -785,19 +787,11 @@ void menu_registro_auditoria() {
 
         switch (opcion) {
             case 1:
-                printf("\n?? Ver Historial de Acciones\n");
-                printf("   1. Filtrar por usuario\n");
-                printf("   2. Filtrar por fecha\n");
-                printf("   3. Filtrar por tipo de acci�n\n");
-                printf("   4. Volver\n");
+                solicitarYListarAuditoria();
                 break;
             case 2:
-                printf("\n?? B�squeda Avanzada\n");
-                printf("   1. Buscar por palabra clave\n");
-                printf("   2. Buscar por nombre de usuario\n");
-                printf("   3. Volver\n");
+                busquedaAvanzada();
                 break;
-
             case 3:
                 return;
             default:
