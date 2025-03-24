@@ -8,7 +8,7 @@
 #include "../include/inventario.h"
 #include "../include/seguridad.h"
 #include "../include/control_stock.h"
-
+#include "../include/transacciones.h"
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
 #define ROL_ADMIN 2
@@ -25,10 +25,9 @@ void menu_administracion_productos();
 void menu_control_stock();
 void menu_descuentos_promociones();
 
-void menu_historial_ventas();
 
 void menu_apertura_caja();
-void menu_ingresos_egresos(int role);
+void menu_ingresos_egresos();
 void menu_corte_caja(int role);
 void menu_retiro_efectivo();
 void menu_reportes_ventas(int role);
@@ -381,7 +380,9 @@ void menu_apertura_caja() {
     } while (opcion != 3);
 }
 
-void menu_ingresos_egresos(int role) {
+void menu_ingresos_egresos() {
+    int role;
+    role = obtener_rol(usuario_actual);
     int opcion;
     do {
         printf("\n--- Ingresos/Egresos ---\n");
@@ -403,7 +404,11 @@ void menu_ingresos_egresos(int role) {
         if (role == ROL_ADMIN) {
             switch (opcion) {
                 case 1:
+                    registrarIngreso();
+                    break;
                 case 2:
+                    registrarEgreso();
+                    break;
                 case 3:
                     printf("Funci�n a�n no implementada.\n");
                     break;
@@ -415,6 +420,8 @@ void menu_ingresos_egresos(int role) {
         } else {
             switch (opcion) {
                 case 1:
+                    registrarIngreso();
+                    break;
                 case 2:
                     printf("Funci�n a�n no implementada.\n");
                     break;
