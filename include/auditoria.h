@@ -2,4 +2,5 @@
 #define AUDITORIA_H
 
 void solicitarYRegistrarAuditoria();
+void solicitarYListarAuditoria();
 #endif
