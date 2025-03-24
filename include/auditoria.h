@@ -3,4 +3,5 @@
 
 void solicitarYRegistrarAuditoria();
 void solicitarYListarAuditoria();
+void busquedaAvanzada();
 #endif
