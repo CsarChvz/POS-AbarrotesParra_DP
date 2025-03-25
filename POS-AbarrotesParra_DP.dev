@@ -24,12 +24,12 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=auditoria,caja,common,include,inventario,reportes,seguridad,ventas
+Folders=auditoria,caja,common,include,inventario,proveedores,reportes,seguridad,ventas
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=22
+UnitCount=23
 
 [VersionInfo]
 Major=1
@@ -264,6 +264,16 @@ BuildCmd=
 FileName=include\auditoria.h
 CompileCpp=0
 Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit23]
+FileName=provedores\proveedores.c
+CompileCpp=0
+Folder=proveedores
 Compile=1
 Link=1
 Priority=1000
