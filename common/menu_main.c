@@ -11,6 +11,8 @@
 #include "../include/transacciones.h"
 #include "../include/auditoria.h"
 #include "../include/apertura_caja.h"
+#include "../include/corte_caja.h"
+#include "../include/descuentos.h"
 
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
@@ -257,9 +259,13 @@ void menu_descuentos_promociones() {
 
         switch (opcion) {
             case 1:
+                aplicarDescuentoProducto();
+                break;
             case 2:
+                configurarFechasDescuento();
+                break;
             case 3:
-                printf("Funci�n a�n no implementada.\n");
+                verProductosConDescuento();
                 break;
             case 4:
                 return;
