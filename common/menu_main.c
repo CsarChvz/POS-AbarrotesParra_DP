@@ -374,7 +374,7 @@ void menu_apertura_caja() {
                 menuAperturaCaja();
                 break;
             case 2:
-                printf("Funci�n a�n no implementada.\n");
+                mostrarEstadoCajaODarOpcionApertura();
                 break;
             case 3:
                 return;
