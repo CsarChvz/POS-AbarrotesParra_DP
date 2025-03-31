@@ -10,6 +10,7 @@
 #include "../include/control_stock.h"
 #include "../include/transacciones.h"
 #include "../include/auditoria.h"
+#include "../include/apertura_caja.h"
 
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
@@ -370,6 +371,8 @@ void menu_apertura_caja() {
 
         switch (opcion) {
             case 1:
+                menuAperturaCaja();
+                break;
             case 2:
                 printf("Funci�n a�n no implementada.\n");
                 break;
