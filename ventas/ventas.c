@@ -12,6 +12,8 @@
 #define UNIDAD_LENGTH 20
 #define CODIGO_BARRAS_LENGTH 20
 
+#define ARCHIVO_TRANSACCIONES "common/data/transacciones.csv"
+
 typedef struct {
     int idVenta;
     time_t fechaVenta;
@@ -40,6 +42,21 @@ typedef struct {
     float precioUnitario;
     float subtotal;
 } VentaProducto;
+
+typedef struct {
+    int idTransaccion;
+    char fecha[11]; // YYYY-MM-DD
+    char tipoMovimiento[10]; // Ingreso o Egreso
+    char categoriaTransaccion[20]; // Venta, Compra, etc.
+    float ingreso;
+    float egreso;
+    float saldo;
+    char metodoPago[20];
+    int idUsuario;
+    char observaciones[100];
+    char corteCaja[4]; // "Sí" o "No"
+    char inicioJornada[4]; // "Sí" o "No"
+} Transaccion;
 
 Producto *buscarProductoPorId(Producto productos[], int numProductos, int idProducto) {
     int i;
@@ -347,7 +364,60 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
             guardarVentaProceso(ventasProductos, *numVentasProductos, ventaActual.idVenta);
             guardarVenta(ventaActual);
 
-            printf("Venta finalizada y datos guardados.\n");
+            // Registrar la transacción en transacciones.csv
+            Transaccion transaccionVenta;
+            transaccionVenta.idTransaccion = obtenerSiguienteIdTransaccion();
+            transaccionVenta.idUsuario = usuario_global.id;
+
+            time_t tiempoActual = time(NULL);
+            struct tm *tiempoLocal = localtime(&tiempoActual);
+            strftime(transaccionVenta.fecha, sizeof(transaccionVenta.fecha), "%Y-%m-%d", tiempoLocal);
+
+            strcpy(transaccionVenta.tipoMovimiento, "Ingreso");
+            strcpy(transaccionVenta.categoriaTransaccion, "Venta");
+            transaccionVenta.ingreso = total;
+            transaccionVenta.egreso = 0.0;
+            strcpy(transaccionVenta.metodoPago, metodoPago); // metodoPago ya fue definido
+            sprintf(transaccionVenta.observaciones, "Venta ID: %d", ventaActual.idVenta); // Usar sprintf para formatear la cadena
+            strcpy(transaccionVenta.corteCaja, "No");
+            strcpy(transaccionVenta.inicioJornada, "No");
+
+            // Calcular el saldo
+            FILE *archivoTransacciones = fopen(ARCHIVO_TRANSACCIONES, "r");
+            float saldoAnterior = 0.0;
+            if (archivoTransacciones != NULL) {
+                char linea[256];
+                fgets(linea, sizeof(linea), archivoTransacciones); // Saltar la cabecera
+                while (fgets(linea, sizeof(linea), archivoTransacciones)) {
+                    Transaccion t;
+                    if (sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
+                               &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                               &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                               t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
+                        saldoAnterior = t.saldo;
+                    }
+                }
+                fclose(archivoTransacciones);
+            }
+
+            transaccionVenta.saldo = saldoAnterior + transaccionVenta.ingreso;
+
+            // Escribir la transacción en el archivo
+            archivoTransacciones = fopen(ARCHIVO_TRANSACCIONES, "a");
+            if (archivoTransacciones == NULL) {
+                printf("Error al abrir el archivo de transacciones.\n");
+                return;
+            }
+
+            fprintf(archivoTransacciones, "%d,%s,%s,%s,%.2f,%.2f,%.2f,%s,%d,%s,%s,%s\n",
+                    transaccionVenta.idTransaccion, transaccionVenta.fecha, transaccionVenta.tipoMovimiento,
+                    transaccionVenta.categoriaTransaccion, transaccionVenta.ingreso, transaccionVenta.egreso,
+                    transaccionVenta.saldo, transaccionVenta.metodoPago, transaccionVenta.idUsuario,
+                    transaccionVenta.observaciones, transaccionVenta.corteCaja, transaccionVenta.inicioJornada);
+
+            fclose(archivoTransacciones);
+
+            printf("Venta finalizada y datos guardados en ventas.csv y transacciones.csv.\n");
             break;
         } else if (opcion == 3) {
             printf("Venta cancelada.\n");
