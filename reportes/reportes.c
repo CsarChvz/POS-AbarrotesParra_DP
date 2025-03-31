@@ -47,6 +47,35 @@ typedef struct {
     int stockMinimo;
 } Producto;
 
+typedef struct {
+    int idCaja;
+    int idUsuario;
+    char fecha[11];
+    char hora[9];
+    float montoInicial;
+    char estado[20];
+} Caja;
+
+typedef struct {
+    int idCorte;
+    int idCaja;
+    char fecha[11];
+    char hora[9];
+    float ingresosTotales;
+    float egresosTotales;
+    float saldoFinal;
+    float montoDeclarado;
+    float diferencia;
+    char observaciones[100];
+} CorteCaja;
+
+typedef struct {
+    int idDescuento;
+    int idProducto;
+    int porcentajeDescuento;
+    char fechaInicio[11];
+    char fechaFin[11];
+} Descuento;
 
 // Funciones para leer datos de archivos CSV
 int leerVentas(Venta ventas[]) {
@@ -428,6 +457,261 @@ void menuReportesInventario(int role) {
                 reporteProductosMenosVendidos(productos, numProductos, ventasProductos, numVentasProductos);
                 break;
             case 4:
+                return; // Volver
+            default:
+                printf("Opción inválida.\n");
+        }
+    } while (1);
+}
+
+
+
+typedef struct {
+    int idTransaccion;
+    char fecha[11];
+    char tipoMovimiento[20];
+    char categoriaTransaccion[20];
+    float ingreso;
+    float egreso;
+    float saldo;
+    char metodoPago[20];
+    int idUsuario;
+    char observaciones[100];
+    char corteCaja[4];
+    char inicioJornada[4];
+} Transaccion;
+
+
+#define ARCHIVO_CORTES "common/data/corte_cajas.csv"
+#define ARCHIVO_CAJAS "common/data/cajas.csv"
+#define ARCHIVO_TRANSACCIONES "common/data/transacciones.csv" 
+#define ARCHIVO_DESCUENTOS "common/data/descuentos.csv"
+// Funciones para leer datos de archivos CSV
+Caja* leerCajas(int* numCajas) {
+    FILE *archivo = fopen(ARCHIVO_CAJAS, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir cajas.csv");
+        return NULL;
+    }
+
+    Caja* cajas = NULL;
+    *numCajas = 0;
+    char linea[256];
+    fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+
+    while (fgets(linea, sizeof(linea), archivo)) {
+        cajas = realloc(cajas, (*numCajas + 1) * sizeof(Caja));
+        sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%19[^]",
+               &cajas[*numCajas].idCaja, &cajas[*numCajas].idUsuario,
+               cajas[*numCajas].fecha, cajas[*numCajas].hora,
+               &cajas[*numCajas].montoInicial, cajas[*numCajas].estado);
+        (*numCajas)++;
+    }
+
+    fclose(archivo);
+    return cajas;
+}
+
+CorteCaja* leerCortesCaja(int* numCortes) {
+    FILE *archivo = fopen(ARCHIVO_CORTES, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir corte_cajas.csv");
+        return NULL;
+    }
+
+    CorteCaja* cortesCaja = NULL;
+    *numCortes = 0;
+    char linea[256];
+    fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+
+    while (fgets(linea, sizeof(linea), archivo)) {
+        cortesCaja = realloc(cortesCaja, (*numCortes + 1) * sizeof(CorteCaja));
+        sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%f,%f,%f,%f,%99[^]",
+               &cortesCaja[*numCortes].idCorte, &cortesCaja[*numCortes].idCaja,
+               cortesCaja[*numCortes].fecha, cortesCaja[*numCortes].hora,
+               &cortesCaja[*numCortes].ingresosTotales, &cortesCaja[*numCortes].egresosTotales,
+               &cortesCaja[*numCortes].saldoFinal, &cortesCaja[*numCortes].montoDeclarado,
+               &cortesCaja[*numCortes].diferencia, cortesCaja[*numCortes].observaciones);
+        (*numCortes)++;
+    }
+
+    fclose(archivo);
+    return cortesCaja;
+}
+
+Transaccion* leerTransacciones(int* numTransacciones) {
+    FILE *archivo = fopen(ARCHIVO_TRANSACCIONES, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir transacciones.csv");
+        return NULL;
+    }
+
+    Transaccion* transacciones = NULL;
+    *numTransacciones = 0;
+    char linea[256];
+    fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+
+    while (fgets(linea, sizeof(linea), archivo)) {
+        transacciones = realloc(transacciones, (*numTransacciones + 1) * sizeof(Transaccion));
+        sscanf(linea, "%d,%10[^,],%19[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^]",
+               &transacciones[*numTransacciones].idTransaccion, transacciones[*numTransacciones].fecha,
+               transacciones[*numTransacciones].tipoMovimiento, transacciones[*numTransacciones].categoriaTransaccion,
+               &transacciones[*numTransacciones].ingreso, &transacciones[*numTransacciones].egreso,
+               &transacciones[*numTransacciones].saldo, transacciones[*numTransacciones].metodoPago,
+               &transacciones[*numTransacciones].idUsuario, transacciones[*numTransacciones].observaciones,
+               transacciones[*numTransacciones].corteCaja, transacciones[*numTransacciones].inicioJornada);
+        (*numTransacciones)++;
+    }
+
+    fclose(archivo);
+    return transacciones;
+}
+
+Descuento* leerDescuentos(int* numDescuentos) {
+    FILE *archivo = fopen(ARCHIVO_DESCUENTOS, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir descuentos.csv");
+        return NULL;
+    }
+
+    Descuento* descuentos = NULL;
+    *numDescuentos = 0;
+    char linea[256];
+    fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+
+    while (fgets(linea, sizeof(linea), archivo)) {
+        descuentos = realloc(descuentos, (*numDescuentos + 1) * sizeof(Descuento));
+        sscanf(linea, "%d,%d,%d,%10[^,],%10[^]",
+               &descuentos[*numDescuentos].idDescuento, &descuentos[*numDescuentos].idProducto,
+               &descuentos[*numDescuentos].porcentajeDescuento, descuentos[*numDescuentos].fechaInicio,
+               descuentos[*numDescuentos].fechaFin);
+        (*numDescuentos)++;
+    }
+
+    fclose(archivo);
+    return descuentos;
+}
+
+// Funciones para generar reportes de caja
+void reporteBalanceDiario(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
+    char fecha[11];
+    printf("Ingrese la fecha (YYYY-MM-DD): ");
+    scanf("%10s", fecha);
+
+    float ingresosTotales = 0;
+    float egresosTotales = 0;   
+    int i;
+    for ( i = 0; i < numTransacciones; i++) {
+        if (strcmp(transacciones[i].fecha, fecha) == 0) {
+            ingresosTotales += transacciones[i].ingreso;
+            egresosTotales += transacciones[i].egreso;
+        }
+    }
+
+    printf("\n--- Balance Diario (%s) ---\n", fecha);
+    printf("Ingresos Totales: %.2f\n", ingresosTotales);
+    printf("Egresos Totales: %.2f\n", egresosTotales);
+    printf("Saldo Neto: %.2f\n", ingresosTotales - egresosTotales);
+}
+
+void reporteBalanceSemanal(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
+    char fechaInicio[11], fechaFin[11];
+    printf("Ingrese la fecha de inicio (YYYY-MM-DD): ");
+    scanf("%10s", fechaInicio);
+    printf("Ingrese la fecha de fin (YYYY-MM-DD): ");
+    scanf("%10s", fechaFin);
+
+    float ingresosTotales = 0;
+    float egresosTotales = 0;
+    int i;
+    for ( i = 0; i < numTransacciones; i++) {
+        if (strcmp(transacciones[i].fecha, fechaInicio) >= 0 && strcmp(transacciones[i].fecha, fechaFin) <= 0) {
+            ingresosTotales += transacciones[i].ingreso;
+            egresosTotales += transacciones[i].egreso;
+        }
+    }
+
+    printf("\n--- Balance Semanal (%s a %s) ---\n", fechaInicio, fechaFin);
+    printf("Ingresos Totales: %.2f\n", ingresosTotales);
+    printf("Egresos Totales: %.2f\n", egresosTotales);
+    printf("Saldo Neto: %.2f\n", ingresosTotales - egresosTotales);
+}
+
+void reporteBalanceMensual(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
+    char mes[8]; // YYYY-MM
+    printf("Ingrese el mes (YYYY-MM): ");
+    scanf("%7s", mes);
+
+    float ingresosTotales = 0;
+    float egresosTotales = 0;
+    int i;
+    for ( i = 0; i < numTransacciones; i++) {
+        if ((transacciones[i].fecha, mes, 7) == 0) {
+            ingresosTotales += transacciones[i].ingreso;
+            egresosTotales += transacciones[i].egreso;
+        }
+    }
+
+    printf("\n--- Balance Mensual (%s) ---\n", mes);
+    printf("Ingresos Totales: %.2f\n", ingresosTotales);
+    printf("Egresos Totales: %.2f\n", egresosTotales);
+    printf("Saldo Neto: %.2f\n", ingresosTotales - egresosTotales);
+}
+
+void reporteIngresosEgresos(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
+    char fecha[11];
+    printf("Ingrese la fecha (YYYY-MM-DD): ");
+    scanf("%10s", fecha);
+    int i;
+    printf("\n--- Reporte de Ingresos/Egresos (%s) ---\n", fecha);
+    for ( i = 0; i < numTransacciones; i++) {
+        if (strcmp(transacciones[i].fecha, fecha) == 0) {
+            printf("ID: %d, Tipo: %s, Categoria: %s, Ingreso: %.2f, Egreso: %.2f, Saldo: %.2f, Metodo: %s, Observaciones: %s\n",
+                   transacciones[i].idTransaccion, transacciones[i].tipoMovimiento, transacciones[i].categoriaTransaccion,
+                   transacciones[i].ingreso, transacciones[i].egreso, transacciones[i].saldo, transacciones[i].metodoPago,
+                   transacciones[i].observaciones);
+        }
+    }
+}
+
+// Función para mostrar el menú de reportes de caja
+void menuReportesCaja() {
+    int opcion;
+    int numCajas, numCortes, numTransacciones, numDescuentos;
+    Caja* cajas = leerCajas(&numCajas);
+    CorteCaja* cortesCaja = leerCortesCaja(&numCortes);
+    Transaccion* transacciones = leerTransacciones(&numTransacciones);
+    Descuento* descuentos = leerDescuentos(&numDescuentos);
+
+    do {
+        printf("\n--- Reportes de Caja ---\n");
+        printf("1. Balance Diario\n");
+        printf("2. Balance Semanal\n");
+        printf("3. Balance Mensual\n");
+        printf("4. Reporte de Ingresos/Egresos\n");
+        printf("5. Volver\n");
+
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+                reporteBalanceDiario(cajas, numCajas, cortesCaja, numCortes, transacciones, numTransacciones);
+                break;
+            case 2:
+                reporteBalanceSemanal(cajas, numCajas, cortesCaja, numCortes, transacciones, numTransacciones);
+                break;
+            case 3:
+                reporteBalanceMensual(cajas, numCajas, cortesCaja, numCortes, transacciones, numTransacciones);
+                break;
+            case 4:
+                reporteIngresosEgresos(cajas, numCajas, cortesCaja, numCortes, transacciones, numTransacciones);
+                break;
+            case 5:
+                free(cajas);
+                free(cortesCaja);
+                free(transacciones);
+                free(descuentos);
                 return; // Volver
             default:
                 printf("Opción inválida.\n");
