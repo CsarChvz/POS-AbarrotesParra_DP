@@ -457,11 +457,13 @@ void menu_corte_caja() {
         if (role == ROL_ADMIN) {
             switch (opcion) {
                 case 1:
+                    realizarCorteCaja();
+                    break;
                 case 2:
                     mostrarUltimoCorteCaja();
                     break;
                 case 3:
-                    printf("Funci�n a�n no implementada.\n");
+                    mostrarHistorialCortesCaja() ;
                     break;
                 case 4:
                     return;
@@ -471,7 +473,8 @@ void menu_corte_caja() {
         } else {
             switch (opcion) {
                 case 1:
-
+                    realizarCorteCaja();
+                    break;
                 case 2:
                     mostrarUltimoCorteCaja();
                     break;

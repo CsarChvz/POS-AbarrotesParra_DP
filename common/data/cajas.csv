@@ -3,5 +3,4 @@ ID_Caja,ID_Usuario,Fecha,Hora,Monto_Inicial,Estado
 2,1,2025-03-23,07:45:00,100.00,Cerrada
 3,1,2025-03-24,07:50:00,200.00,Cerrada
 4,2,2025-03-25,08:10:00,300.00,Cerrada
-
-5,1,2025-03-31,14:40:41,400.00,Abierta
+5,1,2025-03-31,14:40:41,400.00,Cerrada
