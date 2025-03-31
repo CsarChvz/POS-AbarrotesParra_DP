@@ -3,6 +3,5 @@
 
 void mostrarUltimoCorteCaja();
 void mostrarHistorialCortesCaja();
-
 void realizarCorteCaja();
 #endif

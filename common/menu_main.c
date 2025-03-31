@@ -11,6 +11,8 @@
 #include "../include/transacciones.h"
 #include "../include/auditoria.h"
 #include "../include/apertura_caja.h"
+#include "../include/corte_caja.h"
+#include "../include/descuentos.h"
 
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
