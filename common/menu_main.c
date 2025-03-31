@@ -554,22 +554,7 @@ void menu_reportes_inventario() {
 
 
 void menu_reportes_caja() {
-    int opcion;
-    do {
-        printf("\n--- Reportes de Caja ---\n");
-        printf("1. Balance Diario\n");
-        printf("2. Balance Semanal\n");
-        printf("3. Balance Mensual\n");
-        printf("4. Reporte de Ingresos/Egresos\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 5);
+    menuReportesCaja();
 }
 
 void menu_exportacion_datos() {

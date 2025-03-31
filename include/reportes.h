@@ -3,4 +3,5 @@
 
 void mostrarMenuReportesVentas(int role);
 void menuReportesInventario(int role);
+void menuReportesCaja();
 #endif
