@@ -36,7 +36,7 @@ void menu_ingresos_egresos();
 void menu_corte_caja();
 
 void menu_reportes_ventas();
-void menu_reportes_inventario(int role);
+void menu_reportes_inventario();
 void menu_reportes_caja();
 void menu_exportacion_datos();
 void menu_gestion_usuarios();
@@ -546,45 +546,10 @@ void menu_reportes_ventas() {
     mostrarMenuReportesVentas(role);
 }
 
-
-void menu_reportes_inventario(int role) {
-    int opcion;
-    do {
-        printf("\n--- Reportes de Inventario ---\n");
-        printf("1. Stock Actual\n");
-        printf("2. Productos m�s Vendidos\n");
-        printf("3. Productos menos Vendidos\n");
-
-    
-        // Mostrar opciones adicionales para administrador
-        if (role == ROL_ADMIN) {
-            printf("4. Rotaci�n de Inventario\n");
-            printf("5. Volver\n");
-        } else {
-            printf("4. Volver\n");
-        }
-
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        if (role == ROL_ADMIN) {
-            if (opcion >= 1 && opcion <= 5) {
-                printf("Funci�n a�n no implementada.\n");
-            } else if (opcion == 5) {
-                return; // Salir del men�
-            } else {
-                printf("Opci�n inv�lida.\n");
-            }
-        } else {
-            if (opcion >= 1 && opcion <= 3) {
-                printf("Funci�n a�n no implementada.\n");
-            } else if (opcion == 4) {
-                return; // Salir del men� para usuarios no admin
-            } else {
-                printf("Opci�n inv�lida.\n");
-            }
-        }
-    } while (1); // El bucle sigue hasta que se elija "Volver"
+void menu_reportes_inventario() {
+    int role;
+    role = obtener_rol(usuario_global.usuario);
+    menuReportesInventario(role);
 }
 
 
