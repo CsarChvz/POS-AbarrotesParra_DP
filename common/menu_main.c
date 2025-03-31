@@ -31,7 +31,7 @@ void menu_descuentos_promociones();
 
 void menu_apertura_caja();
 void menu_ingresos_egresos();
-void menu_corte_caja(int role);
+void menu_corte_caja();
 
 void menu_reportes_ventas(int role);
 void menu_reportes_inventario(int role);
@@ -434,8 +434,10 @@ void menu_ingresos_egresos() {
     } while (1);
 }
 
-void menu_corte_caja(int role) {
+void menu_corte_caja() {
     int opcion;
+    int role;
+    role = obtener_rol(usuario_global.usuario);
     do {
         printf("\n--- Corte de Caja ---\n");
         printf("1. Realizar Corte\n");
@@ -456,6 +458,8 @@ void menu_corte_caja(int role) {
             switch (opcion) {
                 case 1:
                 case 2:
+                    mostrarUltimoCorteCaja();
+                    break;
                 case 3:
                     printf("Funci�n a�n no implementada.\n");
                     break;
@@ -467,8 +471,9 @@ void menu_corte_caja(int role) {
         } else {
             switch (opcion) {
                 case 1:
+
                 case 2:
-                    printf("Funci�n a�n no implementada.\n");
+                    mostrarUltimoCorteCaja();
                     break;
                 case 3:
                     return;
