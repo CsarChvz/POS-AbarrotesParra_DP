@@ -11,6 +11,8 @@
 
 #define ARCHIVOS_VENTAS "common/data/ventas.csv"
 #define ARCHIVOS_VENTAS_PRODUCTOS "common/data/ventas_productos.csv"
+#define ARCHIVOS_PRODUCTOS "common/data/productos.csv"
+
 // Estructuras para almacenar los datos de ventas
 typedef struct {
     int idVenta;
@@ -28,6 +30,23 @@ typedef struct {
     float precioUnitario;
     float subtotal;
 } VentaProducto;
+
+#define MAX_PRODUCTOS 100
+#define MAX_VENTAS_PRODUCTOS 200
+
+// Estructura para almacenar los datos de productos
+typedef struct {
+    int id;
+    char nombre[50];
+    float precio;
+    int stock;
+    int activo;
+    char unidad[20];
+    int valorUnidad;
+    char codigoBarras[14];
+    int stockMinimo;
+} Producto;
+
 
 // Funciones para leer datos de archivos CSV
 int leerVentas(Venta ventas[]) {
@@ -264,4 +283,154 @@ void mostrarMenuReportesVentas(int role) {
     } while (opcion != (role == ROL_ADMIN ? 7 : 5));
 }
 
+// Funciones para leer datos de archivos CSV
+int leerProductos(Producto productos[]) {
+    FILE *archivo = fopen(ARCHIVOS_PRODUCTOS, "r");
+    if (archivo == NULL) {
+        perror("Error al abrir productos.csv");
+        return 0;
+    }
 
+    char linea[256];
+    fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+
+    int numProductos = 0;
+    while (fgets(linea, sizeof(linea), archivo) && numProductos < MAX_PRODUCTOS) {
+        sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%13[^,],%d",
+               &productos[numProductos].id, productos[numProductos].nombre,
+               &productos[numProductos].precio, &productos[numProductos].stock,
+               &productos[numProductos].activo, productos[numProductos].unidad,
+               &productos[numProductos].valorUnidad, productos[numProductos].codigoBarras,
+               &productos[numProductos].stockMinimo);
+        numProductos++;
+    }
+
+    fclose(archivo);
+    return numProductos;
+}
+
+// Funciones para generar reportes de inventario
+void reporteStockActual(Producto productos[], int numProductos) {
+    printf("\n--- Stock Actual ---\n");
+    int i;
+    for (i = 0; i < numProductos; i++) {
+        printf("ID: %d, Nombre: %s, Stock: %d %s\n",
+               productos[i].id, productos[i].nombre, productos[i].stock, productos[i].unidad);
+    }
+}
+
+void reporteProductosMasVendidos(Producto productos[], int numProductos, VentaProducto ventasProductos[], int numVentasProductos) {
+    int ventasPorProducto[MAX_PRODUCTOS] = {0};
+    int i,j;
+    // Contar ventas por producto
+    for ( i = 0; i < numVentasProductos; i++) {
+        for ( j = 0; j < numProductos; j++) {
+            if (ventasProductos[i].idProducto == productos[j].id) {
+                ventasPorProducto[j]++;
+                break;
+            }
+        }
+    }
+
+    // Encontrar el producto más vendido
+    int maxVentas = 0;
+    int idProductoMasVendido = -1;
+    for ( i = 0; i < numProductos; i++) {
+        if (ventasPorProducto[i] > maxVentas) {
+            maxVentas = ventasPorProducto[i];
+            idProductoMasVendido = productos[i].id;
+        }
+    }
+
+    // Mostrar el producto más vendido
+    if (idProductoMasVendido != -1) {
+        printf("\n--- Producto más Vendido ---\n");
+        for ( i = 0; i < numProductos; i++) {
+            if (productos[i].id == idProductoMasVendido) {
+                printf("ID: %d, Nombre: %s, Ventas: %d\n", productos[i].id, productos[i].nombre, maxVentas);
+                break;
+            }
+        }
+    } else {
+        printf("\nNo hay ventas registradas.\n");
+    }
+}
+
+void reporteProductosMenosVendidos(Producto productos[], int numProductos, VentaProducto ventasProductos[], int numVentasProductos) {
+    int ventasPorProducto[MAX_PRODUCTOS] = {0};
+    int i, j;
+    // Contar ventas por producto
+    for ( i = 0; i < numVentasProductos; i++) {
+        for ( j = 0; j < numProductos; j++) {
+            if (ventasProductos[i].idProducto == productos[j].id) {
+                ventasPorProducto[j]++;
+                break;
+            }
+        }
+    }
+
+    // Encontrar el producto menos vendido
+    int minVentas = numVentasProductos + 1;
+    int idProductoMenosVendido = -1;
+    for ( i = 0; i < numProductos; i++) {
+        if (ventasPorProducto[i] < minVentas) {
+            minVentas = ventasPorProducto[i];
+            idProductoMenosVendido = productos[i].id;
+        }
+    }
+
+    // Mostrar el producto menos vendido
+    if (idProductoMenosVendido != -1) {
+        printf("\n--- Producto menos Vendido ---\n");
+        for ( i = 0; i < numProductos; i++) {
+            if (productos[i].id == idProductoMenosVendido) {
+                printf("ID: %d, Nombre: %s, Ventas: %d\n", productos[i].id, productos[i].nombre, minVentas);
+                break;
+            }
+        }
+    } else {
+        printf("\nNo hay ventas registradas.\n");
+    }
+}
+
+// Función para mostrar el menú de reportes de inventario
+void menuReportesInventario(int role) {
+    int opcion;
+    Producto productos[MAX_PRODUCTOS];
+    VentaProducto ventasProductos[MAX_VENTAS_PRODUCTOS];
+
+    int numProductos = leerProductos(productos);
+    int numVentasProductos = leerVentasProductos(ventasProductos);
+
+    do {
+        printf("\n--- Reportes de Inventario ---\n");
+        printf("1. Stock Actual\n");
+        printf("2. Productos más Vendidos\n");
+        printf("3. Productos menos Vendidos\n");
+
+        if (role == 1) { // Asumiendo que 1 representa el rol de administrador
+            printf("4. Volver\n");
+        } else {
+            printf("4. Volver\n");
+        }
+
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+                reporteStockActual(productos, numProductos);
+                break;
+            case 2:
+                reporteProductosMasVendidos(productos, numProductos, ventasProductos, numVentasProductos);
+                break;
+            case 3:
+                reporteProductosMenosVendidos(productos, numProductos, ventasProductos, numVentasProductos);
+                break;
+            case 4:
+                return; // Volver
+            default:
+                printf("Opción inválida.\n");
+        }
+    } while (1);
+}
