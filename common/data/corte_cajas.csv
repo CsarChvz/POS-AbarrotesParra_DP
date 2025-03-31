@@ -1,0 +1,5 @@
+ID_Corte,ID_Caja,Fecha,Hora,Ingresos_Totales,Egresos_Totales,Saldo_Final,Monto_Declarado,Diferencia,Observaciones
+1,1,2025-03-22,18:00:00,2300.00,100.00,2200.00,2200.00,0.00,"Corte normal"
+2,2,2025-03-23,18:00:00,1500.50,500.25,1000.25,1000.25,0.00,"Corte normal"
+3,3,2025-03-24,18:00:00,3000.00,2500.00,500.00,500.00,0.00,"Corte normal"
+4,4,2025-03-25,18:00:00,1000.00,200.00,1100.00,1050.00,-50.00,"Faltante de 50"

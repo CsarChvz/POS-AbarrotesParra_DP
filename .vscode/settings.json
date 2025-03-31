@@ -1,6 +1,7 @@
 {
     "files.associations": {
       "gestion_usuarios.h": "c",
-      "seguridad.h": "c"
+      "seguridad.h": "c",
+      "time.h": "c"
     }
 }
