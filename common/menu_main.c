@@ -259,9 +259,13 @@ void menu_descuentos_promociones() {
 
         switch (opcion) {
             case 1:
+                aplicarDescuentoProducto();
+                break;
             case 2:
+                configurarFechasDescuento();
+                break;
             case 3:
-                printf("Funci�n a�n no implementada.\n");
+                verProductosConDescuento();
                 break;
             case 4:
                 return;
