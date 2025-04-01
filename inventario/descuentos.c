@@ -64,8 +64,8 @@ void aplicarDescuentoProducto() {
             descuento.fechaInicio, descuento.fechaFin);
 
     fclose(archivo);
-    printf("Descuento aplicado con éxito.\n");
-    registrarRegistroAuditoria(usuario_global.id, "APLICAR_DESCUENTO_PRODUCTO", "Aplicar descuento a producto", "Descuento", descuento.idDescuento, "Descuento aplicado", "Informativo", "Éxito");
+    printf("Descuento aplicado con %cxito.\n", 130);
+    registrarRegistroAuditoria(usuario_global.id, "APLICAR_DESCUENTO_PRODUCTO", "Aplicar descuento a producto", "Descuento", descuento.idDescuento, "Descuento aplicado", "Informativo", "Exito");
 }
 
 void configurarFechasDescuento() {
@@ -98,8 +98,8 @@ void configurarFechasDescuento() {
     while (fgets(linea, sizeof(linea), archivoOriginal)) {
         Descuento descuento;
         if (sscanf(linea, "%d,%d,%d,%10[^,],%10[^\n]",
-                   &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
-                   descuento.fechaInicio, descuento.fechaFin) == 5) {
+                    &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
+                    descuento.fechaInicio, descuento.fechaFin) == 5) {
             if (descuento.idDescuento == idDescuento) {
                 strcpy(descuento.fechaInicio, fechaInicio);
                 strcpy(descuento.fechaFin, fechaFin);
@@ -123,8 +123,8 @@ void configurarFechasDescuento() {
     remove(ARCHIVO_DESCUENTOS);
     rename("common/data/descuentos_temp.csv", ARCHIVO_DESCUENTOS);
 
-    printf("Fechas de descuento actualizadas con éxito.\n");
-    registrarRegistroAuditoria(usuario_global.id, "CONFIGURAR_FECHAS_DESCUENTO", "Configurar fechas de descuento", "Descuento", idDescuento, "Fechas de descuento actualizadas", "Informativo", "Éxito");
+    printf("Fechas de descuento actualizadas con %cxito.\n", 130);
+    registrarRegistroAuditoria(usuario_global.id, "CONFIGURAR_FECHAS_DESCUENTO", "Configurar fechas de descuento", "Descuento", idDescuento, "Fechas de descuento actualizadas", "Informativo", "Exito");
 }
 
 void verProductosConDescuento() {
@@ -144,8 +144,8 @@ void verProductosConDescuento() {
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         Descuento descuento;
         if (sscanf(linea, "%d,%d,%d,%10[^,],%10[^\n]",
-                   &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
-                   descuento.fechaInicio, descuento.fechaFin) == 5) {
+                    &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
+                    descuento.fechaInicio, descuento.fechaFin) == 5) {
             printf("%-15d%-15d%-20s%-20s\n",
                     descuento.idProducto, descuento.porcentajeDescuento,
                     descuento.fechaInicio, descuento.fechaFin);
@@ -153,5 +153,5 @@ void verProductosConDescuento() {
     }
 
     fclose(archivo);
-    registrarRegistroAuditoria(usuario_global.id, "VER_PRODUCTOS_CON_DESCUENTO", "Ver productos con descuento", "Descuento", 0, "Listado de productos con descuento visto", "Informativo", "Éxito");
+    registrarRegistroAuditoria(usuario_global.id, "VER_PRODUCTOS_CON_DESCUENTO", "Ver productos con descuento", "Descuento", 0, "Listado de productos con descuento visto", "Informativo", "Exito");
 }

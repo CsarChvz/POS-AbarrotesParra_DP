@@ -48,8 +48,8 @@ int leer_usuarios(Usuario **usuarios, int *num_usuarios) {
     int i = 0;
     while (fgets(linea, MAX_LINEA, archivo) != NULL) {
         if (sscanf(linea, "%d,%19[^,],%19[^,],%d,%d",
-                   &(*usuarios)[i].id, (*usuarios)[i].usuario, (*usuarios)[i].contrasena,
-                   &(*usuarios)[i].rol, &(*usuarios)[i].activo) == 5) {
+                    &(*usuarios)[i].id, (*usuarios)[i].usuario, (*usuarios)[i].contrasena,
+                    &(*usuarios)[i].rol, &(*usuarios)[i].activo) == 5) {
             i++;
         }
     }
@@ -104,11 +104,11 @@ int inicio_sesion() {
     char contrasena[CONTRASENA_LENGTH];
 
     while (1) {
-        printf("\n--- Inicio de Sesión ---\n");
+        printf("\n--- Inicio de Sesi%cn ---\n", 162);
         printf("Ingrese el nombre de usuario: ");
         scanf("%19s", usuario);
 
-        printf("Ingrese la contraseña: ");
+        printf("Ingrese la contrase%ca: ", 164);
         scanf("%19s", contrasena);
 
         if (checar_credenciales(usuario, contrasena)) {
@@ -116,7 +116,7 @@ int inicio_sesion() {
             printf("¡Acceso concedido!\n");
             return 1;
         } else {
-            printf("¡Acceso denegado! Usuario o contraseña incorrectos.\n");
+            printf("¡Acceso denegado! Usuario o contrase%ca incorrectos.\n", 164);
         }
 
         printf("¿Desea intentarlo de nuevo? (s/n): ");
@@ -140,7 +140,7 @@ void cambiar_contrasena() {
 
     for (i = 0; i < num_usuarios; i++) {
         if (strcmp(usuarios[i].usuario, usuario_global.usuario) == 0) {
-            printf("\nIngrese la nueva contraseña: ");
+            printf("\nIngrese la nueva contrase%ca: ", 164);
             scanf("%19s", nueva_contrasena);
             strcpy(usuarios[i].contrasena, nueva_contrasena);
 
@@ -157,9 +157,9 @@ void cambiar_contrasena() {
             }
             fclose(archivo);
 
-            printf("Contraseña cambiada exitosamente.\n");
+            printf("Contrase%ca cambiada exitosamente.\n", 164);
             free(usuarios);
-            registrarRegistroAuditoria(usuario_global.id, "CAMBIAR_CONTRASENA", "Cambiar contraseña", "Usuario", usuario_global.id, "Contraseña cambiada", "Modificación", "Éxito");
+            registrarRegistroAuditoria(usuario_global.id, "CAMBIAR_CONTRASENA", "Cambiar contraseña", "Usuario", usuario_global.id, "Contrase%ca cambiada", "Modificacion", "Exito");
             return;
         }
     }
@@ -168,9 +168,9 @@ void cambiar_contrasena() {
 }
 
 void cerrar_sesion() {
-    printf("\nCerrando sesión...\n");
+    printf("\nCerrando sesi%cn...\n", 162);
 
-    registrarRegistroAuditoria(usuario_global.id, "CERRAR_SESION", "Cerrar sesión", "Usuario", usuario_global.id, "Sesión cerrada", "Autenticación", "Éxito");
+    registrarRegistroAuditoria(usuario_global.id, "CERRAR_SESION", "Cerrar sesiocn", "Usuario", usuario_global.id, "Sesión cerrada", "Autenticaciocn", "Exito");
     usuario_global.id = 0;
     memset(usuario_global.usuario, 0, sizeof(usuario_global.usuario));
     usuario_global.rol = 0;

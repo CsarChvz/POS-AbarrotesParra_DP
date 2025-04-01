@@ -4,3 +4,6 @@ ID_Auditoria,Fecha,Hora,ID_Usuario,Tipo_Usuario,Accion_Codigo,Accion_Descripcion
 3,2025-03-31,19:41:51,6,REGISTRAR_VENTA,Registrar venta,Venta,23,Venta registrada,Venta,Éxito
 4,2025-03-31,19:42:03,6,CERRAR_SESION,Cerrar sesión,Usuario,6,Sesión cerrada,Autenticación,Éxito
 5,2025-03-31,19:42:03,0,CAMBIAR_CONTRASENA,Cambiar contraseña,Usuario,0,Contraseña cambiada,Modificación,Éxito
+6,2025-04-01,08:15:58,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+7,2025-04-01,08:17:34,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+8,2025-04-01,08:17:46,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito

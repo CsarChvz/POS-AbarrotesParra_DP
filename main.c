@@ -9,15 +9,15 @@ int main() {
     while (1) {
         if (inicio_sesion() == 1) {
             while (1) {
-                printf("\n--- Men\243 Principal ---\n"); // Men� (� = ASCII 243)
+                printf("\n--- Men%c Principal ---\n", 250); 
                 printf("1. Acceder al sistema\n");
-                printf("2. Cerrar sesi\242n\n"); // Sesi�n (� = ASCII 162)
+                printf("2. Cerrar sesi%cn\n", 162);
                 printf("3. Salir\n");
-                printf("Seleccione una opci\242n: "); // Opci�n (� = ASCII 162)
+                printf("Seleccione una opci%cn: ", 162); 
                 
                 int opcion;
                 scanf("%d", &opcion);
-				
+                
                 switch (opcion) {
                     case 1:
                         rol = obtener_rol(usuario_global.usuario);
@@ -30,7 +30,7 @@ int main() {
                         printf("Saliendo del programa...\n");
                         return 0;
                     default:
-                        printf("Opci\242n inv\240lida. Intente nuevamente.\n"); // Opci�n (� = 162), Inv�lida (� = 160)
+                        printf("Opci%cn inv%clida. Intente nuevamente.\n", 162, 160); 
                 }
 
                 if (usuario_global.usuario[0] == '\0') {
@@ -43,4 +43,3 @@ int main() {
         }
     }
 }
-
