@@ -7,3 +7,5 @@ ID_Auditoria,Fecha,Hora,ID_Usuario,Tipo_Usuario,Accion_Codigo,Accion_Descripcion
 6,2025-04-01,08:15:58,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
 7,2025-04-01,08:17:34,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
 8,2025-04-01,08:17:46,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+9,2025-04-01,08:19:32,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+10,2025-04-01,08:21:05,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito

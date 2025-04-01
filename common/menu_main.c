@@ -64,9 +64,10 @@ void menu_main(int role) {
         {"Ventas", menu_ventas, ROL_VENDEDOR},
         {"Caja", menu_gestion_caja, ROL_VENDEDOR},
         {"Reportes", menu_reportes_estadisticas, ROL_VENDEDOR},
-        {"Administración", menu_administracion, ROL_ADMIN},
+        {"Administracion", menu_administracion, ROL_ADMIN}, // "ó" = \xF3 (ISO-8859-1)
         {"Mi cuenta", menu_mi_cuenta, ROL_VENDEDOR},
     };
+    
 
     int total_opciones = sizeof(opciones) / sizeof(opciones[0]);
     int opcion;
