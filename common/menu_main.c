@@ -643,23 +643,28 @@ void menu_gestion_usuarios() {
             case 1:
                 listarUsuarios();
                 break;
+
             case 2:
-                printf("Ingrese el nombre del usuario: ");
-                scanf("%s", nombre_usuario);
-    
-                printf("Ingrese que rol quiere que tenga el usuario [2 - Admin / 1 - Vendedor]: ");
-                // Usar `scanf` con "&role" para leer la entrada correctamente
-                if (scanf("%d", &role) != 1) {
-                    // Si no se lee correctamente, mostrar mensaje de error
-                    printf("Entrada inválida para el rol.\n");
-                    break; // Salir del case si hay error
-                }
-    
-                success = guardarUsuario(nombre_usuario, role);
-                if (success) {
-                    printf("Usuario guardado exitosamente.\n");
-                } else {
-                    printf("Error al guardar el usuario.\n");
+                while (1) { // Bucle para reintentar
+                    printf("Ingrese el nombre del usuario: ");
+                    scanf("%s", nombre_usuario);
+            
+                    printf("Ingrese que rol quiere que tenga el usuario [2 - Admin / 1 - Vendedor]: ");
+                    // Usar `scanf` con "&role" para leer la entrada correctamente
+                    if (scanf("%d", &role) != 1) {
+                        // Si no se lee correctamente, mostrar mensaje de error
+                        printf("Entrada inválida para el rol. Intente de nuevo.\n");
+                        continue; // Volver a pedir la entrada
+                    }
+            
+                    success = guardarUsuario(nombre_usuario, role);
+                    if (success) {
+                        printf("Usuario guardado exitosamente.\n");
+                        break; // Salir del bucle si éxito
+                    } else {
+                        printf("Error al guardar el usuario. Intente de nuevo.\n");
+                        // Aquí puedes agregar opciones adicionales, como preguntar si quiere reintentar o cancelar
+                    }
                 }
                 break;
             case 3:
