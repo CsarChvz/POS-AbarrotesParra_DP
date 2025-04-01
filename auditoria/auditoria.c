@@ -3,9 +3,9 @@
 #include <string.h>
 #include <time.h>
 
-
 #define ARCHIVO_AUDITORIA "common/data/auditoria.csv"
 #define MAX_LINEA 512
+#define REGISTROS_POR_PAGINA 10
 
 typedef struct {
     int idAuditoria;
@@ -21,13 +21,14 @@ typedef struct {
     char estado[10];
 } RegistroAuditoria;
 
+// Función para obtener el siguiente ID de auditoría disponible
 int obtenerSiguienteIdAuditoria() {
     FILE *archivo = fopen(ARCHIVO_AUDITORIA, "r");
-    if (!archivo) return 1;
+    if (!archivo) return 1; // Si no se puede abrir el archivo, inicia con ID 1
 
     int maxId = 0;
     char linea[MAX_LINEA];
-    fgets(linea, MAX_LINEA, archivo); // Saltar cabecera
+    fgets(linea, MAX_LINEA, archivo); // Saltar la cabecera del archivo
 
     while (fgets(linea, MAX_LINEA, archivo)) {
         RegistroAuditoria r;
@@ -39,9 +40,10 @@ int obtenerSiguienteIdAuditoria() {
         }
     }
     fclose(archivo);
-    return maxId + 1;
+    return maxId + 1; // El siguiente ID es el máximo encontrado + 1
 }
 
+// Función para registrar un nuevo registro de auditoría en el archivo
 void registrarRegistroAuditoria(int idUsuario, const char *accionCodigo, const char *accionDescripcion,
                                 const char *tipoObjeto, int idObjeto, const char *detalles,
                                 const char *severidad, const char *estado) {
@@ -77,6 +79,7 @@ void registrarRegistroAuditoria(int idUsuario, const char *accionCodigo, const c
     printf("Registro de auditoría guardado con éxito.\n");
 }
 
+// Función para solicitar al usuario los datos de un nuevo registro y registrarlo
 void solicitarYRegistrarAuditoria() {
     int idUsuario, idObjeto;
     char accionCodigo[20], accionDescripcion[100], tipoObjeto[20], detalles[200], severidad[20], estado[10];
@@ -101,6 +104,7 @@ void solicitarYRegistrarAuditoria() {
     registrarRegistroAuditoria(idUsuario, accionCodigo, accionDescripcion, tipoObjeto, idObjeto, detalles, severidad, estado);
 }
 
+// Función para obtener todos los registros de auditoría del archivo
 int obtenerRegistrosAuditoria(RegistroAuditoria **registros) {
     FILE *archivo = fopen(ARCHIVO_AUDITORIA, "r");
     if (!archivo) return 0;
@@ -115,7 +119,7 @@ int obtenerRegistrosAuditoria(RegistroAuditoria **registros) {
         fclose(archivo);
         return 0;
     }
-    fgets(linea, MAX_LINEA, archivo); // Saltar cabecera
+    fgets(linea, MAX_LINEA, archivo); // Saltar la cabecera
 
     int i = 0;
     while (fgets(linea, MAX_LINEA, archivo)) {
@@ -131,6 +135,7 @@ int obtenerRegistrosAuditoria(RegistroAuditoria **registros) {
     return i;
 }
 
+// Función para listar los registros de auditoría con opciones de paginación y filtrado
 int listarRegistrosAuditoria(int filtro, char filtroValor[]) {
     RegistroAuditoria *registros = NULL;
     int i;
@@ -140,7 +145,7 @@ int listarRegistrosAuditoria(int filtro, char filtroValor[]) {
         return 1;
     }
 
-    int pagina = 1, registrosPorPagina = 10, registrosMostrados = 0;
+    int pagina = 1, registrosMostrados = 0;
     while (1) {
         printf("\n--- Registros de Auditoría - Página %d ---\n", pagina);
         printf("ID\tFecha\t\tHora\tUsuario\tCódigo\tAcción\t\tObjeto\tID Objeto\tDetalles\t\t\tSeveridad\tEstado\n");
@@ -149,92 +154,96 @@ int listarRegistrosAuditoria(int filtro, char filtroValor[]) {
         for (i = 0; i < cantidadRegistrosLeidos; i++) {
             int mostrarRegistro = 0;
             if (filtro == 0 || (filtro == 1 && registros[i].idUsuario == atoi(filtroValor)) ||
-                (filtro == 2 && strstr(registros[i].detalles, filtroValor)) ) {
+                (filtro == 2 && strstr(registros[i].detalles, filtroValor))) {
                 mostrarRegistro = 1;
             }
 
-            if (mostrarRegistro && registrosMostrados >= (pagina - 1) * registrosPorPagina && registrosMostrados < pagina * registrosPorPagina) {
+            if (mostrarRegistro && registrosMostrados >= (pagina - 1) * REGISTROS_POR_PAGINA &&
+                registrosMostrados < pagina * REGISTROS_POR_PAGINA) {
                 printf("%d\t%s\t%s\t%d\t%s\t%s\t%s\t%d\t\t%s\t\t%s\t\t%s\n",
                        registros[i].idAuditoria, registros[i].fecha, registros[i].hora, registros[i].idUsuario,
                        registros[i].accionCodigo, registros[i].accionDescripcion, registros[i].tipoObjeto,
                        registros[i].idObjeto, registros[i].detalles, registros[i].severidad, registros[i].estado);
             }
-            if (mostrarRegistro) registrosMostrados++;}
+            if (mostrarRegistro) registrosMostrados++;
+        }
 
-            char opcion;
-            printf("\n--- Opciones ---\n");
-            if (pagina > 1) printf("a. Página Anterior\n");
-            if (registrosMostrados > pagina * registrosPorPagina) printf("s. Siguiente Página\n");
-            printf("q. Salir\n");
-            printf("Seleccione una opción: ");
-            scanf(" %c", &opcion);
-    
-            if (opcion == 'a' && pagina > 1) pagina--;
-            else if (opcion == 's' && registrosMostrados > pagina * registrosPorPagina) pagina++;
-            else if (opcion == 'q') break;
-            else printf("Opción inválida.\n");
-        }
-    
-        free(registros);
-        return 0;
-    }
-    
-    void solicitarYListarAuditoria() {
-        int filtro;
-        char filtroValor[100];
-    
-        printf("\n--- Filtrar Registros de Auditoría ---\n");
-        printf("1. Filtrar por usuario\n");
-        printf("2. Filtrar por fecha\n");
-        printf("3. Filtrar por tipo de acción\n");
-        printf("4. Sin filtro\n");
+        char opcion;
+        printf("\n--- Opciones ---\n");
+        if (pagina > 1) printf("a. Página Anterior\n");
+        if (registrosMostrados > pagina * REGISTROS_POR_PAGINA) printf("s. Siguiente Página\n");
+        printf("q. Salir\n");
         printf("Seleccione una opción: ");
-        scanf("%d", &filtro);
-    
-        if (filtro == 1) {
-            printf("Ingrese el ID del usuario: ");
-            scanf("%s", filtroValor);
-        } else if (filtro == 2) {
-            printf("Ingrese la fecha (AAAA-MM-DD): ");
-            scanf("%s", filtroValor);
-        } else if (filtro == 3) {
-            printf("Ingrese el tipo de acción: ");
-            scanf("%s", filtroValor);
-        } else if (filtro == 4) {
-            filtro = 0;
-            strcpy(filtroValor, "");
-        } else {
-            printf("Opción inválida.\n");
-            return;
-        }
-    
-        listarRegistrosAuditoria(filtro, filtroValor);
+        scanf(" %c", &opcion);
+
+        if (opcion == 'a' && pagina > 1) pagina--;
+        else if (opcion == 's' && registrosMostrados > pagina * REGISTROS_POR_PAGINA) pagina++;
+        else if (opcion == 'q') break;
+        else printf("Opción inválida.\n");
     }
-    
-    void busquedaAvanzada() {
-        int filtro;
-        char filtroValor[100];
-    
-        printf("\n--- Búsqueda Avanzada de Registros de Auditoría ---\n");
-        printf("1. Filtrar por usuario\n");
-        printf("2. Filtrar por palabra clave\n");
-        printf("3. Sin filtro\n");
-        printf("Seleccione una opción: ");
-        scanf("%d", &filtro);
-    
-        if (filtro == 1) {
-            printf("Ingrese el ID del usuario: ");
-            scanf("%s", filtroValor);
-        } else if (filtro == 2) {
-            printf("Ingrese la palabra clave: ");
-            scanf(" %99[^\n]", filtroValor);
-        } else if (filtro == 3) {
-            filtro = 0;
-            strcpy(filtroValor, "");
-        } else {
-            printf("Opción inválida.\n");
-            return;
-        }
-    
-        listarRegistrosAuditoria(filtro, filtroValor);
+
+    free(registros);
+    return 0;
+}
+
+// Función para solicitar al usuario opciones de filtrado y listar los registros
+void solicitarYListarAuditoria() {
+    int filtro;
+    char filtroValor[100];
+
+    printf("\n--- Filtrar Registros de Auditoría ---\n");
+    printf("1. Filtrar por usuario\n");
+    printf("2. Filtrar por fecha\n");
+    printf("3. Filtrar por tipo de acción\n");
+    printf("4. Sin filtro\n");
+    printf("Seleccione una opción: ");
+    scanf("%d", &filtro);
+
+    if (filtro == 1) {
+        printf("Ingrese el ID del usuario: ");
+        scanf("%s", filtroValor);
+    } else if (filtro == 2) {
+        printf("Ingrese la fecha (AAAA-MM-DD): ");
+        scanf("%s", filtroValor);
+    } else if (filtro == 3) {
+        printf("Ingrese el tipo de acción: ");
+        scanf("%s", filtroValor);
+    } else if (filtro == 4) {
+        filtro = 0;
+        strcpy(filtroValor, "");
+    } else {
+        printf("Opción inválida.\n");
+        return;
     }
+
+    listarRegistrosAuditoria(filtro, filtroValor);
+}
+
+// Función para realizar una búsqueda avanzada con opciones de filtrado
+void busquedaAvanzada() {
+    int filtro;
+    char filtroValor[100];
+
+    printf("\n--- Búsqueda Avanzada de Registros de Auditoría ---\n");
+    printf("1. Filtrar por usuario\n");
+    printf("2. Filtrar por palabra clave\n");
+    printf("3. Sin filtro\n");
+    printf("Seleccione una opción: ");
+    scanf("%d", &filtro);
+
+    if (filtro == 1) {
+        printf("Ingrese el ID del usuario: ");
+        scanf("%s", filtroValor);
+    } else if (filtro == 2) {
+        printf("Ingrese la palabra clave: ");
+        scanf(" %99[^\n]", filtroValor);
+    } else if (filtro == 3) {
+        filtro = 0;
+        strcpy(filtroValor, "");
+    } else {
+        printf("Opción inválida.\n");
+        return;
+    }
+
+    listarRegistrosAuditoria(filtro, filtroValor);
+}
