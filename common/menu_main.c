@@ -10,6 +10,9 @@
 #include "../include/control_stock.h"
 #include "../include/transacciones.h"
 #include "../include/auditoria.h"
+#include "../include/apertura_caja.h"
+#include "../include/corte_caja.h"
+#include "../include/descuentos.h"
 
 // Definimos constantes para roles
 #define ROL_VENDEDOR 1
@@ -20,7 +23,7 @@
 void menu_inventario(int role);
 void menu_ventas();
 void menu_gestion_caja(int role);
-void menu_reportes_estadisticas(int role);
+void menu_reportes_estadisticas();
 void menu_administracion(int role);
 
 void menu_administracion_productos();
@@ -30,10 +33,10 @@ void menu_descuentos_promociones();
 
 void menu_apertura_caja();
 void menu_ingresos_egresos();
-void menu_corte_caja(int role);
+void menu_corte_caja();
 
-void menu_reportes_ventas(int role);
-void menu_reportes_inventario(int role);
+void menu_reportes_ventas();
+void menu_reportes_inventario();
 void menu_reportes_caja();
 void menu_exportacion_datos();
 void menu_gestion_usuarios();
@@ -256,9 +259,13 @@ void menu_descuentos_promociones() {
 
         switch (opcion) {
             case 1:
+                aplicarDescuentoProducto();
+                break;
             case 2:
+                configurarFechasDescuento();
+                break;
             case 3:
-                printf("Funci�n a�n no implementada.\n");
+                verProductosConDescuento();
                 break;
             case 4:
                 return;
@@ -370,8 +377,10 @@ void menu_apertura_caja() {
 
         switch (opcion) {
             case 1:
+                menuAperturaCaja();
+                break;
             case 2:
-                printf("Funci�n a�n no implementada.\n");
+                mostrarEstadoCajaODarOpcionApertura();
                 break;
             case 3:
                 return;
@@ -431,8 +440,10 @@ void menu_ingresos_egresos() {
     } while (1);
 }
 
-void menu_corte_caja(int role) {
+void menu_corte_caja() {
     int opcion;
+    int role;
+    role = obtener_rol(usuario_global.usuario);
     do {
         printf("\n--- Corte de Caja ---\n");
         printf("1. Realizar Corte\n");
@@ -452,9 +463,13 @@ void menu_corte_caja(int role) {
         if (role == ROL_ADMIN) {
             switch (opcion) {
                 case 1:
+                    realizarCorteCaja();
+                    break;
                 case 2:
+                    mostrarUltimoCorteCaja();
+                    break;
                 case 3:
-                    printf("Funci�n a�n no implementada.\n");
+                    mostrarHistorialCortesCaja() ;
                     break;
                 case 4:
                     return;
@@ -464,8 +479,10 @@ void menu_corte_caja(int role) {
         } else {
             switch (opcion) {
                 case 1:
+                    realizarCorteCaja();
+                    break;
                 case 2:
-                    printf("Funci�n a�n no implementada.\n");
+                    mostrarUltimoCorteCaja();
                     break;
                 case 3:
                     return;
@@ -477,7 +494,9 @@ void menu_corte_caja(int role) {
 }
 
 
-void menu_reportes_estadisticas(int role) {
+void menu_reportes_estadisticas() {
+    int role;
+    role = obtener_rol(usuario_global.usuario);
     OpcionMenu opciones[] = {
         {"Reportes de Ventas", menu_reportes_ventas, ROL_VENDEDOR},
         {"Reportes de Inventario", menu_reportes_inventario, ROL_VENDEDOR},
@@ -521,138 +540,21 @@ void menu_reportes_estadisticas(int role) {
         }
     } while (1);
 }
-void menu_reportes_ventas(int role) {
-    int opcion;
-    char fecha[11];
-    int mes, anio;
-
-    do {
-        printf("\n--- Reportes de Ventas ---\n");
-        printf("1. Ventas por Día\n");
-        printf("2. Ventas por Semana\n");
-        printf("3. Ventas por Mes\n");
-
-        if (role == ROL_ADMIN) {
-            printf("4. Ventas por Vendedor\n");
-            printf("5. Ventas por Producto\n");
-            printf("6. Ventas por Método de Pago\n");
-            printf("7. Volver\n");
-        } else {
-            printf("4. Mis Ventas\n");
-            printf("5. Volver\n");
-        }
-
-        printf("Seleccione una opción: ");
-        scanf("%d", &opcion);
-
-    //     switch (opcion) {
-    //         case 1:
-    //             mostrar_ventas_dia();
-    //             break;
-    //         case 2:
-    //             printf("\nIngrese la fecha a partir de la cual quiere filtrar las ventas (YYYY-MM-DD): ");
-    //             scanf("%s", fecha);  // No usar & con cadenas
-    //             mostrar_ventas_semana(fecha);
-    //             break;
-    //         case 3:
-    //             printf("\nIngrese el año: ");
-    //             scanf("%d", &anio);
-    //             printf("\nIngrese el mes: ");
-    //             scanf("%d", &mes);
-    //             mostrar_ventas_anio(mes, anio);
-    //             break;
-    //         case 4:
-    //             if (role == ROL_ADMIN) {
-    //                 printf("Función: Ventas por vendedor (aún no implementada).\n");
-    //             } else {
-    //                 printf("Función: Mis ventas (aún no implementada).\n");
-    //             }
-    //             break;
-    //         case 5:
-    //             if (role == ROL_ADMIN) {
-    //                 printf("Función: Ventas por producto (aún no implementada).\n");
-    //             } else {
-    //                 return;  // Salir del menú si no es admin
-    //             }
-    //             break;
-    //         case 6:
-    //             if (role == ROL_ADMIN) {
-    //                 printf("Función: Ventas por método de pago (aún no implementada).\n");
-    //             } else {
-    //                 printf("Opción inválida.\n");
-    //             }
-    //             break;
-    //         case 7:
-    //             if (role == ROL_ADMIN) {
-    //                 return;
-    //             }
-    //             printf("Opción inválida.\n");
-    //             break;
-    //         default:
-    //             printf("Opción inválida.\n");
-    //     }
-     } while (1);
+void menu_reportes_ventas() {
+    int role;
+    role = obtener_rol(usuario_global.usuario);
+    mostrarMenuReportesVentas(role);
 }
 
-
-void menu_reportes_inventario(int role) {
-    int opcion;
-    do {
-        printf("\n--- Reportes de Inventario ---\n");
-        printf("1. Stock Actual\n");
-        printf("2. Productos m�s Vendidos\n");
-        printf("3. Productos menos Vendidos\n");
-
-    
-        // Mostrar opciones adicionales para administrador
-        if (role == ROL_ADMIN) {
-            printf("4. Rotaci�n de Inventario\n");
-            printf("5. Volver\n");
-        } else {
-            printf("4. Volver\n");
-        }
-
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        if (role == ROL_ADMIN) {
-            if (opcion >= 1 && opcion <= 5) {
-                printf("Funci�n a�n no implementada.\n");
-            } else if (opcion == 5) {
-                return; // Salir del men�
-            } else {
-                printf("Opci�n inv�lida.\n");
-            }
-        } else {
-            if (opcion >= 1 && opcion <= 3) {
-                printf("Funci�n a�n no implementada.\n");
-            } else if (opcion == 4) {
-                return; // Salir del men� para usuarios no admin
-            } else {
-                printf("Opci�n inv�lida.\n");
-            }
-        }
-    } while (1); // El bucle sigue hasta que se elija "Volver"
+void menu_reportes_inventario() {
+    int role;
+    role = obtener_rol(usuario_global.usuario);
+    menuReportesInventario(role);
 }
 
 
 void menu_reportes_caja() {
-    int opcion;
-    do {
-        printf("\n--- Reportes de Caja ---\n");
-        printf("1. Balance Diario\n");
-        printf("2. Balance Semanal\n");
-        printf("3. Balance Mensual\n");
-        printf("4. Reporte de Ingresos/Egresos\n");
-        printf("5. Volver\n");
-        printf("Seleccione una opci�n: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            default:
-                printf("Opci�n inv�lida.\n");
-        }
-    } while (opcion != 5);
+    menuReportesCaja();
 }
 
 void menu_exportacion_datos() {
