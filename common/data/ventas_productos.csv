@@ -43,3 +43,4 @@ ID_VP,ID_Venta,ID_Producto,Cantidad,Precio_Unitario,Subtotal
 33,21,8,2.00,2.50,0.00
 34,22,28,1.00,2.80,2.80
 34,22,17,1.00,2.50,1.25
+35,23,21,3.00,3.00,9.00

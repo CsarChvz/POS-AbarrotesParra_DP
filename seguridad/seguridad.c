@@ -158,7 +158,6 @@ void cambiar_contrasena() {
             fclose(archivo);
 
             printf("Contraseña cambiada exitosamente.\n");
-            cerrar_sesion();
             free(usuarios);
             registrarRegistroAuditoria(usuario_global.id, "CAMBIAR_CONTRASENA", "Cambiar contraseña", "Usuario", usuario_global.id, "Contraseña cambiada", "Modificación", "Éxito");
             return;

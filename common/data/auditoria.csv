@@ -1,5 +1,6 @@
 ID_Auditoria,Fecha,Hora,ID_Usuario,Tipo_Usuario,Accion_Codigo,Accion_Descripcion,Tipo_Objeto,ID_Objeto,Detalles,Severidad,Estado
-1,2024-10-27,10:30:00,1,Administrador,LOGIN_SUCCESS,Inicio de sesión,Usuario,1,"Inicio de sesión exitoso",Informativo,Éxito
-2,2024-10-27,10:35:00,1,Administrador,PRODUCT_CREATE,Creación de producto,Producto,123,"Nombre: Laptop, Precio: 1200.00, Stock: 10 unidades"
-3,2024-10-27,11:00:00,2,Vendedor,SALE_REGISTER,Registro de venta,Venta,5,"Total: 150.00",Informativo
-4,2024-10-27,11:15:00,2,Vendedor,STOCK_UPDATE,Actualización de stock,Producto,3,"Cantidad: -2 unidades, Stock anterior: 5 unidades",Advertencia,Éxito
+1,2025-03-31,19:40:03,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+2,2025-03-31,19:41:26,6,INICIO_SESION,Inicio de sesión,Usuario,6,Inicio de sesión exitoso,Autenticación,Éxito
+3,2025-03-31,19:41:51,6,REGISTRAR_VENTA,Registrar venta,Venta,23,Venta registrada,Venta,Éxito
+4,2025-03-31,19:42:03,6,CERRAR_SESION,Cerrar sesión,Usuario,6,Sesión cerrada,Autenticación,Éxito
+5,2025-03-31,19:42:03,0,CAMBIAR_CONTRASENA,Cambiar contraseña,Usuario,0,Contraseña cambiada,Modificación,Éxito
