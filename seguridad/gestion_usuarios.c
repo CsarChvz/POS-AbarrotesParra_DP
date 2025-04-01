@@ -85,7 +85,7 @@ int obtenerSiguienteId() {
     return maxId + 1;
 }
 
-// Funcion para guardar un nuevo usuario en el archivo usuarios.csv
+// Función para guardar un nuevo usuario en el archivo usuarios.csv
 int guardarUsuario(const char *nombre_usuario, int role) {
     // Validación del nombre de usuario
     if (nombre_usuario == NULL || strlen(nombre_usuario) == 0) {
@@ -93,15 +93,21 @@ int guardarUsuario(const char *nombre_usuario, int role) {
         return 0; // Error en nombre de usuario
     }
 
+    // Verifica si el nombre de usuario ya existe
+    if (usuarioExiste(nombre_usuario)) {
+        printf("Error: El nombre de usuario '%s' ya existe.\n", nombre_usuario);
+        return 0; // Error: nombre de usuario duplicado
+    }
+
     // Abre el archivo en modo 'append' (agregar al final)
     FILE *archivo = fopen("common/data/usuarios.csv", "a");
     if (archivo == NULL) {
         printf("Error: ");
-        perror("Error al abrir el archivo");  // Mejor manejo de errores
+        perror("Error al abrir el archivo"); // Mejor manejo de errores
         return 0; // Error al abrir el archivo
     }
 
-    int id = obtenerSiguienteId();  // Obtener el siguiente ID (suponiendo que esta función está definida correctamente)
+    int id = obtenerSiguienteId(); // Obtener el siguiente ID (suponiendo que esta función está definida correctamente)
 
     // Escribir los datos del usuario en el archivo CSV
     if (fprintf(archivo, "%d,%s,%s,%d,%d\n", id, nombre_usuario, "contrasena", role, 1) < 0) {
@@ -114,6 +120,32 @@ int guardarUsuario(const char *nombre_usuario, int role) {
     registrarRegistroAuditoria(usuario_global.id, "GUARDAR_USUARIO", "Guardar usuario", "Usuario", id, "Usuario guardado", "Informativo", "Éxito");
     return 1; // Éxito
 }
+
+// Función para verificar si un nombre de usuario ya existe
+int usuarioExiste(const char *nombre_usuario) {
+    FILE *archivo = fopen("common/data/usuarios.csv", "r");
+    if (archivo == NULL) {
+        return 0; // Si no se puede abrir el archivo, asumimos que el usuario no existe
+    }
+
+    char linea[256];
+    char usuario_actual[20]; // Ajusta el tamaño según tu definición de USUARIO_LENGTH
+
+    fgets(linea, sizeof(linea), archivo); // Saltar la cabecera
+
+    while (fgets(linea, sizeof(linea), archivo)) {
+        if (sscanf(linea, "%*d,%19[^,],%*[^,],%*d,%*d", usuario_actual) == 1) {
+            if (strcmp(usuario_actual, nombre_usuario) == 0) {
+                fclose(archivo);
+                return 1; // El usuario ya existe
+            }
+        }
+    }
+
+    fclose(archivo);
+    return 0; // El usuario no existe
+}
+
 
 int buscarUsuario(int id, Usuario *resultado) {
     FILE *archivo = fopen("common/data/usuarios.csv", "r");  // Modo lectura
