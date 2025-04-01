@@ -110,7 +110,7 @@ void menu_main(int role) {
 
 void menu_inventario(int role) {
     OpcionMenu opciones[] = {
-        {"Gestión de Productos", menu_administracion_productos, ROL_ADMIN},
+        {"Gestion de Productos", menu_administracion_productos, ROL_ADMIN},
         {"Control de Stock", menu_control_stock, ROL_VENDEDOR},
         {"Descuentos y Promociones", menu_descuentos_promociones, ROL_ADMIN},
     };
@@ -125,7 +125,7 @@ void menu_inventario(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Men%c Principal\n", 233);
+        printf("%d. Volver al Men%c Principal\n", 4, 233);
         printf("==========================\n");
         printf("Seleccione una opci%cn: ", 243);
 
@@ -289,7 +289,7 @@ void menu_ventas() {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Men%c Principal\n", 233);
+        printf("%d. Volver al Men%c Principal\n", 3, 233);
         printf("=====================\n");
         printf("Seleccione una opci%cn: ", 243);
 
@@ -333,7 +333,7 @@ void menu_gestion_caja(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Men%c Principal\n", 233);
+        printf("%d. Volver al Men%c Principal\n", 4, 233);
         printf("====================\n");
         printf("Seleccione una opci%cn: ", 243);
 
@@ -508,7 +508,7 @@ void menu_reportes_estadisticas() {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Men%c Principal\n", 233);
+        printf("%d. Volver al Men%c Principal\n", 5,233);
         printf("========================\n");
         printf("Seleccione una opci%cn: ", 243);
 
@@ -592,7 +592,7 @@ void menu_administracion(int role) {
                 printf("%d. %s\n", num_opcion++, opciones[i].nombre);
             }
         }
-        printf("%d. Volver al Men%c Principal\n", 233);
+        printf("%d. Volver al Men%c Principal\n", 3,233);
         printf("==============================\n");
         printf("Seleccione una opci%cn: ", 243);
 

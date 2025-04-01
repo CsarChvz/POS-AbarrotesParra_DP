@@ -9,3 +9,23 @@ ID_Auditoria,Fecha,Hora,ID_Usuario,Tipo_Usuario,Accion_Codigo,Accion_Descripcion
 8,2025-04-01,08:17:46,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
 9,2025-04-01,08:19:32,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
 10,2025-04-01,08:21:05,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+11,2025-04-01,08:25:01,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+12,2025-04-01,08:26:24,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+13,2025-04-01,08:29:18,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+14,2025-04-01,08:29:36,1,LISTAR_PRODUCTOS,Listar productos,Producto,0,Listado de productos visto,Informativo,Éxito
+15,2025-04-01,08:29:54,1,LISTADO_STOCK_PRODU,Listado de productos con stock,Producto,0,Listado de productos con stock visto,Informativo,Exito
+16,2025-04-01,08:29:57,1,LISTADO_STOCK_BAJO,Listado de productos con bajo stock,Producto,0,Listado de productos con bajo stock visto,Informativo,Exito
+17,2025-04-01,08:30:22,1,VER_PRODUCTOS_CON_D,Ver productos con descuento,Descuento,0,Listado de productos con descuento visto,Informativo,Exito
+18,2025-04-01,08:31:53,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+19,2025-04-01,08:33:04,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
+20,2025-04-01,08:33:26,1,VER_PRODUCTOS_CON_D,Ver productos con descuento,Descuento,0,Listado de productos con descuento visto,Informativo,Exito
+21,2025-04-01,08:33:39,1,LISTAR_PRODUCTOS,Listar productos,Producto,0,Listado de productos visto,Informativo,Éxito
+22,2025-04-01,08:33:52,1,LISTADO_STOCK_PRODU,Listado de productos con stock,Producto,0,Listado de productos con stock visto,Informativo,Exito
+23,2025-04-01,08:35:16,1,CAJA_APERTURA,Apertura de caja,Caja,6,Caja aperturada,Informativo,Éxito
+24,2025-04-01,08:35:22,1,CORTE_CAJA_VISTA,Vista del �cltimo corte de caja,CorteCaja,5,Vista del %cltimo corte de caja,Informativo,Exito
+25,2025-04-01,08:35:28,1,CORTE_CAJA_HISTORIA,Vista del historial de cortes de caja,CorteCaja,0,Vista del historial de cortes de caja,Informativo,Exito
+26,2025-04-01,08:37:31,1,REPORTE_VENTAS_DIA,Reporte de ventas por día,Venta,0,Reporte de ventas por día generado,Informativo,Éxito
+27,2025-04-01,08:40:36,1,REPORTE_STOCK_ACTUA,Reporte de stock actual,Producto,0,Reporte de stock actual generado,Informativo,Éxito
+28,2025-04-01,08:40:38,1,REPORTE_PRODUCTOS_M,Reporte de productos más vendidos,Producto,0,Reporte de productos más vendidos generado,Informativo,Éxito
+29,2025-04-01,08:40:41,1,REPORTE_PRODUCTOS_M,Reporte de productos menos vendidos,Producto,0,Reporte de productos menos vendidos generado,Informativo,Éxito
+30,2025-04-01,08:42:28,1,INICIO_SESION,Inicio de sesión,Usuario,1,Inicio de sesión exitoso,Autenticación,Éxito
