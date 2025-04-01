@@ -16,7 +16,7 @@ ID,Nombre,Precio,Stock,Activo,Unidad,ValorUnidad,CodigoBarras,StockMinimo
 18,Chocolate,3.20,10,1,Barra,100,1234567890140,15
 19,Queso,4.00,5,1,Paquete,500,1234567890141,6
 20,Pan,1.50,2,1,Bolsa,400,1234567890142,10
-21,Mantequilla,3.00,7,1,Barra,250,1234567890143,5
+21,Mantequilla,3.00,4,1,Barra,250,1234567890143,5
 22,Yogur,2.20,3,1,Botella,1000,1234567890144,8
 23,Huevos,0.30,48,1,Unidad,12,1234567890145,50
 24,Pasta,1.70,18,1,Paquete,500,1234567890146,20

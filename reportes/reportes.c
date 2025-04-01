@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "../include/seguridad.h"
+#include "../include/auditoria.h"
 
 #define MAX_VENTAS 100
 #define MAX_VENTAS_PRODUCTOS 200
@@ -140,6 +141,7 @@ void reporteVentasPorDia(Venta ventas[], int numVentas, VentaProducto ventasProd
             totalVentas += ventas[i].precioTotal;
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_VENTAS_DIA", "Reporte de ventas por día", "Venta", 0, "Reporte de ventas por día generado", "Informativo", "Éxito");
     printf("Total ventas del dia: %.2f\n", totalVentas);
 }
 
@@ -157,6 +159,7 @@ void reporteVentasPorSemana(Venta ventas[], int numVentas, VentaProducto ventasP
             totalVentas += ventas[i].precioTotal;
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_VENTAS_SEMANA", "Reporte de ventas por semana", "Venta", 0, "Reporte de ventas por semana generado", "Informativo", "Éxito");
     printf("Total ventas de la semana: %.2f\n", totalVentas);
 }
 
@@ -172,6 +175,7 @@ void reporteVentasPorMes(Venta ventas[], int numVentas, VentaProducto ventasProd
             totalVentas += ventas[i].precioTotal;
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_VENTAS_MES", "Reporte de ventas por mes", "Venta", 0, "Reporte de ventas por mes generado", "Informativo", "Éxito");
     printf("Total ventas del mes: %.2f\n", totalVentas);
 }
 
@@ -187,6 +191,7 @@ void reporteVentasPorVendedor(Venta ventas[], int numVentas, VentaProducto venta
             totalVentas += ventas[i].precioTotal;
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_VENTAS_VENDEDOR", "Reporte de ventas por vendedor", "Venta", 0, "Reporte de ventas por vendedor generado", "Informativo", "Éxito");
     printf("Total ventas del vendedor: %.2f\n", totalVentas);
 }
 
@@ -208,6 +213,7 @@ void reporteVentasPorProducto(Venta ventas[], int numVentas, VentaProducto venta
             }
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_VENTAS_PRODUCTO", "Reporte de ventas por producto", "Venta", 0, "Reporte de ventas por producto generado", "Informativo", "Éxito");
     printf("Total ventas del producto: %.2f\n", totalVentas);
 }
 
@@ -223,6 +229,7 @@ void reporteVentasPorMetodoPago(Venta ventas[], int numVentas, VentaProducto ven
             totalVentas += ventas[i].precioTotal;
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_VENTAS_METODO_PAGO", "Reporte de ventas por método de pago", "Venta", 0, "Reporte de ventas por método de pago generado", "Informativo", "Éxito");
     printf("Total ventas con metodo de pago %s: %.2f\n", metodoPago, totalVentas);
 }
 
@@ -235,6 +242,7 @@ void reporteMisVentas(Venta ventas[], int numVentas, VentaProducto ventasProduct
             totalVentas += ventas[i].precioTotal;
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_MIS_VENTAS", "Reporte de mis ventas", "Venta", 0, "Reporte de mis ventas generado", "Informativo", "Éxito");
     printf("Total mis ventas: %.2f\n", totalVentas);
 }
 
@@ -346,6 +354,7 @@ void reporteStockActual(Producto productos[], int numProductos) {
         printf("ID: %d, Nombre: %s, Stock: %d %s\n",
                productos[i].id, productos[i].nombre, productos[i].stock, productos[i].unidad);
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_STOCK_ACTUAL", "Reporte de stock actual", "Producto", 0, "Reporte de stock actual generado", "Informativo", "Éxito");
 }
 
 void reporteProductosMasVendidos(Producto productos[], int numProductos, VentaProducto ventasProductos[], int numVentasProductos) {
@@ -383,6 +392,7 @@ void reporteProductosMasVendidos(Producto productos[], int numProductos, VentaPr
     } else {
         printf("\nNo hay ventas registradas.\n");
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_PRODUCTOS_MAS_VENDIDOS", "Reporte de productos más vendidos", "Producto", 0, "Reporte de productos más vendidos generado", "Informativo", "Éxito");
 }
 
 void reporteProductosMenosVendidos(Producto productos[], int numProductos, VentaProducto ventasProductos[], int numVentasProductos) {
@@ -420,6 +430,7 @@ void reporteProductosMenosVendidos(Producto productos[], int numProductos, Venta
     } else {
         printf("\nNo hay ventas registradas.\n");
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_PRODUCTOS_MENOS_VENDIDOS", "Reporte de productos menos vendidos", "Producto", 0, "Reporte de productos menos vendidos generado", "Informativo", "Éxito");
 }
 
 // Función para mostrar el menú de reportes de inventario
@@ -612,6 +623,8 @@ void reporteBalanceDiario(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int 
     printf("Ingresos Totales: %.2f\n", ingresosTotales);
     printf("Egresos Totales: %.2f\n", egresosTotales);
     printf("Saldo Neto: %.2f\n", ingresosTotales - egresosTotales);
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_BALANCE_DIARIO", "Reporte de balance diario", "Caja", 0, "Reporte de balance diario generado", "Informativo", "Éxito");
+
 }
 
 void reporteBalanceSemanal(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
@@ -635,6 +648,8 @@ void reporteBalanceSemanal(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int
     printf("Ingresos Totales: %.2f\n", ingresosTotales);
     printf("Egresos Totales: %.2f\n", egresosTotales);
     printf("Saldo Neto: %.2f\n", ingresosTotales - egresosTotales);
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_BALANCE_SEMANAL", "Reporte de balance semanal", "Caja", 0, "Reporte de balance semanal generado", "Informativo", "Éxito");
+
 }
 
 void reporteBalanceMensual(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
@@ -656,6 +671,8 @@ void reporteBalanceMensual(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int
     printf("Ingresos Totales: %.2f\n", ingresosTotales);
     printf("Egresos Totales: %.2f\n", egresosTotales);
     printf("Saldo Neto: %.2f\n", ingresosTotales - egresosTotales);
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_BALANCE_MENSUAL", "Reporte de balance mensual", "Caja", 0, "Reporte de balance mensual generado", "Informativo", "Éxito");
+
 }
 
 void reporteIngresosEgresos(Caja* cajas, int numCajas, CorteCaja* cortesCaja, int numCortes, Transaccion* transacciones, int numTransacciones) {
@@ -672,6 +689,7 @@ void reporteIngresosEgresos(Caja* cajas, int numCajas, CorteCaja* cortesCaja, in
                    transacciones[i].observaciones);
         }
     }
+    registrarRegistroAuditoria(usuario_global.id, "REPORTE_INGRESOS_EGRESOS", "Reporte de ingresos/egresos", "Caja", 0, "Reporte de ingresos/egresos generado", "Informativo", "Éxito");
 }
 
 // Función para mostrar el menú de reportes de caja

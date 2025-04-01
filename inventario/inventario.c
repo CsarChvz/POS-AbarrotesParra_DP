@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../include/seguridad.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
+
 #define NOMBRE_LENGTH 100
 #define UNIDAD_LENGTH 20
 #define CODIGO_BARRAS_LENGTH 20
@@ -24,21 +27,21 @@ static int obtenerSiguienteId() {
     if (archivo == NULL) {
         return 1; // Si no existe el archivo, el primer ID es 1
     }
-    
+
     char linea[256];
     int maxId = 0;
     int id;
-    
+
     // Saltar cabecera
     fgets(linea, 256, archivo);
-    
+
     while (fgets(linea, 256, archivo) != NULL) {
         sscanf(linea, "%d", &id);
         if (id > maxId) {
             maxId = id;
         }
     }
-    
+
     fclose(archivo);
     return maxId + 1;
 }
@@ -61,8 +64,8 @@ int registrarProducto(Producto *producto) {
     int id = obtenerSiguienteId();
 
     // Escribir los datos del producto en el archivo CSV
-    if (fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n", 
-                id, producto->nombre, producto->precio, producto->stock, producto->activo, 
+    if (fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n",
+                id, producto->nombre, producto->precio, producto->stock, producto->activo,
                 producto->unidad, producto->valorUnidad, producto->codigoBarras, producto->stockMinimo) < 0) {
         perror("Error al escribir en el archivo");
         fclose(archivo);
@@ -115,6 +118,7 @@ void registrarProductoMenu() {
     // Llamar a la función para registrar el producto
     if (registrarProducto(&nuevoProducto)) {
         printf("Producto registrado exitosamente.\n");
+        registrarRegistroAuditoria(usuario_global.id, "REGISTRAR_PRODUCTO", "Registrar producto", "Producto", nuevoProducto.id, "Producto registrado", "Informativo", "Éxito");
     } else {
         printf("Error al registrar el producto.\n");
     }
@@ -152,8 +156,8 @@ int obtenerProductos(Producto **productos) {
     int i = 0;
     while (fgets(linea, 256, archivo) != NULL) {
         Producto p;
-        sscanf(linea, "%d,%[^,],%f,%d,%d,%[^,],%d,%[^,],%d", 
-               &p.id, p.nombre, &p.precio, &p.stock, &p.activo, p.unidad, 
+        sscanf(linea, "%d,%[^,],%f,%d,%d,%[^,],%d,%[^,],%d",
+               &p.id, p.nombre, &p.precio, &p.stock, &p.activo, p.unidad,
                &p.valorUnidad, p.codigoBarras, &p.stockMinimo);
         (*productos)[i] = p;
         i++;
@@ -186,9 +190,9 @@ int listarProductos() {
         }
 
         for (i = inicio; i < fin; i++) {
-            printf("ID: %d, Nombre: %-20s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %-10s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n", 
-                   productos[i].id, productos[i].nombre, productos[i].precio, 
-                   productos[i].stock, productos[i].activo, productos[i].unidad, 
+            printf("ID: %d, Nombre: %-20s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %-10s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n",
+                   productos[i].id, productos[i].nombre, productos[i].precio,
+                   productos[i].stock, productos[i].activo, productos[i].unidad,
                    productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
         }
 
@@ -218,6 +222,7 @@ int listarProductos() {
 
     // Liberar memoria
     free(productos);
+    registrarRegistroAuditoria(usuario_global.id, "LISTAR_PRODUCTOS", "Listar productos", "Producto", 0, "Listado de productos visto", "Informativo", "Éxito");
 
     return 0;
 }
@@ -259,9 +264,9 @@ void eliminarProductoPorNombre(char *nombre) {
     for (i = 0; i < cantidadProductos; i++) {
         if (strcmp(productos[i].nombre, nombre) == 0) {
             // Mostrar producto encontrado
-            printf("Producto encontrado: ID: %d, Nombre: %s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n", 
-                productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
-                productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+            printf("Producto encontrado: ID: %d, Nombre: %s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n",
+                   productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock,
+                   productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
 
             // Confirmación para eliminar
             char opcion;
@@ -281,14 +286,15 @@ void eliminarProductoPorNombre(char *nombre) {
                 // Reescribir productos que no son el que estamos eliminando
                 for (i = 0; i < cantidadProductos; i++) {
                     if (strcmp(productos[i].nombre, nombre) != 0) {
-                        fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n", 
-                            productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
-                            productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+                        fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n",
+                                productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock,
+                                productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
                     }
                 }
 
                 fclose(archivo);
                 printf("Producto eliminado exitosamente.\n");
+                registrarRegistroAuditoria(usuario_global.id, "ELIMINAR_PRODUCTO", "Eliminar producto", "Producto", productos[i].id, "Producto eliminado por nombre", "Informativo", "Éxito");
             } else {
                 printf("El producto no fue eliminado.\n");
             }
@@ -314,9 +320,9 @@ void eliminarProductoPorId(int id) {
     for (i = 0; i < cantidadProductos; i++) {
         if (productos[i].id == id) {
             // Mostrar producto encontrado
-            printf("Producto encontrado: ID: %d, Nombre: %s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n", 
-                productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
-                productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+            printf("Producto encontrado: ID: %d, Nombre: %s, Precio: %.2f, Stock: %d, Activo: %d, Unidad: %s, ValorUnidad: %d, Codigo: %s, Stock Mínimo: %d\n",
+                   productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock,
+                   productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
 
             // Confirmación para eliminar
             char opcion;
@@ -336,14 +342,15 @@ void eliminarProductoPorId(int id) {
                 // Reescribir productos que no son el que estamos eliminando
                 for (i = 0; i < cantidadProductos; i++) {
                     if (productos[i].id != id) {
-                        fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n", 
-                            productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock, 
-                            productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
+                        fprintf(archivo, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n",
+                                productos[i].id, productos[i].nombre, productos[i].precio, productos[i].stock,
+                                productos[i].activo, productos[i].unidad, productos[i].valorUnidad, productos[i].codigoBarras, productos[i].stockMinimo);
                     }
                 }
 
                 fclose(archivo);
                 printf("Producto eliminado exitosamente.\n");
+                registrarRegistroAuditoria(usuario_global.id, "ELIMINAR_PRODUCTO", "Eliminar producto", "Producto", id, "Producto eliminado por ID", "Informativo", "Éxito");
             } else {
                 printf("El producto no fue eliminado.\n");
             }

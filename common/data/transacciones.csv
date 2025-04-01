@@ -11,3 +11,4 @@ ID_Transaccion,Fecha,Tipo_Movimiento,Categoria_Transaccion,Ingreso,Egreso,Saldo,
 10,2025-03-31,Ingreso,Venta,16.10,0.00,1378.10,Efectivo,1,Venta ID: 20,No,No
 11,2025-03-31,Ingreso,Venta,48.60,0.00,1426.70,Tarjeta,1,Venta ID: 21,No,No
 12,2025-03-31,Ingreso,Venta,4.05,0.00,1430.75,Tarjeta,1,Venta ID: 22,No,No
+13,2025-03-31,Ingreso,Venta,9.00,0.00,1439.75,Tarjeta,6,Venta ID: 23,No,No
