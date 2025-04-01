@@ -5,6 +5,7 @@
 
 #include "../include/seguridad.h"
 #include "../include/descuentos.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
 
 #define MAX_VENTAS 100
 #define MAX_VENTAS_PRODUCTOS (MAX_VENTAS * 10)
@@ -165,7 +166,6 @@ static int obtenerSiguienteIdVentaProducto() {
     fclose(archivo);
     return maxId + 1;
 }
-
 float aplicarDescuento(int idProducto, float subtotal) {
     FILE *archivo = fopen(ARCHIVO_DESCUENTOS, "r");
     if (archivo == NULL) {
@@ -180,25 +180,34 @@ float aplicarDescuento(int idProducto, float subtotal) {
     strftime(fechaActual, sizeof(fechaActual), "%Y-%m-%d", tiempoLocal);
 
     float subtotalConDescuento = subtotal;
+    int descuentoAplicado = 0; // Bandera para verificar si se aplicó un descuento
 
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         Descuento descuento;
         if (sscanf(linea, "%d,%d,%d,%10[^,],%10[^\n]",
-                   &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
-                   descuento.fechaInicio, descuento.fechaFin) == 5) {
+                    &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
+                    descuento.fechaInicio, descuento.fechaFin) == 5) {
             if (descuento.idProducto == idProducto &&
                 strcmp(descuento.fechaInicio, fechaActual) <= 0 &&
                 strcmp(descuento.fechaFin, fechaActual) >= 0) {
                 // Se aplica el descuento
                 subtotalConDescuento = subtotal * (1 - (float)descuento.porcentajeDescuento / 100);
+                descuentoAplicado = 1; // Se aplicó un descuento
                 break; // Se encontró y aplicó el descuento, no es necesario buscar más
             }
         }
     }
 
     fclose(archivo);
+
+    // Registrar auditoría si se aplicó un descuento
+    if (descuentoAplicado) {
+        registrarRegistroAuditoria(usuario_global.id, "APLICAR_DESCUENTO", "Aplicar descuento", "Descuento", idProducto, "Descuento aplicado", "Modificación", "Éxito");
+    }
+
     return subtotalConDescuento;
 }
+
 
 
 static int actualizarStockProducto(int id, float cantidad, int restar) {
@@ -223,8 +232,8 @@ static int actualizarStockProducto(int id, float cantidad, int restar) {
     while (fgets(linea, sizeof(linea), archivoOriginal)) {
         Producto p;
         if (sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%14[^,],%d",
-                   &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
-                   p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
+                    &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
+                    p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
             if (p.id == id) {
                 if (restar) {
                     p.stock -= (int)cantidad; // Restar la cantidad
@@ -263,6 +272,7 @@ static int actualizarStockProducto(int id, float cantidad, int restar) {
 
     return 1;
 }
+
 void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int *numVentas, VentaProducto ventasProductos[], int *numVentasProductos) {
     int opcion;
     int idProducto;
@@ -424,9 +434,9 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
                 while (fgets(linea, sizeof(linea), archivoTransacciones)) {
                     Transaccion t;
                     if (sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
-                               &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
-                               &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
-                               t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
+                                &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                                &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                                t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
                         saldoAnterior = t.saldo;
                     }
                 }
@@ -448,6 +458,8 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
                     transaccionVenta.observaciones, transaccionVenta.corteCaja, transaccionVenta.inicioJornada);
 
             fclose(archivoTransacciones);
+
+            registrarRegistroAuditoria(usuario_global.id, "REGISTRAR_VENTA", "Registrar venta", "Venta", ventaActual.idVenta, "Venta registrada", "Venta", "Éxito");
 
             printf("Venta finalizada y datos guardados en ventas.csv y transacciones.csv.\n");
             break;
@@ -488,8 +500,8 @@ static int obtenerProductos(Producto **productos) {
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         Producto p;
         sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%19[^,],%d",
-               &p.id, p.nombre, &p.precio, &p.stock, &p.activo, p.unidad,
-               &p.valorUnidad, p.codigoBarras, &p.stockMinimo);
+                &p.id, p.nombre, &p.precio, &p.stock, &p.activo, p.unidad,
+                &p.valorUnidad, p.codigoBarras, &p.stockMinimo);
         (*productos)[i] = p;
         i++;
     }
@@ -521,8 +533,8 @@ void generarTicketVenta(int idVenta, Venta ventas[], int numVentas, VentaProduct
     printf("\n--- Ticket de Venta ---\n");
     printf("ID Venta: %d\n", venta.idVenta);
     printf("Fecha: %04d-%02d-%02d %02d:%02d:%02d\n",
-           timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
-           timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+            timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+            timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
     printf("Método de Pago: %s\n", venta.metodoPago);
     printf("Usuario: %d\n", venta.idUsuario);
     printf("\n--- Productos ---\n");
@@ -535,7 +547,7 @@ void generarTicketVenta(int idVenta, Venta ventas[], int numVentas, VentaProduct
             Producto *producto = buscarProductoPorId(productos, numProductos, ventasProductos[i].idProducto);
             if (producto != NULL) {
                 printf("%s x%.2f %s: %.2f\n",
-                       producto->nombre, ventasProductos[i].cantidad, producto->unidad, ventasProductos[i].subtotal);
+                        producto->nombre, ventasProductos[i].cantidad, producto->unidad, ventasProductos[i].subtotal);
                 total += ventasProductos[i].subtotal;
             }
         }
@@ -575,7 +587,6 @@ void registrarVentaMenu() {
 
     free(productos);
 }
-
 void visualizarHistorialVentas() {
     FILE *archivo = fopen("common/data/ventas.csv", "r");
     if (archivo == NULL) {
@@ -601,7 +612,7 @@ void visualizarHistorialVentas() {
 
     while (1) {
         printf("\n--- Historial de Ventas (Página %d) ---\n", pagina);
-        printf("ID Venta | Fecha       | Metodo de Pago | Precio Total\n");
+        printf("ID Venta | Fecha     | Metodo de Pago | Precio Total\n");
         printf("------------------------------------------------------\n");
 
         inicio = (pagina - 1) * ventasPorPagina;
@@ -616,8 +627,11 @@ void visualizarHistorialVentas() {
                 sscanf(linea, "%d,%ld,%s,%d,%f", &idVenta, &fechaVenta, metodoPago, &idUsuario, &precioTotal);
                 timeinfo = localtime(&fechaVenta);
                 printf("%-8d | %04d-%02d-%02d | %-14s | %.2f\n",
-                       idVenta, timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
-                       metodoPago, precioTotal);
+                        idVenta, timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+                        metodoPago, precioTotal);
+
+                // Registrar auditoría para cada venta visualizada
+                registrarRegistroAuditoria(usuario_global.id, "VISUALIZAR_VENTA", "Visualizar venta", "Venta", idVenta, "Venta visualizada en historial", "Visualización", "Éxito");
             }
             i++;
         }

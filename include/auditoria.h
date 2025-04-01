@@ -3,5 +3,7 @@
 
 void solicitarYRegistrarAuditoria();
 void solicitarYListarAuditoria();
-void busquedaAvanzada();
+void registrarRegistroAuditoria(int idUsuario, const char *accionCodigo, const char *accionDescripcion,
+    const char *tipoObjeto, int idObjeto, const char *detalles,
+    const char *severidad, const char *estado);
 #endif

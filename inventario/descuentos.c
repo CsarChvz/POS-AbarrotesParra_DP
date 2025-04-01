@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "../include/seguridad.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
 
 #define ARCHIVO_DESCUENTOS "common/data/descuentos.csv"
 #define FECHA_LENGTH 11
@@ -64,6 +65,7 @@ void aplicarDescuentoProducto() {
 
     fclose(archivo);
     printf("Descuento aplicado con éxito.\n");
+    registrarRegistroAuditoria(usuario_global.id, "APLICAR_DESCUENTO_PRODUCTO", "Aplicar descuento a producto", "Descuento", descuento.idDescuento, "Descuento aplicado", "Informativo", "Éxito");
 }
 
 void configurarFechasDescuento() {
@@ -122,6 +124,7 @@ void configurarFechasDescuento() {
     rename("common/data/descuentos_temp.csv", ARCHIVO_DESCUENTOS);
 
     printf("Fechas de descuento actualizadas con éxito.\n");
+    registrarRegistroAuditoria(usuario_global.id, "CONFIGURAR_FECHAS_DESCUENTO", "Configurar fechas de descuento", "Descuento", idDescuento, "Fechas de descuento actualizadas", "Informativo", "Éxito");
 }
 
 void verProductosConDescuento() {
@@ -144,11 +147,11 @@ void verProductosConDescuento() {
                    &descuento.idDescuento, &descuento.idProducto, &descuento.porcentajeDescuento,
                    descuento.fechaInicio, descuento.fechaFin) == 5) {
             printf("%-15d%-15d%-20s%-20s\n",
-                   descuento.idProducto, descuento.porcentajeDescuento,
-                   descuento.fechaInicio, descuento.fechaFin);
+                    descuento.idProducto, descuento.porcentajeDescuento,
+                    descuento.fechaInicio, descuento.fechaFin);
         }
     }
 
     fclose(archivo);
+    registrarRegistroAuditoria(usuario_global.id, "VER_PRODUCTOS_CON_DESCUENTO", "Ver productos con descuento", "Descuento", 0, "Listado de productos con descuento visto", "Informativo", "Éxito");
 }
-
