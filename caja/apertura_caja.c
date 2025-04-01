@@ -127,7 +127,7 @@ int verificarEstadoCajaDiaActual(int idUsuario, Caja *cajaActual) {
     while (fgets(linea, 256, archivo) != NULL) {
         Caja caja;
         if (sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%9s",
-                   &caja.idCaja, &caja.idUsuario, caja.fecha, caja.hora, &caja.montoInicial, caja.estado) == 6) {
+                    &caja.idCaja, &caja.idUsuario, caja.fecha, caja.hora, &caja.montoInicial, caja.estado) == 6) {
             if (caja.idUsuario == idUsuario && strcmp(caja.fecha, fechaActual) == 0) {
                 *cajaActual = caja;
                 cajaEncontrada = 1;
@@ -148,17 +148,17 @@ void mostrarEstadoCajaODarOpcionApertura() {
     int cajaEncontrada = verificarEstadoCajaDiaActual(idUsuario, &cajaActual);
 
     if (cajaEncontrada == 1) {
-        printf("Caja del día actual:\n");
+        printf("Caja del d%ca actual:\n", 161);
         printf("ID Caja: %d\n", cajaActual.idCaja);
         printf("Fecha: %s\n", cajaActual.fecha);
         printf("Hora: %s\n", cajaActual.hora);
         printf("Monto Inicial: %.2f\n", cajaActual.montoInicial);
         printf("Estado: %s\n", cajaActual.estado);
         // Registrar auditoría
-        registrarRegistroAuditoria(idUsuario, "CAJA_ESTADO", "Verificación estado caja", "Caja", cajaActual.idCaja, "Estado de caja verificado", "Informativo", "Éxito");
+        registrarRegistroAuditoria(idUsuario, "CAJA_ESTADO", "Verificaci%cn estado caja", "Caja", cajaActual.idCaja, "Estado de caja verificado", "Informativo", "Éxito");
 
     } else if (cajaEncontrada == 0) {
-        printf("No se encontró una caja abierta para el día actual.\n");
+        printf("No se encontr%c una caja abierta para el d%ca actual.\n", 162, 161);
         char opcion;
         printf("¿Desea aperturar una nueva caja? (s/n): ");
         scanf(" %c", &opcion);

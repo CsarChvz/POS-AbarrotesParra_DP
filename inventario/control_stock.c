@@ -57,7 +57,7 @@ int obtenerProductosStock(Producto **productos) {
     while (fgets(linea, 256, archivo) != NULL) {
         Producto p;
         sscanf(linea, "%d,%[^,],%*f,%d,%*d,%*[^,],%*d,%*[^,],%*d",
-               &p.id, p.nombre, &p.stock);
+                &p.id, p.nombre, &p.stock);
         (*productos)[i] = p;
         i++;
     }
@@ -79,7 +79,7 @@ int listarStockProductos() {
     }
 
     while (1) {
-        printf("\n--- Lista de Productos (Stock) - Página %d ---\n", pagina);
+        printf("\n--- Lista de Productos (Stock) - P%cgina %d ---\n", 160, pagina);
 
         // Mostrar los productos de la página actual
         int inicio = (pagina - 1) * productosPorPagina;
@@ -99,13 +99,13 @@ int listarStockProductos() {
         char opcion;
         printf("\n--- Opciones ---\n");
         if (pagina > 1) {
-            printf("a. Página Anterior\n");
+            printf("a. P%cgina Anterior\n", 160);
         }
         if (fin < cantidadProductosLeidos) {
-            printf("s. Siguiente Página\n");
+            printf("s. Siguiente P%cgina\n", 160);
         }
         printf("q. Salir\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opci%cn: ", 162);
         scanf(" %c", &opcion); // Espacio antes de %c para consumir el salto de línea
 
         if (opcion == 'a' && pagina > 1) {
@@ -115,7 +115,7 @@ int listarStockProductos() {
         } else if (opcion == 'q') {
             break; // Salir
         } else {
-            printf("Opción inválida.\n");
+            printf("Opci%cn inv%clida.\n", 162, 160);
         }
     }
 
@@ -157,7 +157,7 @@ int obtenerProductosBajoStock(Producto **productos) {
     while (fgets(linea, 256, archivo) != NULL) {
         Producto p;
         sscanf(linea, "%d,%[^,],%*f,%d,%d,%*[^,],%*d,%*[^,],%*d",
-               &p.id, p.nombre, &p.stock, &p.stockMinimo);
+                &p.id, p.nombre, &p.stock, &p.stockMinimo);
 
         if (p.stock <= p.stockMinimo + 5) { // Filtra productos con bajo stock
             (*productos)[productosBajoStock++] = p;
@@ -179,7 +179,7 @@ void visualizarStockBajo() {
     }
 
     printf("\n--- Productos con Bajo Stock ---\n");
-    printf("ID\tNombre\t\tStock\tStock Mínimo\n");
+    printf("ID\tNombre\t\tStock\tStock M%cnimo\n", 161);
     printf("-------------------------------------\n");
     for (i = 0; i < cantidad; i++) {
         printf("%d\t%-20s\t%d\t%d\n", productos[i].id, productos[i].nombre, productos[i].stock, productos[i].stockMinimo);
@@ -208,8 +208,8 @@ int buscarProducto(int id, const char *nombre, Producto *resultado) {
     while (fgets(linea, sizeof(linea), archivo)) {
         Producto p;
         if (sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%14[^,],%d",
-                   &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
-                   p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
+                    &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
+                    p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
             if ((id != -1 && p.id == id) || (nombre && strcmp(p.nombre, nombre) == 0)) {
                 *resultado = p;
                 encontrado = 1;
@@ -244,8 +244,8 @@ int actualizarStockProducto(int id, int cantidad) {
     while (fgets(linea, sizeof(linea), archivoOriginal)) {
         Producto p;
         if (sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%14[^,],%d",
-                   &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
-                   p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
+                    &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
+                    p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
             if (p.id == id) {
                 p.stock += cantidad; // Incrementar el stock
                 encontrado = 1;
@@ -255,7 +255,7 @@ int actualizarStockProducto(int id, int cantidad) {
                     p.id, p.nombre, p.precio, p.stock, p.activo,
                     p.unidad, p.valorUnidad, p.codigoBarras, p.stockMinimo);
         } else {
-            printf("Advertencia: Línea corrupta en el archivo.\n");
+            printf("Advertencia: L%cnea corrupta en el archivo.\n", 161);
         }
     }
 
@@ -264,7 +264,7 @@ int actualizarStockProducto(int id, int cantidad) {
 
     if (!encontrado) {
         remove("common/data/productos_temp.csv");
-        printf("Error: No se encontró el producto con ID %d.\n", id);
+        printf("Error: No se encontr%c el producto con ID %d.\n", 162, id);
         return 0;
     }
 
@@ -286,22 +286,22 @@ void registrarReposicionStock() {
     char nombre[NOMBRE_LENGTH];
     Producto producto;
 
-    printf("\n=== Registrar Reposición de Stock ===\n");
+    printf("\n=== Registrar Reposici%cn de Stock ===\n", 162);
     printf("Desea buscar el producto por:\n");
     printf("1. ID\n");
     printf("2. Nombre\n");
-    printf("Seleccione una opción: ");
+    printf("Seleccione una opci%cn: ", 162);
 
     int opcion;
     if (scanf("%d", &opcion) != 1) {
-        printf("Entrada inválida.\n");
+        printf("Entrada inv%clida.\n", 160);
         return;
     }
 
     if (opcion == 1) {
         printf("Ingrese el ID del producto: ");
         if (scanf("%d", &id) != 1) {
-            printf("Entrada inválida.\n");
+            printf("Entrada inv%clida.\n", 160);
             return;
         }
         if (!buscarProducto(id, NULL, &producto)) {
@@ -317,23 +317,23 @@ void registrarReposicionStock() {
         }
         id = producto.id; // Obtener el ID del producto encontrado
     } else {
-        printf("Opción inválida.\n");
+        printf("Opci%cn inv%clida.\n", 162, 160);
         return;
     }
 
     printf("\nProducto encontrado:\n");
     printf("ID: %d | Nombre: %s | Stock actual: %d | Unidad: %s\n",
-           producto.id, producto.nombre, producto.stock, producto.unidad);
+            producto.id, producto.nombre, producto.stock, producto.unidad);
 
     int cantidad;
     printf("\nIngrese la cantidad a agregar al stock: ");
     if (scanf("%d", &cantidad) != 1 || cantidad <= 0) {
-        printf("Cantidad inválida.\n");
+        printf("Cantidad inv%clida.\n", 160);
         return;
     }
 
     if (actualizarStockProducto(id, cantidad)) {
-        printf("\nReposición de stock realizada con éxito.\n");
+        printf("\nReposici%cn de stock realizada con %cxito.\n", 162, 130);
         registrarRegistroAuditoria(usuario_global.id,"REPOSICION_STOCK","Reposición de stock","Producto",id,"Reposición de stock realizada","Informativo","Exito");
     } else {
         printf("\nError al actualizar el stock.\n");
@@ -362,19 +362,19 @@ int actualizarStockMinimo(int id, int nuevoStockMinimo) {
     while (fgets(linea, sizeof(linea), archivoOriginal)) {
         Producto p;
         if (sscanf(linea, "%d,%49[^,],%f,%d,%d,%19[^,],%d,%14[^,],%d",
-                   &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
-                   p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
+                    &p.id, p.nombre, &p.precio, &p.stock, &p.activo,
+                    p.unidad, &p.valorUnidad, p.codigoBarras, &p.stockMinimo) == 9) {
             if (p.id == id) {
                 p.stockMinimo = nuevoStockMinimo; // Actualizar stock mínimo
                 encontrado = 1;
-                printf("\n[Stock mínimo actualizado] Producto: '%s' | Nuevo Stock Mínimo: %d\n",
-                       p.nombre, p.stockMinimo);
+                printf("\n[Stock m%cnimo actualizado] Producto: '%s' | Nuevo Stock M%cnimo: %d\n",
+                        161, p.nombre, 161, p.stockMinimo);
             }
             fprintf(archivoTemporal, "%d,%s,%.2f,%d,%d,%s,%d,%s,%d\n",
                     p.id, p.nombre, p.precio, p.stock, p.activo,
                     p.unidad, p.valorUnidad, p.codigoBarras, p.stockMinimo);
         } else {
-            printf("Advertencia: Línea corrupta en el archivo.\n");
+            printf("Advertencia: L%cnea corrupta en el archivo.\n", 161);
         }
     }
 
@@ -383,7 +383,7 @@ int actualizarStockMinimo(int id, int nuevoStockMinimo) {
 
     if (!encontrado) {
         remove("common/data/productos_temp.csv");
-        printf("Error: No se encontró el producto con ID %d.\n", id);
+        printf("Error: No se encontr%c el producto con ID %d.\n", 162, id);
         return 0;
     }
 
@@ -405,22 +405,22 @@ void modificarStockMinimo() {
     char nombre[NOMBRE_LENGTH];
     Producto producto;
 
-    printf("\n=== Modificar Stock Mínimo ===\n");
+    printf("\n=== Modificar Stock M%cnimo ===\n", 161);
     printf("Desea buscar el producto por:\n");
     printf("1. ID\n");
     printf("2. Nombre\n");
-    printf("Seleccione una opción: ");
+    printf("Seleccione una opci%cn: ", 162);
 
     int opcion;
     if (scanf("%d", &opcion) != 1) {
-        printf("Entrada inválida.\n");
+        printf("Entrada inv%clida.\n", 160);
         return;
     }
 
     if (opcion == 1) {
         printf("Ingrese el ID del producto: ");
         if (scanf("%d", &id) != 1) {
-            printf("Entrada inválida.\n");
+            printf("Entrada inv%clida.\n", 160);
             return;
         }
         if (!buscarProducto(id, NULL, &producto)) {
@@ -436,25 +436,25 @@ void modificarStockMinimo() {
         }
         id = producto.id; // Obtener el ID del producto encontrado
     } else {
-        printf("Opción inválida.\n");
+        printf("Opci%cn inv%clida.\n", 162, 160);
         return;
     }
 
     printf("\nProducto encontrado:\n");
-    printf("ID: %d | Nombre: %s | Stock mínimo actual: %d | Unidad: %s\n",
-           producto.id, producto.nombre, producto.stockMinimo, producto.unidad);
+    printf("ID: %d | Nombre: %s | Stock m%cnimo actual: %d | Unidad: %s\n",
+            producto.id, producto.nombre, 161, producto.stockMinimo, producto.unidad);
 
     int nuevoStockMinimo;
-    printf("\nIngrese el nuevo stock mínimo: ");
+    printf("\nIngrese el nuevo stock m%cnimo: ",161);
     if (scanf("%d", &nuevoStockMinimo) != 1 || nuevoStockMinimo < 0) {
-        printf("Cantidad inválida.\n");
+        printf("Cantidad inv%clida.\n", 160);
         return;
     }
 
     if (actualizarStockMinimo(id, nuevoStockMinimo)) {
-        printf("\nStock mínimo actualizado con éxito.\n");
+        printf("\nStock m%cnimo actualizado con %cxito.\n", 161, 130);
         registrarRegistroAuditoria(usuario_global.id,"MODIFICACION_STOCK_MINIMO","Modificación de stock mínimo","Producto",id,"Stock mínimo actualizado","Informativo","Exito");
     } else {
-        printf("\nError al actualizar el stock mínimo.\n");
+        printf("\nError al actualizar el stock m%cnimo.\n", 161);
     }
 }

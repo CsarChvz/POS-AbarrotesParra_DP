@@ -146,12 +146,11 @@ int usuarioExiste(const char *nombre_usuario) {
     return 0; // El usuario no existe
 }
 
-
 int buscarUsuario(int id, Usuario *resultado) {
-    FILE *archivo = fopen("common/data/usuarios.csv", "r");  // Modo lectura
+    FILE *archivo = fopen("common/data/usuarios.csv", "r"); // Modo lectura
     if (archivo == NULL) {
         perror("Error al abrir el archivo");
-        return 0;  // Error al abrir el archivo
+        return 0; // Error al abrir el archivo
     }
 
     char linea[256];
@@ -160,13 +159,13 @@ int buscarUsuario(int id, Usuario *resultado) {
     // Saltar la cabecera
     if (fgets(linea, sizeof(linea), archivo) == NULL) {
         fclose(archivo);
-        return 0;  // Archivo vacío
+        return 0; // Archivo vacío
     }
 
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         Usuario u;
         if (sscanf(linea, "%d,%49[^,],%49[^,],%d,%d",
-                   &u.id, u.usuario, u.contrasena, &u.rol, &u.activo) == 5) {  // Verifica que haya 5 campos
+                   &u.id, u.usuario, u.contrasena, &u.rol, &u.activo) == 5) { // Verifica que haya 5 campos
             if (u.id == id) {
                 *resultado = u;
                 encontrado = 1;

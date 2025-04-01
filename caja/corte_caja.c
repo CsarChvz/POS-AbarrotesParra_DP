@@ -67,9 +67,9 @@ int obtenerUltimoCorteCaja(CorteCaja *ultimoCorte) {
 
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         if (sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%f,%f,%f,%f,%255[^\n]",
-                   &corteActual.idCorte, &corteActual.idCaja, corteActual.fecha, corteActual.hora,
-                   &corteActual.ingresosTotales, &corteActual.egresosTotales, &corteActual.saldoFinal,
-                   &corteActual.montoDeclarado, &corteActual.diferencia, corteActual.observaciones) == 10) {
+                    &corteActual.idCorte, &corteActual.idCaja, corteActual.fecha, corteActual.hora,
+                    &corteActual.ingresosTotales, &corteActual.egresosTotales, &corteActual.saldoFinal,
+                    &corteActual.montoDeclarado, &corteActual.diferencia, corteActual.observaciones) == 10) {
             *ultimoCorte = corteActual;
             corteEncontrado = 1;
         }
@@ -82,16 +82,16 @@ int obtenerUltimoCorteCaja(CorteCaja *ultimoCorte) {
 void mostrarUltimoCorteCaja() {
     CorteCaja ultimoCorte;
     if (obtenerUltimoCorteCaja(&ultimoCorte)) {
-        printf("\n--- Último Corte de Caja ---\n");
+        printf("\n--- %cUltimo Corte de Caja ---\n", 233);
         printf("ID\tCaja\tFecha\t\tHora\tIngresos\tEgresos\tSaldo\tDeclarado\tDiferencia\tObservaciones\n");
         printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
         printf("%d\t%d\t%s\t%s\t%.2f\t\t%.2f\t\t%.2f\t\t%.2f\t\t%.2f\t\t%s\n",
-               ultimoCorte.idCorte, ultimoCorte.idCaja, ultimoCorte.fecha, ultimoCorte.hora,
-               ultimoCorte.ingresosTotales, ultimoCorte.egresosTotales, ultimoCorte.saldoFinal,
-               ultimoCorte.montoDeclarado, ultimoCorte.diferencia, ultimoCorte.observaciones);
+                ultimoCorte.idCorte, ultimoCorte.idCaja, ultimoCorte.fecha, ultimoCorte.hora,
+                ultimoCorte.ingresosTotales, ultimoCorte.egresosTotales, ultimoCorte.saldoFinal,
+                ultimoCorte.montoDeclarado, ultimoCorte.diferencia, ultimoCorte.observaciones);
         // Registrar auditoría
-        registrarRegistroAuditoria(usuario_global.id, "CORTE_CAJA_VISTA", "Vista del último corte de caja", "CorteCaja", ultimoCorte.idCorte, "Vista del último corte de caja", "Informativo", "Éxito");
+        registrarRegistroAuditoria(usuario_global.id, "CORTE_CAJA_VISTA", "Vista del �cltimo corte de caja", "CorteCaja", ultimoCorte.idCorte, "Vista del %cltimo corte de caja", "Informativo", "Exito");
     } else {
         printf("No se encontraron cortes de caja.\n");
     }
@@ -129,9 +129,9 @@ int obtenerHistorialCortesCaja(CorteCaja **cortes) {
     int i = 0;
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         if (sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%f,%f,%f,%f,%255[^\n]",
-                   &(*cortes)[i].idCorte, &(*cortes)[i].idCaja, (*cortes)[i].fecha, (*cortes)[i].hora,
-                   &(*cortes)[i].ingresosTotales, &(*cortes)[i].egresosTotales, &(*cortes)[i].saldoFinal,
-                   &(*cortes)[i].montoDeclarado, &(*cortes)[i].diferencia, (*cortes)[i].observaciones) == 10) {
+                    &(*cortes)[i].idCorte, &(*cortes)[i].idCaja, (*cortes)[i].fecha, (*cortes)[i].hora,
+                    &(*cortes)[i].ingresosTotales, &(*cortes)[i].egresosTotales, &(*cortes)[i].saldoFinal,
+                    &(*cortes)[i].montoDeclarado, &(*cortes)[i].diferencia, (*cortes)[i].observaciones) == 10) {
             i++;
         }
     }
@@ -146,18 +146,18 @@ void mostrarHistorialCortesCaja() {
     int i;
     if (cantidadCortes > 0) {
         printf("\n%-5s%-6s%-12s%-8s%-10s%-10s%-10s%-10s%-10s%-20s\n",
-               "ID", "Caja", "Fecha", "Hora", "Ingresos", "Egresos", "Saldo", "Declarado", "Diferencia", "Observaciones");
+                "ID", "Caja", "Fecha", "Hora", "Ingresos", "Egresos", "Saldo", "Declarado", "Diferencia", "Observaciones");
         printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
         for (i = 0; i < cantidadCortes; i++) {
             printf("%-5d%-6d%-12s%-8s%-10.2f%-10.2f%-10.2f%-10.2f%-10.2f%-20s\n",
-                   cortes[i].idCorte, cortes[i].idCaja, cortes[i].fecha, cortes[i].hora,
-                   cortes[i].ingresosTotales, cortes[i].egresosTotales, cortes[i].saldoFinal,
-                   cortes[i].montoDeclarado, cortes[i].diferencia, cortes[i].observaciones);
+                    cortes[i].idCorte, cortes[i].idCaja, cortes[i].fecha, cortes[i].hora,
+                    cortes[i].ingresosTotales, cortes[i].egresosTotales, cortes[i].saldoFinal,
+                    cortes[i].montoDeclarado, cortes[i].diferencia, cortes[i].observaciones);
         }
         free(cortes);
         // Registrar auditoría
-        registrarRegistroAuditoria(usuario_global.id, "CORTE_CAJA_HISTORIAL", "Vista del historial de cortes de caja", "CorteCaja", 0, "Vista del historial de cortes de caja", "Informativo", "Éxito");
+        registrarRegistroAuditoria(usuario_global.id, "CORTE_CAJA_HISTORIAL", "Vista del historial de cortes de caja", "CorteCaja", 0, "Vista del historial de cortes de caja", "Informativo", "Exito");
     } else {
         printf("No se encontraron cortes de caja.\n");
     }
@@ -199,8 +199,8 @@ int obtenerCajaAbierta(Caja *cajaAbierta) {
 
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         if (sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%9[^\n]",
-                   &cajaActual.idCaja, &cajaActual.idUsuario, cajaActual.fecha, cajaActual.hora,
-                   &cajaActual.montoInicial, cajaActual.estado) == 6) {
+                    &cajaActual.idCaja, &cajaActual.idUsuario, cajaActual.fecha, cajaActual.hora,
+                    &cajaActual.montoInicial, cajaActual.estado) == 6) {
             if (strcmp(cajaActual.estado, "Abierta") == 0) {
                 *cajaAbierta = cajaActual;
                 cajaEncontrada = 1;
@@ -232,8 +232,8 @@ int actualizarEstadoCaja(int idCaja, const char *estado) {
     while (fgets(linea, sizeof(linea), archivoOriginal)) {
         Caja caja;
         if (sscanf(linea, "%d,%d,%10[^,],%8[^,],%f,%9[^\n]",
-                   &caja.idCaja, &caja.idUsuario, caja.fecha, caja.hora,
-                   &caja.montoInicial, caja.estado) == 6) {
+                    &caja.idCaja, &caja.idUsuario, caja.fecha, caja.hora,
+                    &caja.montoInicial, caja.estado) == 6) {
             if (caja.idCaja == idCaja) {
                 strcpy(caja.estado, estado);
                 encontrado = 1;
@@ -272,9 +272,9 @@ float calcularIngresosEgresos(int idCaja, float *egresos) {
     while (fgets(linea, sizeof(linea), archivo) != NULL) {
         Transaccion t;
         if (sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
-                   &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
-                   &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
-                   t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
+                    &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                    &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                    t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
             if (strcmp(t.metodoPago, "Efectivo") == 0) {
                 if (strcmp(t.tipoMovimiento, "Ingreso") == 0) {
                     ingresos += t.ingreso;
@@ -345,7 +345,7 @@ void realizarCorteCaja() {
     actualizarEstadoCaja(cajaAbierta.idCaja, "Cerrada");
 
     // Registrar auditoría
-    registrarRegistroAuditoria(cajaAbierta.idUsuario, "CORTE_CAJA", "Corte de caja realizado", "Caja", cajaAbierta.idCaja, "Corte de caja realizado", "Informativo", "Éxito");
+    registrarRegistroAuditoria(cajaAbierta.idUsuario, "CORTE_CAJA", "Corte de caja realizado", "Caja", cajaAbierta.idCaja, "Corte de caja realizado", "Informativo", "Exito");
 
-    printf("Corte de caja realizado con éxito.\n");
+    printf("Corte de caja realizado con %cxito.\n", 130);
 }

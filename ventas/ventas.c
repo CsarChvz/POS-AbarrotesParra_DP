@@ -351,14 +351,12 @@ void registrarVenta(Producto productos[], int numProductos, Venta ventas[], int 
                 if (ventasProductos[i].idVenta == ventaActual.idVenta) {
                     Producto *producto = buscarProductoPorId(productos, numProductos, ventasProductos[i].idProducto);
                     if (producto != NULL) {
-                        printf(
-                            "Producto: %s, Cantidad: %.2f %s, Precio Unitario: %.2f, Subtotal: %.2f\n",
-                            producto->nombre,
-                            ventasProductos[i].cantidad,
-                            producto->unidad,
-                            ventasProductos[i].precioUnitario,
-                            ventasProductos[i].subtotal
-                        );
+                        printf("Producto: %s, Cantidad: %.2f %s, Precio Unitario: %.2f, Subtotal: %.2f\n",
+                                producto->nombre,
+                                ventasProductos[i].cantidad,
+                                producto->unidad,
+                                ventasProductos[i].precioUnitario,
+                                ventasProductos[i].subtotal);
                     }
                 }
             }

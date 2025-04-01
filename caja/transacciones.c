@@ -38,9 +38,9 @@ int obtenerSiguienteIdTransaccion() {
     while (fgets(linea, sizeof(linea), archivo)) {
         Transaccion t;
         if (sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
-                   &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
-                   &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
-                   t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
+                    &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                    &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                    t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
             if (t.idTransaccion > maxId) {
                 maxId = t.idTransaccion;
             }
@@ -62,23 +62,23 @@ void registrarIngreso() {
 
     strcpy(transaccion.tipoMovimiento, "Ingreso");
 
-    printf("Categoría de ingreso (Venta, Depósito, etc.): ");
+    printf("Categor%ca de ingreso (Venta, Dep%csito, etc.): ", 161, 162);
     scanf("%s", transaccion.categoriaTransaccion);
 
     printf("Monto del ingreso: ");
     scanf("%f", &transaccion.ingreso);
     transaccion.egreso = 0.0;
 
-    printf("Método de pago: ");
+    printf("M%ctodo de pago: ", 130);
     scanf("%s", transaccion.metodoPago);
 
     printf("Observaciones: ");
     scanf(" %[^\n]", transaccion.observaciones);
 
-    printf("¿Corte de caja? (Sí/No): ");
+    printf("¿Corte de caja? (S%c/No): ", 161);
     scanf("%s", transaccion.corteCaja);
 
-    printf("¿Inicio de jornada? (Sí/No): ");
+    printf("¿Inicio de jornada? (S%c/No): ", 161);
     scanf("%s", transaccion.inicioJornada);
 
     // Calcular el saldo
@@ -91,9 +91,9 @@ void registrarIngreso() {
         while (fgets(linea, sizeof(linea), archivo)) {
             Transaccion t;
             if (sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
-                       &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
-                       &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
-                       t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
+                        &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                        &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                        t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
                 saldoAnterior = t.saldo;
             }
         }
@@ -117,9 +117,9 @@ void registrarIngreso() {
 
     fclose(archivo);
 
-    printf("Ingreso registrado con éxito.\n");
+    printf("Ingreso registrado con %cxito.\n", 130);
     // Registrar auditoría
-    registrarRegistroAuditoria(transaccion.idUsuario, "TRANSACCION_INGRESO", "Registro de ingreso", "Transaccion", transaccion.idTransaccion, "Ingreso registrado", "Informativo", "Éxito");
+    registrarRegistroAuditoria(transaccion.idUsuario, "TRANSACCION_INGRESO", "Registro de ingreso", "Transaccion", transaccion.idTransaccion, "Ingreso registrado", "Informativo", "Exito");
 }
 
 void registrarEgreso() {
@@ -133,23 +133,23 @@ void registrarEgreso() {
 
     strcpy(transaccion.tipoMovimiento, "Egreso");
 
-    printf("Categoría de egreso (Compra, Pago, etc.): ");
+    printf("Categor%ca de egreso (Compra, Pago, etc.): ", 161);
     scanf("%s", transaccion.categoriaTransaccion);
 
     printf("Monto del egreso: ");
     scanf("%f", &transaccion.egreso);
     transaccion.ingreso = 0.0;
 
-    printf("Método de pago: ");
+    printf("M%ctodo de pago: ", 130);
     scanf("%s", transaccion.metodoPago);
 
     printf("Observaciones: ");
     scanf(" %[^\n]", transaccion.observaciones);
 
-    printf("¿Corte de caja? (Sí/No): ");
+    printf("¿Corte de caja? (S%c/No): ", 161);
     scanf("%s", transaccion.corteCaja);
 
-    printf("¿Inicio de jornada? (Sí/No): ");
+    printf("¿Inicio de jornada? (S%c/No): ", 161);
     scanf("%s", transaccion.inicioJornada);
 
     // Calcular el saldo
@@ -162,9 +162,9 @@ void registrarEgreso() {
         while (fgets(linea, sizeof(linea), archivo)) {
             Transaccion t;
             if (sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
-                       &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
-                       &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
-                       t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
+                        &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                        &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                        t.observaciones, t.corteCaja, t.inicioJornada) == 12) {
                 saldoAnterior = t.saldo;
             }
         }
@@ -187,9 +187,9 @@ void registrarEgreso() {
             transaccion.observaciones, transaccion.corteCaja, transaccion.inicioJornada);
     fclose(archivo);
 
-    printf("Egreso registrado con éxito.\n");
+    printf("Egreso registrado con %cxito.\n", 130);
     // Registrar auditoría
-    registrarRegistroAuditoria(transaccion.idUsuario, "TRANSACCION_EGRESO", "Registro de egreso", "Transaccion", transaccion.idTransaccion, "Egreso registrado", "Informativo", "Éxito");
+    registrarRegistroAuditoria(transaccion.idUsuario, "TRANSACCION_EGRESO", "Registro de egreso", "Transaccion", transaccion.idTransaccion, "Egreso registrado", "Informativo", "Exito");
 }
 
 // Función para obtener transacciones desde el archivo CSV
@@ -225,9 +225,9 @@ int obtenerTransacciones(Transaccion **transacciones) {
     while (fgets(linea, 256, archivo) != NULL) {
         Transaccion t;
         sscanf(linea, "%d,%10[^,],%9[^,],%19[^,],%f,%f,%f,%19[^,],%d,%99[^,],%3[^,],%3[^\n]",
-               &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
-               &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
-               t.observaciones, t.corteCaja, t.inicioJornada);
+                &t.idTransaccion, t.fecha, t.tipoMovimiento, t.categoriaTransaccion,
+                &t.ingreso, &t.egreso, &t.saldo, t.metodoPago, &t.idUsuario,
+                t.observaciones, t.corteCaja, t.inicioJornada);
         (*transacciones)[i] = t;
         i++;
     }
@@ -249,7 +249,7 @@ int listarTransacciones() {
     }
 
     while (1) {
-        printf("\n--- Lista de Transacciones - Página %d ---\n", pagina);
+        printf("\n--- Lista de Transacciones - P%cgina %d ---\n", 160, pagina);
 
         // Mostrar las transacciones de la página actual
         int inicio = (pagina - 1) * transaccionesPorPagina;
@@ -258,28 +258,28 @@ int listarTransacciones() {
             fin = cantidadTransaccionesLeidas;
         }
 
-        printf("ID\tFecha\t\tTipo\tCategoría\tIngreso\tEgreso\tSaldo\tMétodo\tUsuario\tObservaciones\tCorte\tInicio\n");
+        printf("ID\tFecha\t\tTipo\tCategor%ca\tIngreso\tEgreso\tSaldo\tM%ctodo\tUsuario\tObservaciones\tCorte\tInicio\n", 161, 130);
         printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
         for (i = inicio; i < fin; i++) {
             printf("%d\t%s\t%s\t%s\t%.2f\t%.2f\t%.2f\t%s\t%d\t%s\t%s\t%s\n",
-                   transacciones[i].idTransaccion, transacciones[i].fecha, transacciones[i].tipoMovimiento,
-                   transacciones[i].categoriaTransaccion, transacciones[i].ingreso, transacciones[i].egreso,
-                   transacciones[i].saldo, transacciones[i].metodoPago, transacciones[i].idUsuario,
-                   transacciones[i].observaciones, transacciones[i].corteCaja, transacciones[i].inicioJornada);
+                    transacciones[i].idTransaccion, transacciones[i].fecha, transacciones[i].tipoMovimiento,
+                    transacciones[i].categoriaTransaccion, transacciones[i].ingreso, transacciones[i].egreso,
+                    transacciones[i].saldo, transacciones[i].metodoPago, transacciones[i].idUsuario,
+                    transacciones[i].observaciones, transacciones[i].corteCaja, transacciones[i].inicioJornada);
         }
 
         // Preguntar si desea ver la siguiente página o volver a la anterior
         char opcion;
         printf("\n--- Opciones ---\n");
         if (pagina > 1) {
-            printf("a. Página Anterior\n");
+            printf("a. P%cgina Anterior\n", 160);
         }
         if (fin < cantidadTransaccionesLeidas) {
-            printf("s. Siguiente Página\n");
+            printf("s. Siguiente P%cgina\n", 160);
         }
         printf("q. Salir\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opci%cn: ", 162);
         scanf(" %c", &opcion); // Espacio antes de %c para consumir el salto de línea
 
         if (opcion == 'a' && pagina > 1) {
@@ -289,13 +289,13 @@ int listarTransacciones() {
         } else if (opcion == 'q') {
             break;
         } else {
-            printf("Opción inválida.\n");
+            printf("Opci%cn inv%clida.\n", 162, 160);
         }
     }
 
     // Liberar memoria
     free(transacciones);
     //registrar auditoria
-    registrarRegistroAuditoria(usuario_global.id,"TRANSACCIONES_LISTADO","Listado de transacciones","Transaccion",0,"Listado de transacciones visto","Informativo","Exito");
+    registrarRegistroAuditoria(usuario_global.id, "TRANSACCIONES_LISTADO", "Listado de transacciones", "Transaccion", 0, "Listado de transacciones visto", "Informativo", "Ecxito");
     return 0;
 }
