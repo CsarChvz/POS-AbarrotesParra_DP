@@ -3,10 +3,10 @@
 #include <string.h>
 #include <time.h>
 
-#include "../include/seguridad.h" 
+#include "../include/seguridad.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
 
 #define ARCHIVO_CAJA "common/data/cajas.csv"
-
 #define FECHA_LENGTH 11
 #define HORA_LENGTH 9
 
@@ -39,6 +39,7 @@ void obtenerFechaActual(char *fechaActual) {
 
     strftime(fechaActual, 11, "%Y-%m-%d", tiempoLocal);
 }
+
 // Función para obtener el siguiente ID de caja disponible
 int obtenerSiguienteIdCaja() {
     FILE *archivo = fopen(ARCHIVO_CAJA, "r");
@@ -83,6 +84,10 @@ int aperturarCaja(int idUsuario, float montoInicial) {
     }
 
     fclose(archivo);
+
+    // Registrar auditoría
+    registrarRegistroAuditoria(idUsuario, "CAJA_APERTURA", "Apertura de caja", "Caja", idCaja, "Caja aperturada", "Informativo", "Éxito");
+
     return 1; // Éxito
 }
 
@@ -149,6 +154,9 @@ void mostrarEstadoCajaODarOpcionApertura() {
         printf("Hora: %s\n", cajaActual.hora);
         printf("Monto Inicial: %.2f\n", cajaActual.montoInicial);
         printf("Estado: %s\n", cajaActual.estado);
+        // Registrar auditoría
+        registrarRegistroAuditoria(idUsuario, "CAJA_ESTADO", "Verificación estado caja", "Caja", cajaActual.idCaja, "Estado de caja verificado", "Informativo", "Éxito");
+
     } else if (cajaEncontrada == 0) {
         printf("No se encontró una caja abierta para el día actual.\n");
         char opcion;

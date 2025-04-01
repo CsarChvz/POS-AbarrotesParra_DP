@@ -3,17 +3,16 @@
 #include <string.h>
 #include <time.h>
 
-#include "../include/seguridad.h" 
+#include "../include/seguridad.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
 
 #define ARCHIVO_CORTES "common/data/corte_cajas.csv"
 #define ARCHIVO_CAJAS "common/data/cajas.csv"
 #define ARCHIVO_TRANSACCIONES "common/data/transacciones.csv"
 
 #define OBSERVACIONES_LENGTH 256
-
 #define FECHA_LENGTH 11
 #define HORA_LENGTH 9
-
 
 typedef struct {
     int idCaja;
@@ -51,7 +50,6 @@ typedef struct {
     char corteCaja[4]; // "Sí" o "No"
     char inicioJornada[4]; // "Sí" o "No"
 } Transaccion;
-
 
 int obtenerUltimoCorteCaja(CorteCaja *ultimoCorte) {
     FILE *archivo = fopen(ARCHIVO_CORTES, "r");
@@ -92,6 +90,8 @@ void mostrarUltimoCorteCaja() {
                ultimoCorte.idCorte, ultimoCorte.idCaja, ultimoCorte.fecha, ultimoCorte.hora,
                ultimoCorte.ingresosTotales, ultimoCorte.egresosTotales, ultimoCorte.saldoFinal,
                ultimoCorte.montoDeclarado, ultimoCorte.diferencia, ultimoCorte.observaciones);
+        // Registrar auditoría
+        registrarRegistroAuditoria(usuario_global.id, "CORTE_CAJA_VISTA", "Vista del último corte de caja", "CorteCaja", ultimoCorte.idCorte, "Vista del último corte de caja", "Informativo", "Éxito");
     } else {
         printf("No se encontraron cortes de caja.\n");
     }
@@ -156,10 +156,13 @@ void mostrarHistorialCortesCaja() {
                    cortes[i].montoDeclarado, cortes[i].diferencia, cortes[i].observaciones);
         }
         free(cortes);
+        // Registrar auditoría
+        registrarRegistroAuditoria(usuario_global.id, "CORTE_CAJA_HISTORIAL", "Vista del historial de cortes de caja", "CorteCaja", 0, "Vista del historial de cortes de caja", "Informativo", "Éxito");
     } else {
         printf("No se encontraron cortes de caja.\n");
     }
 }
+
 int obtenerSiguienteIdCorteCaja() {
     FILE *archivo = fopen(ARCHIVO_CORTES, "r");
     if (archivo == NULL) {
@@ -340,6 +343,9 @@ void realizarCorteCaja() {
     fclose(archivo);
 
     actualizarEstadoCaja(cajaAbierta.idCaja, "Cerrada");
+
+    // Registrar auditoría
+    registrarRegistroAuditoria(cajaAbierta.idUsuario, "CORTE_CAJA", "Corte de caja realizado", "Caja", cajaAbierta.idCaja, "Corte de caja realizado", "Informativo", "Éxito");
 
     printf("Corte de caja realizado con éxito.\n");
 }

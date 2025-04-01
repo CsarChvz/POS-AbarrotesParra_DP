@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "../include/seguridad.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
 
 #define ARCHIVO_TRANSACCIONES "common/data/transacciones.csv"
 
@@ -51,7 +52,6 @@ int obtenerSiguienteIdTransaccion() {
 }
 
 void registrarIngreso() {
-
     Transaccion transaccion;
     transaccion.idTransaccion = obtenerSiguienteIdTransaccion();
     transaccion.idUsuario = usuario_global.id;
@@ -118,6 +118,8 @@ void registrarIngreso() {
     fclose(archivo);
 
     printf("Ingreso registrado con éxito.\n");
+    // Registrar auditoría
+    registrarRegistroAuditoria(transaccion.idUsuario, "TRANSACCION_INGRESO", "Registro de ingreso", "Transaccion", transaccion.idTransaccion, "Ingreso registrado", "Informativo", "Éxito");
 }
 
 void registrarEgreso() {
@@ -186,6 +188,8 @@ void registrarEgreso() {
     fclose(archivo);
 
     printf("Egreso registrado con éxito.\n");
+    // Registrar auditoría
+    registrarRegistroAuditoria(transaccion.idUsuario, "TRANSACCION_EGRESO", "Registro de egreso", "Transaccion", transaccion.idTransaccion, "Egreso registrado", "Informativo", "Éxito");
 }
 
 // Función para obtener transacciones desde el archivo CSV
@@ -291,6 +295,7 @@ int listarTransacciones() {
 
     // Liberar memoria
     free(transacciones);
-
+    //registrar auditoria
+    registrarRegistroAuditoria(usuario_global.id,"TRANSACCIONES_LISTADO","Listado de transacciones","Transaccion",0,"Listado de transacciones visto","Informativo","Exito");
     return 0;
 }

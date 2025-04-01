@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/seguridad.h"
+#include "../include/auditoria.h" // Incluir el archivo de auditoría
 
 #define USUARIO_LENGTH 20
 #define CONTRASENA_LENGTH 20
@@ -71,6 +72,7 @@ int checar_credenciales(const char *usuario, const char *contrasena) {
         if (strcmp(usuarios[i].usuario, usuario) == 0 && strcmp(usuarios[i].contrasena, contrasena) == 0 && usuarios[i].activo == 1) { //solo usuarios activos
             usuario_global.id = usuarios[i].id;
             free(usuarios);
+            registrarRegistroAuditoria(usuario_global.id, "INICIO_SESION", "Inicio de sesión", "Usuario", usuario_global.id, "Inicio de sesión exitoso", "Autenticación", "Éxito");
             return 1;
         }
     }
@@ -130,7 +132,7 @@ void cambiar_contrasena() {
     Usuario *usuarios = NULL;
     int num_usuarios = 0;
     char nueva_contrasena[CONTRASENA_LENGTH];
-    int i,j;
+    int i, j;
     if (!leer_usuarios(&usuarios, &num_usuarios)) {
         printf("Error al leer usuarios.\n");
         return;
@@ -158,6 +160,7 @@ void cambiar_contrasena() {
             printf("Contraseña cambiada exitosamente.\n");
             cerrar_sesion();
             free(usuarios);
+            registrarRegistroAuditoria(usuario_global.id, "CAMBIAR_CONTRASENA", "Cambiar contraseña", "Usuario", usuario_global.id, "Contraseña cambiada", "Modificación", "Éxito");
             return;
         }
     }
@@ -168,6 +171,7 @@ void cambiar_contrasena() {
 void cerrar_sesion() {
     printf("\nCerrando sesión...\n");
 
+    registrarRegistroAuditoria(usuario_global.id, "CERRAR_SESION", "Cerrar sesión", "Usuario", usuario_global.id, "Sesión cerrada", "Autenticación", "Éxito");
     usuario_global.id = 0;
     memset(usuario_global.usuario, 0, sizeof(usuario_global.usuario));
     usuario_global.rol = 0;
